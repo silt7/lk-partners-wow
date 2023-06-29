@@ -22,11 +22,13 @@ export default function GetProfile() {
 
 function getData() {
   const data = {
-    method: "getCompany",
+    domain: window.MyDomain,
+    cabinet: window.Cabinet,
+    method: "getClient",
     contactId: Cookies.get("contactid"),
     token: Cookies.get("token"),
   };
-  const response = fetch("https://wowlife-crm.ru/customrest/index.php", {
+  const response = fetch(window.BaseDir, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

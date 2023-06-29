@@ -58,12 +58,14 @@ export default function data() {
 
   const handleChangeStatus = (dealID) => {
     const data = {
+      domain: window.MyDomain,
+      cabinet: window.Cabinet,
       method: "changeDealStatus",
       contactId: Cookies.get("contactid"),
       token: Cookies.get("token"),
       dealId: dealID,
     };
-    const response = fetch("https://wowlife-crm.ru/customrest/index.php", {
+    const response = fetch(window.BaseDir, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,20 +81,21 @@ export default function data() {
     let arr = [];
     if (deals !== null) {
       deals.forEach((element) => {
-        const date = new Date(element.UF_CRM_1654155455356 * 1000); // Умножаем на 1000, так как JavaScript использует миллисекунды, а не секунды
-        const options = {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: false, // 24-часовой формат времени
-        };
-        element.UF_CRM_1654155455356 = date.toLocaleDateString(
-          undefined,
-          options
-        );
+        let formattedDate = "";
+        if (element.UF_CRM_1654155455356 != "") {
+          const date = new Date(element.UF_CRM_1654155455356); // Умножаем на 1000, так как JavaScript использует миллисекунды, а не секунды
+          const options = {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false, // 24-часовой формат времени
+          };
+          formattedDate = date.toLocaleDateString(undefined, options);
+        } else {
+          formattedDate = "не записан";
+        }
 
         element.COLOR = "dark";
         element.CHECK = "Принять";
@@ -116,9 +119,7 @@ export default function data() {
               email={"Сумма: " + element.OPPORTUNITY + " руб."}
             />
           ),
-          function: (
-            <Job title="test" description={"ID - " + element.CONTACTS[0]} />
-          ),
+          function: <Job title={element.CONTACTS.NAME} description="" />,
           status: (
             <MDBox ml={-1}>
               <MDBadge
@@ -137,7 +138,7 @@ export default function data() {
               color="text"
               fontWeight="medium"
             >
-              {element.UF_CRM_1654155455356}
+              {formattedDate}
             </MDTypography>
           ),
           action: (

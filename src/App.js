@@ -78,6 +78,15 @@ export default function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  window.BaseDir = "https://tevale.ru/rest/index.php";
+  window.Cabinet = "partner";
+
+  if (process.env.NODE_ENV === "development") {
+    window.MyDomain = "wowlife-crm.ru";
+  } else {
+    window.MyDomain = window.location.hostname;
+  }
+
   useEffect(() => {
     const checkAuth = async () => {
       const tokenExists = !!Cookies.get("token");
@@ -86,21 +95,19 @@ export default function App() {
         try {
           //Отправка токена на сервер для проверки
           const data = {
-            // Ваши данные из формы
+            domain: window.MyDomain,
+            cabinet: window.Cabinet,
             method: "authorization",
             contactId: Cookies.get("contactid"),
             token: Cookies.get("token"),
           };
-          const response = await fetch(
-            "https://wowlife-crm.ru/customrest/index.php",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            }
-          )
+          const response = await fetch(window.BaseDir, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
             .then((response) => {
               if (response.ok) {
                 return response.json(); // Получаем JSON-ответ

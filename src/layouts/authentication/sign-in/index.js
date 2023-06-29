@@ -64,18 +64,17 @@ function Basic() {
 
   const buttonCodeClick = async () => {
     const data = {
+      domain: window.MyDomain,
+      cabinet: window.Cabinet,
       method: "getCode",
       contact: inputContact,
     };
     try {
-      const response = await fetch(
-        "https://wowlife-crm.ru/customrest/index.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      )
+      const response = await fetch(window.BaseDir, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
         .then((response) => {
           if (response.ok) {
             return response.json(); // Получаем JSON-ответ
@@ -83,11 +82,23 @@ function Basic() {
           throw new Error("Network response was not ok");
         })
         .then((data) => {
-          if (data.result !== null && data.result != "notfound") {
+          if (data.result == null) {
+            alert("Данные не отправлены");
+          } else if (data.result == "notfound") {
+            alert("Пользователь не найден");
+          } else if (data.result == "notdomain") {
+            alert("Домена нет в базе");
+          } else if (data.result == "notauth") {
+            alert("Проблема c классом  авторизации");
+          } else if (data.result == "notgetcode") {
+            alert("Ошибка в функции получения кода активации");
+          } else if (data.result == "nottokenbitrix") {
+            alert("Отсутствует токен для подключения битрикс");
+          } else if (data.result == "moreone") {
+            alert("Найдено несколько контактов с этими данными");
+          } else {
             setShowButtonCode(false);
             setShowButtonIn(true);
-          } else {
-            alert("Пользователь не найден");
           }
         })
         .catch((error) => {
@@ -99,20 +110,18 @@ function Basic() {
   };
   const buttonInClick = async () => {
     const data = {
-      // Ваши данные из формы
+      domain: window.MyDomain,
+      cabinet: window.Cabinet,
       method: "authentication",
       contact: inputContact,
       code: inputCode,
     };
     try {
-      const response = await fetch(
-        "https://wowlife-crm.ru/customrest/index.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      )
+      const response = await fetch(window.BaseDir, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
         .then((response) => {
           if (response.ok) {
             return response.json(); // Получаем JSON-ответ
