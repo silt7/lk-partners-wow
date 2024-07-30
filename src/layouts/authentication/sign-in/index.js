@@ -172,10 +172,10 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            Вход в личный кабинет
           </MDTypography>
-          {/* <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+            {/* <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
               </MDTypography>
@@ -184,13 +184,13 @@ function Basic() {
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <GitHubIcon color="inherit" />
               </MDTypography>
-            </Grid>
+            </Grid> */}
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography component={MuiLink} href="https://tevale.ru/rest/yandex-oauth/index.php" variant="body1" color="white">
                 <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>
-          </Grid> */}
+          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
