@@ -66,58 +66,55 @@ function Basic() {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      method: "getCode",
       contact: inputContact,
     };
+
     try {
-      const response = await fetch(window.BaseDir, {
+      const response = await fetch(`${window.BaseDir}auth.getCode`, {  // Добавляем auth.getCode к адресу
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json(); // Получаем JSON-ответ
-          }
-          throw new Error("Network response was not ok");
-        })
-        .then((data) => {
-          if (data.result == null) {
-            alert("Данные не отправлены");
-          } else if (data.result == "notfound") {
-            alert("Пользователь не найден");
-          } else if (data.result == "notdomain") {
-            alert("Домена нет в базе");
-          } else if (data.result == "notauth") {
-            alert("Проблема c классом  авторизации");
-          } else if (data.result == "notgetcode") {
-            alert("Ошибка в функции получения кода активации");
-          } else if (data.result == "nottokenbitrix") {
-            alert("Отсутствует токен для подключения битрикс");
-          } else if (data.result == "moreone") {
-            alert("Найдено несколько контактов с этими данными");
-          } else {
-            setShowButtonCode(false);
-            setShowButtonIn(true);
-          }
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
-        });
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const resultData = await response.json();
+
+      if (resultData.result == null) {
+        alert("Данные не отправлены");
+      } else if (resultData.result === "notfound") {
+        alert("Пользователь не найден");
+      } else if (resultData.result === "notdomain") {
+        alert("Домена нет в базе");
+      } else if (resultData.result === "notauth") {
+        alert("Проблема c классом авторизации");
+      } else if (resultData.result === "notgetcode") {
+        alert("Ошибка в функции получения кода активации");
+      } else if (resultData.result === "nottokenbitrix") {
+        alert("Отсутствует токен для подключения битрикс");
+      } else if (resultData.result === "moreone") {
+        alert("Найдено несколько контактов с этими данными");
+      } else {
+        setShowButtonCode(false);
+        setShowButtonIn(true);
+      }
     } catch (error) {
       console.error("Произошла ошибка", error);
+      alert("Произошла ошибка при выполнении запроса."); // Добавляем сообщение пользователю
     }
   };
+
   const buttonInClick = async () => {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      method: "authentication",
       contact: inputContact,
       code: inputCode,
     };
     try {
-      const response = await fetch(window.BaseDir, {
+      const response = await fetch(`${window.BaseDir}auth.authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -24,11 +24,10 @@ function getData() {
   const data = {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
-    method: "getDeal",
-    contactId: Cookies.get("contactid"),
+    allIds: Cookies.get("contactid"),
     token: Cookies.get("token"),
   };
-  const response = fetch(window.BaseDir, {
+  const response = fetch(`${window.BaseDir}deal.getDealsByClientId`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +36,7 @@ function getData() {
   })
     .then((response) => response.json())
     .then((jsonData) => {
-      return jsonData.result;
+      return jsonData.result.deals;
     })
     .catch((error) => console.error("Ошибка получения данных:", error));
   //

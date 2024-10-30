@@ -76,13 +76,13 @@ export default function data() {
   };
 
   const dataRows = () => {
-    const deals = GetDeal();
+  const deals = GetDeal();
     let obj = {};
     let arr = [];
     if (deals !== null) {
       deals.forEach((element) => {
         let formattedDate = "";
-        if (element.UF_CRM_1654155455356 != "") {
+        if (element.UF_CRM_1654155455356 !== "") {
           const date = new Date(element.UF_CRM_1654155455356); // Умножаем на 1000, так как JavaScript использует миллисекунды, а не секунды
           const options = {
             year: "numeric",
@@ -99,12 +99,12 @@ export default function data() {
 
         element.COLOR = "dark";
         element.CHECK = "Принять";
-        if (element.STAGE_ID == "C2:NEW") {
+        if (element.STAGE_ID === "C2:NEW") {
           element.STAGE_ID = "Не подтвержден";
         }
         if (
-          element.STAGE_ID == "C2:UC_4Q05NY" ||
-          element.STAGE_ID == "C2:UC_M7SHZP"
+          element.STAGE_ID === "C2:UC_4Q05NY" ||
+          element.STAGE_ID === "C2:UC_M7SHZP"
         ) {
           element.STAGE_ID = "Подтвержден";
           element.COLOR = "success";

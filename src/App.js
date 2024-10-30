@@ -78,8 +78,8 @@ export default function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  window.BaseDir = "https://tevale.ru/rest/index.php";
-  window.Cabinet = "partner";
+  window.BaseDir = process.env.REACT_APP_BASE_URL;
+  window.Cabinet = process.env.REACT_APP_CABINET;
 
   if (process.env.NODE_ENV === "development") {
     window.MyDomain = "wowlife-crm.ru";
@@ -97,11 +97,10 @@ export default function App() {
           const data = {
             domain: window.MyDomain,
             cabinet: window.Cabinet,
-            method: "authorization",
             contactId: Cookies.get("contactid"),
             token: Cookies.get("token"),
           };
-          const response = await fetch(window.BaseDir, {
+          const response = await fetch(`${window.BaseDir}auth.authorization`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
