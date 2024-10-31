@@ -23,11 +23,16 @@ import { createContext, useContext, useReducer, useMemo } from "react";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
+import Cookies from "js-cookie";
+
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
+const Context = createContext();
 
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {
@@ -133,4 +138,57 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
+};
+const domain = process.env.REACT_APP_DOMAIN;
+const endPoint = process.env.REACT_APP_BASE_URL;
+
+export const ApiProvider = ({ children }) => {
+
+  const client_id = process.env.REACT_APP_YANDEX_CLIENT_ID;
+
+  const makeRequest = async (method, data) => {
+    data.domain = domain;
+    try {
+      if (endPoint !== undefined) {
+        const response = await fetch(endPoint + method, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+              `Ошибка запроса - fetch: ${response.status} ${response.statusText}`
+          );
+        }
+
+        return await response.json();
+      }
+    } catch (error) {
+      console.error("Ошибка запроса - axios:", error);
+      throw error;
+    }
+  };
+
+  return (
+      <Context.Provider
+          value={{
+            makeRequest,
+            endPoint,
+            domain,
+          }}
+      >
+        {children}
+      </Context.Provider>
+  );
+};
+
+export const useApi = () => {
+  const context = useContext(Context);
+  if (!context) {
+    throw new Error("useApi должен использоваться внутри ApiProvider");
+  }
+  return context;
 };

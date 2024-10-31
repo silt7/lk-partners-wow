@@ -82,7 +82,7 @@ export default function App() {
   window.Cabinet = process.env.REACT_APP_CABINET;
 
   if (process.env.NODE_ENV === "development") {
-    window.MyDomain = "wowlife-crm.ru";
+    window.MyDomain = process.env.REACT_APP_DOMAIN;
   } else {
     window.MyDomain = window.location.hostname;
   }

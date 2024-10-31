@@ -9,6 +9,7 @@ function SingOut() {
         // Удаляем куки
         Cookies.remove("clientId");
         Cookies.remove("token");
+        Cookies.remove("allIds");
 
         // Перенаправляем на страницу входа
         navigate("/authentication/sign-in");
