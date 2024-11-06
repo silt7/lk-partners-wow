@@ -26,7 +26,7 @@ async function getData() {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
     length: 10,
-    contactId: 300,
+    contactId: Cookies.get("contactid"),
     allIds: Cookies.get("allIds"),
     token: Cookies.get("token"),
   };

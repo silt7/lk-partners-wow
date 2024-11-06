@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import useDeals from "layouts/tables/data/getDeal";
 import MDBox from "components/MDBox";
@@ -16,7 +16,7 @@ export default function DataComponent() {
         }
     }, [deals]);
 
-    const Author = ({name, email}) => (
+    const Author = ({ name, email }) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
             <MDBox ml={2} lineHeight={1}>
                 <MDTypography display="block" variant="button" fontWeight="medium">
@@ -27,7 +27,7 @@ export default function DataComponent() {
         </MDBox>
     );
 
-    const Job = ({title, phone}) => (
+    const Job = ({ title, phone }) => (
         <MDBox lineHeight={1} textAlign="left">
             <MDTypography
                 display="block"
@@ -79,40 +79,55 @@ export default function DataComponent() {
         window.location.reload();
     };
 
+    const formatDate = (date) => {
+        return date
+            ? new Date(date).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false,
+            })
+            : "не записан";
+    };
+
+    const getStatusInfo = (stageId) => {
+        const statusMapping = {
+            "C2:NEW": { statusColor: "warning", statusText: "У партнера" },
+            "C2:UC_4Q05NY": { statusColor: "success", statusText: "Записан" },
+            "C2:UC_M7SHZP": { statusColor: "info", statusText: "Ожидает посещения" },
+            "C2:UC_6P1BHL": { statusColor: "secondary", statusText: "Отзыв" },
+            "C2:UC_77OTP8": { statusColor: "warning", statusText: "Ожидает оплаты" },
+            "C2:UC_8W7HSG": { statusColor: "primary", statusText: "Себес" },
+            "C2:UC_RPZ7AA": { statusColor: "info", statusText: "Ждем сверку" },
+            "C2:WON": { statusColor: "success", statusText: "Выполнен" },
+        };
+
+        // Возвращаем значения для найденного stageId, или default значения, если не найден
+        const status = statusMapping[stageId] || { statusColor: "dark", statusText: "Неизвестный статус" };
+
+        return status;
+    };
+
     const dataRows = () => {
-        const rows = [];
         if (!deals || typeof deals !== "object") {
-            return rows; // Возвращаем пустой массив, если `deals` не объект или пуст
+            return []; // Возвращаем пустой массив, если `deals` не объект или пуст
         }
 
-        Object.values(deals).map((element) => {
-            const dateValue = element.SCHEDULE_TIME
-                ? new Date(element.SCHEDULE_TIME).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: false,
-                })
-                : "не записан";
-
-            const statusColor =
-                element.STAGE_ID === "C2:UC_4Q05NY" || element.STAGE_ID === "C2:UC_M7SHZP"
-                    ? "success"
-                    : "dark";
+        return Object.values(deals).map((element) => {
+            const { statusColor, statusText } = getStatusInfo(element.STAGE_ID);
+            const dateValue = formatDate(element.SCHEDULE_TIME);
             const checkLabel = statusColor === "success" ? "" : "Принять";
-            const statusText = element.STAGE_ID === "C2:NEW" ? "Не подтвержден" : "Подтвержден";
 
-            rows.push({
-                author: <Author name={element.TITLE} email={`Сумма: ${element.OPPORTUNITY} руб.`}/>,
+            return {
+                author: <Author name={element.TITLE} email={`Сумма: ${element.OPPORTUNITY} руб.`} />,
                 function: (
-                    <Job title={element.CONTACT_INFO ? element.CONTACT_INFO.NAME : "Не указан"}
-                         phone={element.CONTACT_INFO ? element.CONTACT_INFO.PHONE : "Не указан"}/>
+                    <Job title={element.CONTACT_INFO ? element.CONTACT_INFO.NAME : "Не указан"} phone={element.CONTACT_INFO ? element.CONTACT_INFO.PHONE : "Не указан"} />
                 ),
                 status: (
                     <MDBox ml={-1}>
-                        <MDBadge badgeContent={statusText} color={statusColor} variant="gradient" size="sm"/>
+                        <MDBadge badgeContent={statusText} color={statusColor} variant="gradient" size="sm" />
                     </MDBox>
                 ),
                 employed: (
@@ -132,25 +147,22 @@ export default function DataComponent() {
                         {checkLabel}
                     </MDTypography>
                 ),
-            });
+            };
         });
-
-        return rows;
     };
 
     return {
         columns: [
-            {Header: "Услуга", accessor: "author", width: "45%", align: "left"},
-            {Header: "Контакт", accessor: "function", align: "left"},
-            {Header: "Статус", accessor: "status", align: "center"},
-            {Header: "Дата записи", accessor: "employed", align: "center"},
-            {Header: "", accessor: "action", align: "center"},
+            { Header: "Услуга", accessor: "author", width: "45%", align: "left" },
+            { Header: "Контакт", accessor: "function", align: "left" },
+            { Header: "Статус", accessor: "status", align: "center" },
+            { Header: "Дата записи", accessor: "employed", align: "center" },
+            { Header: "", accessor: "action", align: "center" },
         ],
         rows: isLoading
             ? [
                 {
-                    author: <MDTypography variant="h6" color="text" fontWeight="medium">Данные загружаются,
-                        подождите...</MDTypography>,
+                    author: <MDTypography variant="h6" color="text" fontWeight="medium">Данные загружаются, подождите...</MDTypography>,
                 },
             ]
             : dataRows(),
