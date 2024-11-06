@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Cookies from "js-cookie";
 import useDeals from "layouts/tables/data/getDeal";
 import MDBox from "components/MDBox";
@@ -6,7 +6,15 @@ import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
 
 export default function DataComponent() {
+    const [isLoading, setIsLoading] = useState(true);
     const deals = useDeals();
+
+    // Симуляция ожидания данных
+    useEffect(() => {
+        if (deals) {
+            setIsLoading(false); // Данные загружены, устанавливаем isLoading в false
+        }
+    }, [deals]);
 
     const Author = ({name, email}) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -27,10 +35,10 @@ export default function DataComponent() {
                 color="text"
                 fontWeight="medium"
                 style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '100%',
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "100%",
                 }}
             >
                 {title}
@@ -41,9 +49,9 @@ export default function DataComponent() {
                     color="text"
                     fontWeight="light"
                     style={{
-                        display: 'block',
-                        marginTop: '4px', // Добавить немного отступа
-                        fontSize: '12px', // Меньший размер шрифта для телефона
+                        display: "block",
+                        marginTop: "4px", // Добавить немного отступа
+                        fontSize: "12px", // Меньший размер шрифта для телефона
                     }}
                 >
                     {phone}
@@ -51,7 +59,6 @@ export default function DataComponent() {
             )}
         </MDBox>
     );
-
 
     const handleChangeStatus = async (dealID) => {
         const data = {
@@ -74,7 +81,7 @@ export default function DataComponent() {
 
     const dataRows = () => {
         const rows = [];
-        if (!deals || typeof deals !== 'object') {
+        if (!deals || typeof deals !== "object") {
             return rows; // Возвращаем пустой массив, если `deals` не объект или пуст
         }
 
@@ -90,14 +97,19 @@ export default function DataComponent() {
                 })
                 : "не записан";
 
-            const statusColor = element.STAGE_ID === "C2:UC_4Q05NY" || element.STAGE_ID === "C2:UC_M7SHZP" ? "success" : "dark";
+            const statusColor =
+                element.STAGE_ID === "C2:UC_4Q05NY" || element.STAGE_ID === "C2:UC_M7SHZP"
+                    ? "success"
+                    : "dark";
             const checkLabel = statusColor === "success" ? "" : "Принять";
             const statusText = element.STAGE_ID === "C2:NEW" ? "Не подтвержден" : "Подтвержден";
 
             rows.push({
                 author: <Author name={element.TITLE} email={`Сумма: ${element.OPPORTUNITY} руб.`}/>,
-                function: <Job title={element.CONTACT_INFO ? element.CONTACT_INFO.NAME : "Не указан"}
-                               phone={element.CONTACT_INFO ? element.CONTACT_INFO.PHONE : "Не указан"}/>,
+                function: (
+                    <Job title={element.CONTACT_INFO ? element.CONTACT_INFO.NAME : "Не указан"}
+                         phone={element.CONTACT_INFO ? element.CONTACT_INFO.PHONE : "Не указан"}/>
+                ),
                 status: (
                     <MDBox ml={-1}>
                         <MDBadge badgeContent={statusText} color={statusColor} variant="gradient" size="sm"/>
@@ -134,6 +146,13 @@ export default function DataComponent() {
             {Header: "Дата записи", accessor: "employed", align: "center"},
             {Header: "", accessor: "action", align: "center"},
         ],
-        rows: dataRows(),
+        rows: isLoading
+            ? [
+                {
+                    author: <MDTypography variant="h6" color="text" fontWeight="medium">Данные загружаются,
+                        подождите...</MDTypography>,
+                },
+            ]
+            : dataRows(),
     };
 }
