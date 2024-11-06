@@ -45,7 +45,7 @@ async function getData() {
     }
 
     const jsonData = await response.json();
-    return jsonData.result.deals;
+    return jsonData;
   } catch (error) {
     console.error("Ошибка получения данных:", error);
     return null;
