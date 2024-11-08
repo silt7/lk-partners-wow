@@ -44,6 +44,8 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import SingOut from "layouts/authentication/sing-out";
+import OAuth from "layouts/authentication/oauth";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -119,6 +121,14 @@ const routes = [
     key: "sign-out",
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
+    component: <SingOut />
+  },
+  {
+    name: "OAuth",
+    key: "oauth",
+    icon: <Icon fontSize="small">Oauth</Icon>,
+    route: "/authentication/oauth",
+    component: <OAuth />
   },
 ];
 

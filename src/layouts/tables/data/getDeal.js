@@ -1,46 +1,53 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-export default function GetDeal() {
-  const [profile, setProfile] = useState(null);
+export default function useDeals() {
+  const [deals, setDeals] = useState(null);
+
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getData();
-        if (response !== null) {
-          setProfile(response);
+        if (response) {
+          setDeals(response);
         }
       } catch (error) {
-        console.error(error);
+        console.error(`Ошибка загрузки сделок:`, error);
       }
     }
     fetchData();
   }, []);
 
-  return profile;
+  return deals;
 }
 
-function getData() {
+async function getData() {
   const data = {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
-    method: "getDeal",
+    length: 10,
     contactId: Cookies.get("contactid"),
+    allIds: Cookies.get("allIds"),
     token: Cookies.get("token"),
   };
-  const response = fetch(window.BaseDir, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((jsonData) => {
-      return jsonData.result;
-    })
-    .catch((error) => console.error("Ошибка получения данных:", error));
-  //
 
-  return response;
+  try {
+    const response = await fetch(`${window.BaseDir}deal.getPartnerDeals`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.error("Ошибка получения данных:", error);
+    return null;
+  }
 }

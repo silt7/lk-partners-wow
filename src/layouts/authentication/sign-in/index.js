@@ -16,19 +16,10 @@ Coded by www.creative-tim.com
 import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -44,15 +35,14 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useNavigate } from "react-router-dom";
 
 import Cookies from "js-cookie";
+import YandexButton from "./YandexButton";
 
 function Basic() {
-  const [rememberMe, setRememberMe] = useState(false);
   const [showButtonCode, setShowButtonCode] = useState(true);
   const [showButtonIn, setShowButtonIn] = useState(false);
   const [inputContact, setInputContact] = useState("");
   const [inputCode, setInputCode] = useState("");
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const navigate = useNavigate();
 
   const handleChangeContact = (event) => {
@@ -66,58 +56,55 @@ function Basic() {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      method: "getCode",
       contact: inputContact,
     };
+
     try {
-      const response = await fetch(window.BaseDir, {
+      const response = await fetch(`${window.BaseDir}auth.getCode`, {  // Добавляем auth.getCode к адресу
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json(); // Получаем JSON-ответ
-          }
-          throw new Error("Network response was not ok");
-        })
-        .then((data) => {
-          if (data.result == null) {
-            alert("Данные не отправлены");
-          } else if (data.result == "notfound") {
-            alert("Пользователь не найден");
-          } else if (data.result == "notdomain") {
-            alert("Домена нет в базе");
-          } else if (data.result == "notauth") {
-            alert("Проблема c классом  авторизации");
-          } else if (data.result == "notgetcode") {
-            alert("Ошибка в функции получения кода активации");
-          } else if (data.result == "nottokenbitrix") {
-            alert("Отсутствует токен для подключения битрикс");
-          } else if (data.result == "moreone") {
-            alert("Найдено несколько контактов с этими данными");
-          } else {
-            setShowButtonCode(false);
-            setShowButtonIn(true);
-          }
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
-        });
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const resultData = await response.json();
+
+      if (resultData.result == null) {
+        alert("Данные не отправлены");
+      } else if (resultData.result === "notfound") {
+        alert("Пользователь не найден");
+      } else if (resultData.result === "notdomain") {
+        alert("Домена нет в базе");
+      } else if (resultData.result === "notauth") {
+        alert("Проблема c классом авторизации");
+      } else if (resultData.result === "notgetcode") {
+        alert("Ошибка в функции получения кода активации");
+      } else if (resultData.result === "nottokenbitrix") {
+        alert("Отсутствует токен для подключения битрикс");
+      } else if (resultData.result === "moreone") {
+        alert("Найдено несколько контактов с этими данными");
+      } else {
+        setShowButtonCode(false);
+        setShowButtonIn(true);
+      }
     } catch (error) {
       console.error("Произошла ошибка", error);
+      alert("Произошла ошибка при выполнении запроса."); // Добавляем сообщение пользователю
     }
   };
+
   const buttonInClick = async () => {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      method: "authentication",
       contact: inputContact,
       code: inputCode,
     };
     try {
-      const response = await fetch(window.BaseDir, {
+      await fetch(`${window.BaseDir}auth.authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -129,10 +116,10 @@ function Basic() {
           throw new Error("Network response was not ok");
         })
         .then((data) => {
-          if (data.result == "notcode") {
+          if (data.result === "notcode") {
             alert("Неправильный код");
           }
-          if (data.result == "not3m") {
+          if (data.result === "not3m") {
             alert("Прошло более 3 минут, получите новый код");
             setShowButtonCode(true);
             setShowButtonIn(false);
@@ -144,6 +131,9 @@ function Basic() {
               expires: expirationDate,
             });
             Cookies.set("contactid", data.result.id, {
+              expires: expirationDate,
+            });
+            Cookies.set("allIds", data.result.allIds, {
               expires: expirationDate,
             });
             navigate("/dashboard");
@@ -186,8 +176,7 @@ function Basic() {
               </MDTypography>
             </Grid> */}
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="https://tevale.ru/rest/yandex-oauth/index.php" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
+              <MDTypography component={YandexButton} variant="body1" color="white">
               </MDTypography>
             </Grid>
           </Grid>
