@@ -1,13 +1,20 @@
-# Этап сборки
-FROM node:20 as build
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+# Устанавливаем базовый образ Node.js
+FROM node:20
 
-# Этап развертывания
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Устанавливаем рабочую директорию внутри контейнера
+WORKDIR /app
+
+# Копируем файлы package.json и package-lock.json
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем остальные файлы проекта
+COPY . .
+
+# Указываем порт, на котором будет работать сервер
+EXPOSE 3000
+
+# Запускаем сервер разработки
+CMD ["npm", "start"]
