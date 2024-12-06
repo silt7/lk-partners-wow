@@ -11,8 +11,8 @@ FROM node:20.11.1-alpine AS runner
 WORKDIR /app
 
 # Создаем non-root пользователя
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+# RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# USER appuser
 
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/build ./build
