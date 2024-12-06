@@ -60,15 +60,12 @@ function Basic() {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}auth.getCode`,
-        {
-          // Добавляем auth.getCode к адресу
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(`/api/auth.getCode`, {
+        // Добавляем auth.getCode к адресу
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -108,7 +105,7 @@ function Basic() {
       code: inputCode,
     };
     try {
-      await fetch(`${process.env.REACT_APP_BASE_URL}auth.authentication`, {
+      await fetch(`/api/auth.authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

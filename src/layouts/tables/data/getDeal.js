@@ -32,7 +32,7 @@ async function getData() {
   };
 
   try {
-    const response = await fetch(`${window.BaseDir}deal.getPartnerDeals`, {
+    const response = await fetch(`/api/deal.getPartnerDeals`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

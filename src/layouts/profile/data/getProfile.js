@@ -28,7 +28,7 @@ function getData() {
     contactId: Cookies.get("contactid"),
     token: Cookies.get("token"),
   };
-  const response = fetch(window.BaseDir, {
+  const response = fetch("/api/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

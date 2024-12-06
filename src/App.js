@@ -100,7 +100,7 @@ export default function App() {
             contactId: Cookies.get("contactid"),
             token: Cookies.get("token"),
           };
-          const response = await fetch(`${window.BaseDir}auth.authorization`, {
+          const response = await fetch(`/api/auth.authorization`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
