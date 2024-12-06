@@ -1,20 +1,14 @@
-# Устанавливаем базовый образ Node.js
-FROM node:20
 
-# Устанавливаем рабочую директорию внутри контейнера
+FROM node:20.11.1-alpine AS base
 WORKDIR /app
-
-# Копируем файлы package.json и package-lock.json
 COPY package*.json ./
-
-# Устанавливаем зависимости
-RUN npm install
-
-# Копируем остальные файлы проекта
+RUN npm ci --only=production
 COPY . .
+RUN npm run build
 
-# Указываем порт, на котором будет работать сервер
+# Переходим к финальному этапу
+FROM node:20.11.1-alpine AS runner
+WORKDIR /app
+COPY --from=base /app/node_modules ./node_modules
 EXPOSE 3000
-
-# Запускаем сервер разработки
 CMD ["npm", "start"]
