@@ -22,8 +22,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
+import MDBox from "./components/MDBox";
+import MDTypography from "./components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
@@ -59,7 +59,12 @@ function Projects() {
 
   return (
     <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+      <MDBox
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+      >
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
             المشاريع
@@ -80,7 +85,11 @@ function Projects() {
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+          <Icon
+            sx={{ cursor: "pointer", fontWeight: "bold" }}
+            fontSize="small"
+            onClick={openMenu}
+          >
             more_vert
           </Icon>
         </MDBox>

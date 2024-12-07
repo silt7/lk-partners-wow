@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
+import MDBox from "./components/MDBox";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -34,8 +34,8 @@ import reportsBarChartData from "layouts/rtl/data/reportsBarChartData";
 import reportsLineChartData from "layouts/rtl/data/reportsLineChartData";
 
 // RTL components
-import Projects from "layouts/rtl/components/Projects";
-import OrdersOverview from "layouts/rtl/components/OrdersOverview";
+import Projects from "layouts/rtl/./components/Projects";
+import OrdersOverview from "layouts/rtl/./components/OrdersOverview";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setDirection } from "context";
