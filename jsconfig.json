@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "*": ["*"]
-    }
+    "baseUrl": "src" // Указывает, что все пути начинаются с папки src
   },
   "include": ["src"]
 }
