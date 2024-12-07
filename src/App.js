@@ -27,16 +27,16 @@ import Icon from "@mui/material/Icon";
 import MDBox from "./components/MDBox";
 
 // Material Dashboard 2 React example components
-import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
+import Sidenav from "./examples/Sidenav";
+import Configurator from "./examples/Configurator";
 
 // Material Dashboard 2 React themes
-import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
+import theme from "./assets/theme";
+import themeRTL from "./assets/theme/theme-rtl";
 
 // Material Dashboard 2 React Dark Mode themes
-import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
+import themeDark from "./assets/theme-dark";
+import themeDarkRTL from "./assets/theme-dark/theme-rtl";
 
 // RTL plugins
 import rtlPlugin from "stylis-plugin-rtl";
@@ -54,8 +54,8 @@ import {
 } from "context";
 
 // Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
+import brandWhite from "./assets/images/logo-ct.png";
+import brandDark from "./assets/images/logo-ct-dark.png";
 
 import { useNavigate } from "react-router-dom";
 
