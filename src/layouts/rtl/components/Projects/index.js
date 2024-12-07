@@ -22,8 +22,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
-import MDBox from "./components/MDBox";
-import MDTypography from "./components/MDTypography";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 
 // Data

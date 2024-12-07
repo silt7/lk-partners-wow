@@ -19,10 +19,10 @@ Coded by www.creative-tim.com
 import Tooltip from "@mui/material/Tooltip";
 
 // Material Dashboard 2 React components
-import MDBox from "./components/MDBox";
-import MDTypography from "./components/MDTypography";
-import MDAvatar from "./components/MDAvatar";
-import MDProgress from "./components/MDProgress";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
+import MDProgress from "components/MDProgress";
 
 // Images
 import logoXD from "assets/images/small-logos/logo-xd.svg";
