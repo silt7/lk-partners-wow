@@ -2,8 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "*": ["*"] // Разрешение всех путей относительно baseUrl
+      "*": ["src/*"]
     }
-  },
-  "include": ["src"]
+  }
 }
