@@ -18,6 +18,7 @@ COPY --from=base /app/build ./build
 COPY --from=base /app/public ./public
 COPY --from=base /app/src ./src
 COPY --from=base /app/package.json ./package.json
+COPY --from=base /app/config-overrides.js ./config-overrides.js
 EXPOSE 3000
 
 CMD ["npm", "start"]
