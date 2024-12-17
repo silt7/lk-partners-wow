@@ -120,7 +120,7 @@ export default function DataComponent() {
     console.log(deals);
     return Object.values(deals.result.deals).map((element) => {
       const { statusColor, statusText } = getStatusInfo(element.STAGE_ID);
-      const dateValue = formatDate(element.SCHEDULE_TIME);
+      const dateValue = formatDate(element.UF_CRM_1654155455356);
       const checkLabel = statusColor === "success" ? "" : "Принять";
 
       return {
@@ -133,10 +133,10 @@ export default function DataComponent() {
         function: (
           <Job
             title={
-              element.CONTACT_INFO ? element.CONTACT_INFO.NAME : "Не указан"
+              element.NAME ? element.NAME : "Не указан"
             }
             phone={
-              element.CONTACT_INFO ? element.CONTACT_INFO.PHONE : "Не указан"
+              element.CONTACTS ? element.CONTACTS.phones.join(", ") : "Не указан"
             }
           />
         ),

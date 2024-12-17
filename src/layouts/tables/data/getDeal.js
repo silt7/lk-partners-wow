@@ -27,7 +27,7 @@ async function getData() {
     cabinet: window.Cabinet,
     length: 10,
     contactId: Cookies.get("contactid"),
-    allIds: Cookies.get("allIds"),
+    allIds: Cookies.get("allIds").split(','),
     token: Cookies.get("token"),
   };
 
