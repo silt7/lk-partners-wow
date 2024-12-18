@@ -21,11 +21,13 @@ export default function useDeals() {
   return deals;
 }
 
-async function getData() {
+async function getData(filter={}, length=30, offset=0) {
   const data = {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
-    length: 10,
+    offset,
+    length,
+    filter,
     contactId: Cookies.get("contactid"),
     allIds: Cookies.get("allIds").split(','),
     token: Cookies.get("token"),
