@@ -153,17 +153,57 @@ const endPoint = process.env.REACT_APP_BASE_URL;
 export const ApiProvider = ({ children }) => {
   const client_id = process.env.REACT_APP_YANDEX_CLIENT_ID;
 
+  // const makeRequest = async (method, data) => {
+  //   console.log(method);
+  //   data.domain = domain;
+  //   try {
+  //     if (endPoint !== undefined) {
+  //       const response = await fetch(`/api/` + method, {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json",
+  //         },
+  //         body: JSON.stringify(data),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error(
+  //           `Ошибка запроса - fetch: ${response.status} ${response.statusText}`
+  //         );
+  //       }
+
+  //       return await response.json();
+  //     }
+  //   } catch (error) {
+  //     console.error("Ошибка запроса:", error);
+  //     throw error;
+  //   }
+  // };
   const makeRequest = async (method, data) => {
-    console.log(method);
     data.domain = domain;
+    if (!data.city) {
+      data.city = "msk";
+    }
+    //data.t = new Date().getTime(); проверка кешируется ли запрос
     try {
       if (endPoint !== undefined) {
-        const response = await fetch(`/api/` + method, {
+        // const response = await axios.post(endPoint + method, data, {
+        //   headers: {
+        //     Accept: "application/json",
+        //   },
+        // });
+        const response = await fetch("/api/secure-handler", {
           method: "POST",
           headers: {
             Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-API-Key": process.env.SECURE_API_KEY,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            endpoint: endPoint,
+            method: method,
+            fields: data,
+          }),
         });
 
         if (!response.ok) {
@@ -175,7 +215,7 @@ export const ApiProvider = ({ children }) => {
         return await response.json();
       }
     } catch (error) {
-      console.error("Ошибка запроса - axios:", error);
+      console.error("Ошибка запроса:", error);
       throw error;
     }
   };
