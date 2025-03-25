@@ -22,13 +22,11 @@ export default function GetProfile() {
 
 function getData() {
   const data = {
-    domain: window.MyDomain,
     cabinet: window.Cabinet,
-    method: "getClient",
     contactId: Cookies.get("contactid"),
     token: Cookies.get("token"),
   };
-  const response = fetch("/api/", {
+  const response = fetch("/restapi/profile.getProfile", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

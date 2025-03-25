@@ -60,7 +60,7 @@ function PlatformSettings({ profile }) {
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              {profile.UF_CRM_1684102212641}
+              {profile?.UF_CRM_1684102212641}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -73,7 +73,7 @@ function PlatformSettings({ profile }) {
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              {profile.UF_CRM_1684102224410}
+              {profile?.UF_CRM_1684102224410}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -86,7 +86,7 @@ function PlatformSettings({ profile }) {
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              {profile.UF_CRM_1684102959619}
+              {profile?.UF_CRM_1684102959619}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -109,7 +109,7 @@ function PlatformSettings({ profile }) {
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              {profile.UF_CRM_1684102058711}
+              {profile?.UF_CRM_1684102058711}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -122,7 +122,7 @@ function PlatformSettings({ profile }) {
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              Размер комиссии {profile.UF_CRM_1684102744936}
+              Размер комиссии {profile?.UF_CRM_1684102744936}
             </MDTypography>
           </MDBox>
         </MDBox>

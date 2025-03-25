@@ -69,7 +69,7 @@ export default function DataComponent() {
       token: Cookies.get("token"),
       dealId: dealID,
     };
-    await fetch(`/api/`, {
+    await fetch(`/restapi/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,11 +132,11 @@ export default function DataComponent() {
         ),
         function: (
           <Job
-            title={
-              element.NAME ? element.NAME : "Не указан"
-            }
+            title={element.NAME ? element.NAME : "Не указан"}
             phone={
-              element.CONTACTS ? element.CONTACTS.phones.join(", ") : "Не указан"
+              element.CONTACTS
+                ? element.CONTACTS.phones.join(", ")
+                : "Не указан"
             }
           />
         ),

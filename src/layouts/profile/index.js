@@ -56,11 +56,12 @@ import React, { useState, useEffect } from "react";
 
 function Overview() {
   const profile = GetProfile();
+  console.log(profile);
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mb={2} />
-      {profile !== null && (
+      {profile?.result !== null && (
         <Header profile={profile}>
           <MDBox mt={5} mb={3}>
             <Grid container spacing={1}>
@@ -70,13 +71,13 @@ function Overview() {
               <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
                 <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
                 <ProfileInfoCard
-                  title={profile.TITLE}
+                  title={profile?.result.TITLE}
                   description="Описание Текст текст текст текст текст тексттекстетекстес"
                   info={{
-                    Контакт: "Илья",
-                    Телефон: profile.PHONE,
-                    Почта: profile.EMAIL,
-                    Локация: profile.UF_CRM_1684102866982,
+                    Контакт: "",
+                    Телефон: profile?.PHONE,
+                    Почта: profile?.EMAIL,
+                    Локация: profile?.UF_CRM_1684102866982,
                   }}
                   social={[
                     {

@@ -21,7 +21,7 @@ export default function useDeals() {
   return deals;
 }
 
-async function getData(filter={}, length=30, offset=0) {
+async function getData(filter = {}, length = 30, offset = 0) {
   const data = {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
@@ -29,12 +29,12 @@ async function getData(filter={}, length=30, offset=0) {
     length,
     filter,
     contactId: Cookies.get("contactid"),
-    allIds: Cookies.get("allIds").split(','),
+    allIds: Cookies.get("allIds").split(","),
     token: Cookies.get("token"),
   };
 
   try {
-    const response = await fetch(`/api/deal.getPartnerDeals`, {
+    const response = await fetch(`/restapi/deal.getPartnerDeals`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

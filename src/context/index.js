@@ -192,7 +192,7 @@ export const ApiProvider = ({ children }) => {
         //     Accept: "application/json",
         //   },
         // });
-        const response = await fetch("/api/secure-handler", {
+        const response = await fetch("/restapi/secure-handler", {
           method: "POST",
           headers: {
             Accept: "application/json",

@@ -60,7 +60,7 @@ function Basic() {
     };
 
     try {
-      const response = await fetch(`/api/auth.getCode`, {
+      const response = await fetch(`/restapi/auth.getCode`, {
         // Добавляем auth.getCode к адресу
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,7 +105,7 @@ function Basic() {
       code: inputCode,
     };
     try {
-      await fetch(`/api/auth.authentication`, {
+      await fetch(`/restapi/auth.authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
