@@ -134,7 +134,7 @@ export default function DataComponent() {
           <Job
             title={element.NAME ? element.NAME : "Не указан"}
             phone={
-              element.CONTACTS
+              element.CONTACTS && element.CONTACTS.phones
                 ? element.CONTACTS.phones.join(", ")
                 : "Не указан"
             }
