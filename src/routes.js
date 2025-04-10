@@ -46,6 +46,8 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SingOut from "layouts/authentication/sing-out";
 import OAuth from "layouts/authentication/oauth";
+import Redeem from "layouts/redeem";
+import Reconciliation from "layouts/reconciliation";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -61,11 +63,27 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Заказы",
+    name: "Погашение",
+    key: "redeem",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/redeem",
+    component: <Redeem />,
+  },
+  {
+    type: "collapse",
+    name: "Сертификаты",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Сверки",
+    key: "reconciliation",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/reconciliation",
+    component: <Reconciliation />,
   },
   {
     type: "collapse",
@@ -121,14 +139,14 @@ const routes = [
     key: "sign-out",
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
-    component: <SingOut />
+    component: <SingOut />,
   },
   {
     name: "OAuth",
     key: "oauth",
     icon: <Icon fontSize="small">Oauth</Icon>,
     route: "/authentication/oauth",
-    component: <OAuth />
+    component: <OAuth />,
   },
 ];
 
