@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Cookies from "js-cookie";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -48,39 +49,61 @@ function Tables() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const contactId = Cookies.get("contactid");
+
   const handleSearch = async () => {
     try {
       const data = {
-        code: code,
+        number: code,
+        allIds: [contactId],
       };
-      const response = fetch("/restapi/certificates", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((jsonData) => {
-          return jsonData.result;
-        })
-        .catch((error) => console.error("Ошибка получения данных:", error));
+      const response = await fetch(
+        "/restapi/certificate.getCertificateForRedeem",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      const jsonData = await response.json();
       if (!response.ok) {
-        const sampleData = {
-          number: "000",
-          name: "Пример сертификата",
-          amount: "0",
-          redemptionDate: "2023-01-01",
-        };
-        setCertificateData(sampleData);
-        //throw new Error("Сертификат не найден");
+        throw new Error("Сертификат не найден");
       }
-      setCertificateData(response);
+      setCertificateData(jsonData);
       setError("");
       handleOpen();
     } catch (err) {
       setError(err.message);
       setCertificateData(null);
+    }
+  };
+
+  const handleRedeem = async () => {
+    try {
+      const data = {
+        certificateId: certificateData.result.ID,
+      };
+      const response = await fetch("/restapi/certificate.redeemCertificate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при погашении сертификата");
+      }
+      console.log(response);
+      const jsonData = await response.json();
+      console.log(jsonData.result);
+      jsonData.result
+        ? alert("Сертификат успешно погашен!")
+        : alert("Сертификат не в статусе подтвержден!");
+      handleClose();
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -158,7 +181,7 @@ function Tables() {
                 variant="gradient"
                 color="info"
                 size="medium"
-                onClick={() => alert("Сертификат погашен!")}
+                onClick={handleRedeem}
               >
                 Погасить сертификат
               </MDButton>
