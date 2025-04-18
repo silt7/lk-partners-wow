@@ -45,11 +45,48 @@ function Tables() {
   const [certificateData, setCertificateData] = useState(null);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const [daysLeft, setDaysLeft] = useState(14);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const contactId = Cookies.get("contactid");
+
+  const [certData, setCertData] = useState([]);
+
+  useEffect(() => {
+    getDaysLeft();
+  }, []);
+
+  const getDaysLeft = async () => {
+    try {
+      const data = {
+        allIds: [contactId],
+      };
+      const response = await fetch(
+        "/restapi/certificate.getLastVerificationDate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      const jsonData = await response.json();
+      if (!response.ok) {
+        throw new Error("Ошибка при получении даты последней проверки");
+      }
+      if (jsonData.result?.error == "Verifications not found") {
+        setDaysLeft(0);
+      } else {
+        setDaysLeft(jsonData.result.daysLeft);
+      }
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
 
   const handleSearch = async () => {
     try {
@@ -107,6 +144,27 @@ function Tables() {
     }
   };
 
+  const createVerification = async () => {
+    try {
+      const data = {
+        allIds: [contactId],
+      };
+      const response = await fetch("/restapi/certificate.createVerification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при создании сверки");
+      }
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -157,11 +215,29 @@ function Tables() {
               </MDBox>
               <CertTable />
               <MDBox mx={2}>
-                <MDButton variant="gradient" color="info" size="medium">
-                  Создать сверку
-                </MDButton>
-                <MDTypography variant="overline" color="text">
-                  Сертификаты можно отправлять раз в две недели
+                {daysLeft >= 14 ? (
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    size="medium"
+                    disabled
+                  >
+                    Создать сверку
+                  </MDButton>
+                ) : (
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    size="medium"
+                    onClick={createVerification}
+                  >
+                    Создать сверку
+                  </MDButton>
+                )}
+                <MDTypography variant="caption" color="text">
+                  {daysLeft >= 14
+                    ? `Новая сверка будет доступна через ${daysLeft} дней`
+                    : "Сертификаты можно отправлять раз в две недели"}
                 </MDTypography>
               </MDBox>
             </Card>

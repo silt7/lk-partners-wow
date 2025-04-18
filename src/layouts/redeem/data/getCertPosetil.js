@@ -4,7 +4,7 @@ export default async function GetCertPosetil() {
       page: 1,
       limit: 10,
       groupIds: ["visited"],
-      allIds: [22],
+      allIds: [21],
     };
     const response = await fetch(
       "/restapi/certificate.getPartnerCertificates",
@@ -20,7 +20,7 @@ export default async function GetCertPosetil() {
     if (jsonData.result?.error) {
       return [];
     } else {
-      return response;
+      return jsonData.result[0];
     }
   } catch (err) {
     console.error(err);

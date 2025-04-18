@@ -27,19 +27,17 @@ const CertTable = () => {
                 <tr>
                   <th>Номер Сертификата</th>
                   <th>Имя Посетителя</th>
-                  <th>Дата</th>
                   <th>Статус</th>
+                  <th>Дата</th>
                 </tr>
               </thead>
               <tbody>
                 {certData?.map((cert) => (
-                  <tr key={cert.number}>
-                    <td>{cert.number}</td>
-                    <td>{cert.name}</td>
-                    <td>{cert.amount}</td>
-                    <td>
-                      {new Date(cert.redemptionDate).toLocaleDateString()}
-                    </td>
+                  <tr key={cert.ID}>
+                    <td>{cert.ID}</td>
+                    <td>{cert.NAME}</td>
+                    <td>{cert.STAGE_ID}</td>
+                    <td>{new Date(cert.SCHEDULE_TIME).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
