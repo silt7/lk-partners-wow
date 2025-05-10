@@ -115,11 +115,11 @@ export default function App() {
             })
             .then((data) => {
               if (data.result === false) {
-                if (pathname != "/authentication/sign-in") {
+                if (pathname !== "/authentication/sign-in") {
                   navigate("/authentication/sign-in");
                 }
               } else {
-                if (pathname == "/authentication/sign-in") {
+                if (pathname === "/authentication/sign-in") {
                   navigate("/dashboard");
                 }
               }
@@ -135,7 +135,7 @@ export default function App() {
           // Обработка ошибки, например, отображение сообщения или перенаправление на страницу ошибки
         }
       } else {
-        if (pathname != "/authentication/sign-in") {
+        if (pathname !== "/authentication/sign-in") {
           navigate("/authentication/sign-in");
         }
       }

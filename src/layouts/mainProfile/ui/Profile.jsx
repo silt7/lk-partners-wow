@@ -5,9 +5,10 @@ import { Header } from './Header';
 import { Content } from './Content';
 
 import useGetProfile from '../hooks/useGetProfile';
-import Typography from "../../../assets/theme/base/typography";
-import Box from "@mui/material/Box";
 import {CircularProgress} from "@mui/material";
+import React from "react";
+import MDBox from "../../../components/MDBox";
+import MDTypography from "../../../components/MDTypography";
 
 
 export const Profile = () => {
@@ -20,12 +21,10 @@ export const Profile = () => {
             <DashboardNavbar />
 
             {isLoading ? (
-                <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+                <MDBox display="flex" flexDirection="column" alignItems="center" mt={4}>
                     <CircularProgress color="info" />
-                    <Typography variant="body2" color="textSecondary" mt={2}>
-                        Загрузка...
-                    </Typography>
-                </Box>
+                    <MDTypography>Загрузка...</MDTypography>
+                </MDBox>
             ) : (
                 <>
                     <Header {...data.headerData} />
