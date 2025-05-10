@@ -9,13 +9,18 @@ import useGetProfile from '../hooks/useGetProfile';
 export const Profile = () => {
     const data = useGetProfile();
 
-    console.log(data);
+    // console.log('profle data', data);
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
             <Header {...data.headerData} />
-            <Content mainInfo={data.mainInfo} />
+            <Content
+                mainInfo={data.mainInfo}
+                schedule={data.schedule}
+                requisites={data.requisites}
+                additionalInfo={data.additionalInfo}
+            />
         </DashboardLayout>
     );
 };
