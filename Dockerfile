@@ -2,7 +2,8 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-ENV NPM_CONFIG_FETCH_TIMEOUT=120000
+ENV NPM_CONFIG_FETCH_TIMEOUT=120000 \
+    NODE_ENV=production
 
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
