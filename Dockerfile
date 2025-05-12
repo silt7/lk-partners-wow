@@ -2,7 +2,7 @@
 FROM silt7/node-base:20 AS base
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --verbose
+RUN npm install --verbose || (echo "NPM ERROR!" && sleep 120 && exit 1)
 COPY . .
 RUN npm run build
 
