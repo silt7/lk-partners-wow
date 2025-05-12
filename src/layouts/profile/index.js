@@ -30,7 +30,6 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 
@@ -53,6 +52,7 @@ import GetProfile from "layouts/profile/data/getProfile";
 // import team4 from "assets/images/team-4.jpg";
 
 import React, { useState, useEffect } from "react";
+import ProfileInfoCard from "./components/ProfileInfoCard";
 
 function Overview() {
   const profile = GetProfile();
@@ -65,51 +65,54 @@ function Overview() {
         <Header profile={profile}>
           <MDBox mt={5} mb={3}>
             <Grid container spacing={1}>
+              <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
+                    <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
+                    <ProfileInfoCard
+                        // title={profile?.result?.TITLE}
+                        // description={profile?.result?.DESCRIPTION ? profile.result.DESCRIPTION : 'описание компании'}
+                        info={{
+                            Контакт: "",
+                            Телефон: profile?.PHONE,
+                            Почта: profile?.EMAIL,
+                            Локация: profile?.UF_CRM_1684102866982,
+                        }}
+                        social={[
+                            {
+                                link: "",
+                                icon: <FacebookIcon />,
+                                color: "facebook",
+                            },
+                            {
+                                link: "",
+                                icon: <TwitterIcon />,
+                                color: "twitter",
+                            },
+                            {
+                                link: "",
+                                icon: <InstagramIcon />,
+                                color: "instagram",
+                            },
+                        ]}
+                        action={{ route: "", tooltip: "Редактировать" }}
+                        shadow={false}
+                    />
+                    <Divider orientation="vertical" sx={{ mx: 0 }} />
+                </Grid>
+
               <Grid item xs={12} md={6} xl={4}>
                 <PlatformSettings profile={profile} />
               </Grid>
-              <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-                <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
-                <ProfileInfoCard
-                  title={profile?.result.TITLE}
-                  description="Описание Текст текст текст текст текст тексттекстетекстес"
-                  info={{
-                    Контакт: "",
-                    Телефон: profile?.PHONE,
-                    Почта: profile?.EMAIL,
-                    Локация: profile?.UF_CRM_1684102866982,
-                  }}
-                  social={[
-                    {
-                      link: "",
-                      icon: <FacebookIcon />,
-                      color: "facebook",
-                    },
-                    {
-                      link: "",
-                      icon: <TwitterIcon />,
-                      color: "twitter",
-                    },
-                    {
-                      link: "",
-                      icon: <InstagramIcon />,
-                      color: "instagram",
-                    },
-                  ]}
-                  action={{ route: "", tooltip: "Редактировать" }}
-                  shadow={false}
-                />
-                <Divider orientation="vertical" sx={{ mx: 0 }} />
-              </Grid>
-              <Grid item xs={12} xl={4}>
-                <ProfilesList
-                  title="Сообщения"
-                  profiles={profilesListData}
-                  shadow={false}
-                />
-              </Grid>
+
+              {/*<Grid item xs={12} xl={4}>*/}
+              {/*  <ProfilesList*/}
+              {/*    title="Сообщения"*/}
+              {/*    profiles={profilesListData}*/}
+              {/*    shadow={false}*/}
+              {/*  />*/}
+              {/*</Grid>*/}
             </Grid>
           </MDBox>
+
           {/* <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Projects

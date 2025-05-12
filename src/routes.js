@@ -68,8 +68,8 @@ const routes = [
         key: 'profile',
         icon: <Icon fontSize="small">person</Icon>,
         route: '/profile',
-        component: <MainProfile />,
-        // component: <Profile />
+        // component: <MainProfile />,
+        component: <Profile />
     },
     {
         type: 'collapse',
