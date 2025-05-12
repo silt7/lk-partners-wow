@@ -1,5 +1,5 @@
 # Базовый этап сборки
-FROM node:lts-alpine AS base
+FROM node:20.11.1-alpine AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -7,10 +7,8 @@ COPY . .
 RUN npm run build
 
 # Финальный этап
-FROM node:lts-alpine AS runner
+FROM node:20.11.1-alpine AS runner
 WORKDIR /app
-
-ENV NODE_ENV=production
 
 # Создаем non-root пользователя
 # RUN addgroup -S appgroup && adduser -S appuser -G appgroup
