@@ -1,5 +1,5 @@
 # Базовый этап сборки
-FROM node:20.11.1-alpine AS base
+FROM node:lts-alpine AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Финальный этап
-FROM node:20.11.1-alpine AS runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
