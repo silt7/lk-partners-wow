@@ -117,7 +117,7 @@ export default function DataComponent() {
     if (!deals || typeof deals !== "object") {
       return []; // Возвращаем пустой массив, если `deals` не объект или пуст
     }
-    console.log(deals);
+    // console.log(deals);
     return Object.values(deals.result.deals).map((element) => {
       const { statusColor, statusText } = getStatusInfo(element.STAGE_ID);
       const dateValue = formatDate(element.SCHEDULE_TIME);

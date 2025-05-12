@@ -120,7 +120,7 @@ export default function App() {
                 }
               } else {
                 if (pathname === "/authentication/sign-in") {
-                  navigate("/dashboard");
+                  navigate("/profile");
                 }
               }
             })
@@ -253,7 +253,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/profile" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -281,7 +281,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/profile" />} />
       </Routes>
     </ThemeProvider>
   );

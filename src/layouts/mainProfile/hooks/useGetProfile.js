@@ -17,6 +17,7 @@ export default function useGetProfile() {
                     const normalizeData = normalizeProfileData(response.result);
                     setFormatedDataProfile(normalizeData);
                 }
+                console.log('response', response)
             } catch (error) {
                 console.error(error);
             }

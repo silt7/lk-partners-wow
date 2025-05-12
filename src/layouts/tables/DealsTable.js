@@ -127,9 +127,9 @@ export default function DealsTable() {
     return (
         <MDBox>
             {isLoading ? (
-                <MDBox display="flex" flexDirection="column" alignItems="center" mt={4}>
+                <MDBox display="flex" flexDirection="column" alignItems="center" mt={3} pb={3}>
                     <CircularProgress color="info" />
-                    <MDTypography>Загрузка...</MDTypography>
+                    {/*<MDTypography>Загрузка...</MDTypography>*/}
                 </MDBox>
             ) : (
                 <DataTable
