@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Финальный этап
-FROM silt7/node-base:20 AS base
+FROM silt7/node-base:20 AS runner
 WORKDIR /app
 
 # Создаем non-root пользователя
