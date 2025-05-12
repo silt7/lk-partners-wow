@@ -1,15 +1,14 @@
-FROM node:16.20.2-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+ENV NPM_CONFIG_FETCH_TIMEOUT=120000
 
-RUN npm ci
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
 
 COPY . .
-
 RUN npm run build
 
 EXPOSE 3000
-
 CMD ["npm", "start"]
