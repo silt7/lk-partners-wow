@@ -1,5 +1,5 @@
 # Базовый этап сборки
-FROM node:20.11.1-alpine AS base
+FROM silt7/node-base:20 AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Финальный этап
-FROM node:20.11.1-alpine AS runner
+FROM silt7/node-base:20 AS base
 WORKDIR /app
 
 # Создаем non-root пользователя
