@@ -34,13 +34,16 @@ async function getData(filter = {}, length = 30, offset = 0) {
   };
 
   try {
-    const response = await fetch(`/restapi/deal.getPartnerDeals`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `/restapi/certificate.getPartnerCertificates`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Ошибка HTTP: ${response.status}`);

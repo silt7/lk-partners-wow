@@ -209,7 +209,8 @@ function Tables() {
                 </MDBox>
                 <MDBox mx={2}>
                   <MDTypography variant="overline" color="text">
-                    Введите номер сертификата для погашения или сканируйте QR
+                    Введите номер сертификата для погашения
+                    {/* или сканируйте QR */}
                   </MDTypography>
                 </MDBox>
               </MDBox>

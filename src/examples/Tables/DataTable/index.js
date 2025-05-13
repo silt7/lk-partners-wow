@@ -167,7 +167,11 @@ function DataTable({
           p={3}
         >
           {entriesPerPage && (
-            <MDBox display="flex" alignItems="center">
+            <MDBox
+              display="flex"
+              alignItems="center"
+              style={{ display: "none" }}
+            >
               <Autocomplete
                 disableClearable
                 value={pageSize.toString()}
@@ -185,7 +189,7 @@ function DataTable({
             </MDBox>
           )}
           {canSearch && (
-            <MDBox width="12rem" ml="auto">
+            <MDBox width="12rem" ml="auto" style={{ display: "none" }}>
               <MDInput
                 placeholder="Search..."
                 value={search}
@@ -245,6 +249,7 @@ function DataTable({
         justifyContent="space-between"
         alignItems={{ xs: "flex-start", sm: "center" }}
         p={!showTotalEntries && pageOptions.length === 1 ? 0 : 3}
+        style={{ display: "none" }}
       >
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
