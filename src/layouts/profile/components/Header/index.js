@@ -307,6 +307,7 @@ import MDAvatar from "components/MDAvatar";
 
 import burceMars from "assets/images/bg-sign-up-cover.jpeg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import {setPartnerProfile} from "../../data/setPartnerProfile";
 
 function Header({ profile, children }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -328,15 +329,19 @@ function Header({ profile, children }) {
     };
 
     // Обработчик отправки формы
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Данные формы:", formData);
 
-        // Здесь можно выполнить запрос к API
-
-        console('Данные отправлены! Проверь консоль.');
-        setIsModalOpen(false); // Закрытие модалки
-        setFormData({ TITLE: "", DESCRIPTION: "", file: null }); // Очистка формы
+        try {
+            const result = await setPartnerProfile(formData);
+            console.log("Данные успешно отправлены:", result);
+            alert("Информация успешно обновлена!");
+            setIsModalOpen(false);
+            setFormData({ TITLE: "", DESCRIPTION: "", file: null });
+        } catch (error) {
+            console.error("Ошибка при отправке данных:", error);
+            alert("Не удалось отправить данные. Проверьте подключение или попробуйте позже.");
+        }
     };
 
     return (
