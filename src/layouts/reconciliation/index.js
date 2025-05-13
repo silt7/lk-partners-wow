@@ -25,6 +25,10 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import MasterCard from "../../examples/Cards/MasterCard";
+import DefaultInfoCard from "../../examples/Cards/InfoCards/DefaultInfoCard";
+import PaymentMethod from "../billing/components/PaymentMethod";
+import Invoices from "../billing/components/Invoices";
 import Cookies from "js-cookie";
 
 function Tables() {

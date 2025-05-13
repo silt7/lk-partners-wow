@@ -23,7 +23,7 @@ import { createContext, useContext, useReducer, useMemo } from "react";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
@@ -32,7 +32,7 @@ const Context = createContext();
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {

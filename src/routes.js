@@ -36,118 +36,120 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
-import SingOut from "layouts/authentication/sing-out";
-import OAuth from "layouts/authentication/oauth";
-import Redeem from "layouts/redeem";
-import Reconciliation from "layouts/reconciliation";
+import Dashboard from 'layouts/dashboard';
+import Tables from 'layouts/tables';
+import Billing from 'layouts/billing';
+import RTL from 'layouts/rtl';
+import Notifications from 'layouts/notifications';
+import Profile from 'layouts/profile';
+import SignIn from 'layouts/authentication/sign-in';
+import SignUp from 'layouts/authentication/sign-up';
+import SingOut from 'layouts/authentication/sing-out';
+import OAuth from 'layouts/authentication/oauth';
+import Redeem from 'layouts/redeem';
+import Reconciliation from 'layouts/reconciliation';
+import { MainProfile } from 'layouts/mainProfile';
 
 // @mui icons
-import Icon from "@mui/material/Icon";
+import Icon from '@mui/material/Icon';
 
 const routes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
-  },
-  {
-    type: "collapse",
-    name: "Погашение",
-    key: "redeem",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/redeem",
-    component: <Redeem />,
-  },
-  {
-    type: "collapse",
-    name: "Сертификаты",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Сверки",
-    key: "reconciliation",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/reconciliation",
-    component: <Reconciliation />,
-  },
-  {
-    type: "collapse",
-    name: "Выплаты",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Профиль",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Out",
-    key: "sign-out",
-    icon: <Icon fontSize="small">logout</Icon>,
-    route: "/authentication/sign-out",
-    component: <SingOut />,
-  },
-  {
-    name: "OAuth",
-    key: "oauth",
-    icon: <Icon fontSize="small">Oauth</Icon>,
-    route: "/authentication/oauth",
-    component: <OAuth />,
-  },
+    // {
+    //     type: 'collapse',
+    //     name: 'Dashboard',
+    //     key: 'dashboard',
+    //     icon: <Icon fontSize="small">dashboard</Icon>,
+    //     route: '/dashboard',
+    //     component: <Dashboard />,
+    // },
+    {
+        type: 'collapse',
+        name: 'Профиль',
+        key: 'profile',
+        icon: <Icon fontSize="small">person</Icon>,
+        route: '/profile',
+        // component: <MainProfile />,
+        component: <Profile />
+    },
+    {
+        type: 'collapse',
+        name: 'Сертификаты',
+        key: 'tables',
+        icon: <Icon fontSize="small">table_view</Icon>,
+        route: '/tables',
+        component: <Tables />,
+    },
+    {
+        type: 'collapse',
+        name: 'Погашение',
+        key: 'redeem',
+        icon: <Icon fontSize="small">table_view</Icon>,
+        route: '/redeem',
+        component: <Redeem />,
+    },
+    {
+        type: 'collapse',
+        name: 'Сверки',
+        key: 'reconciliation',
+        icon: <Icon fontSize="small">table_view</Icon>,
+        route: '/reconciliation',
+        component: <Reconciliation />,
+    },
+    // {
+    //     type: 'collapse',
+    //     name: 'Выплаты',
+    //     key: 'billing',
+    //     icon: <Icon fontSize="small">receipt_long</Icon>,
+    //     route: '/billing',
+    //     component: <Billing />,
+    // },
+    {
+        type: 'collapse',
+        name: 'RTL',
+        key: 'rtl',
+        icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+        route: '/rtl',
+        component: <RTL />,
+    },
+    {
+        type: 'collapse',
+        name: 'Notifications',
+        key: 'notifications',
+        icon: <Icon fontSize="small">notifications</Icon>,
+        route: '/notifications',
+        component: <Notifications />,
+    },
+    {
+        type: 'collapse',
+        name: 'Sign In',
+        key: 'sign-in',
+        icon: <Icon fontSize="small">login</Icon>,
+        route: '/authentication/sign-in',
+        component: <SignIn />,
+    },
+    {
+        type: 'collapse',
+        name: 'Sign Up',
+        key: 'sign-up',
+        icon: <Icon fontSize="small">assignment</Icon>,
+        route: '/authentication/sign-up',
+        component: <SignUp />,
+    },
+    {
+        type: 'collapse',
+        name: 'Sign Out',
+        key: 'sign-out',
+        icon: <Icon fontSize="small">logout</Icon>,
+        route: '/authentication/sign-out',
+        component: <SingOut />,
+    },
+    {
+        name: 'OAuth',
+        key: 'oauth',
+        icon: <Icon fontSize="small">Oauth</Icon>,
+        route: '/authentication/oauth',
+        component: <OAuth />,
+    },
 ];
 
 export default routes;
