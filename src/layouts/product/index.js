@@ -68,14 +68,11 @@ function Product() {
 
   const handleSubmit = async () => {
     try {
-      // Здесь будет логика отправки изменений на сервер
-      console.log("Отправка изменений:", {
-        row: selectedRow,
-        newDescription: description,
-      });
       const data = {
-        name: "123",
-        description: "productInfo",
+        partnerData: {
+          name: "Заявка на модерацию товара",
+          productInfo: description,
+        },
       };
       const response = await fetch("/restapi/product.changePartnerProduct", {
         method: "POST",
@@ -85,8 +82,6 @@ function Product() {
         body: JSON.stringify(data),
       });
       const jsonData = await response.json();
-      console.log(jsonData);
-
       handleCloseModal();
     } catch (error) {
       console.error("Ошибка при сохранении изменений:", error);
@@ -96,14 +91,16 @@ function Product() {
   const handleNewProductSubmit = async () => {
     try {
       const data = {
-        name: "Заявка на новый товар",
-        productInfo:
-          "Название товара: " +
-          newProduct.name +
-          "Цена: " +
-          newProduct.price +
-          "Описание: " +
-          newProduct.description,
+        partnerData: {
+          name: "",
+          productInfo:
+            "Название товара: " +
+            newProduct.name +
+            "Цена: " +
+            newProduct.price +
+            "Описание: " +
+            newProduct.description,
+        },
       };
       const response = await fetch("/restapi/product.addPartnerProduct", {
         method: "POST",
@@ -113,7 +110,6 @@ function Product() {
         body: JSON.stringify(data),
       });
       const jsonData = await response.json();
-      console.log(jsonData);
       handleCloseNewProductModal();
       fetchProducts(); // Обновляем список товаров
     } catch (error) {

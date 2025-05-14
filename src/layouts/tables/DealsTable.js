@@ -82,7 +82,6 @@ export default function DealsTable() {
       dealId: dealID,
       stageId: stageId,
     };
-
     try {
       const resp = await fetch(`/restapi/certificate.changeCertificateStage`, {
         method: "POST",
