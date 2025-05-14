@@ -22,13 +22,19 @@ import { CircularProgress } from "@mui/material";
 
 export default function DealsTable() {
   const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [selectedDealId, setSelectedDealId] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState("");
+  const [filters, setFilters] = useState({
+    phone: "",
+    certificateNumber: "",
+    status: "",
+    dateFrom: "",
+    dateTo: "",
+  });
   const { deals, loadDeals, total, totalPages, currentPage, loading } =
-    useDeals(1);
+    useDeals(1, {});
 
   // Симуляция ожидания данных
   useEffect(() => {
@@ -38,7 +44,7 @@ export default function DealsTable() {
   }, [deals]);
 
   useEffect(() => {
-    loadDeals(page);
+    loadDeals(page, filters);
   }, [page]);
 
   const getStatusInfo = (stage) => {
@@ -271,11 +277,25 @@ export default function DealsTable() {
       ) : (
         <>
           <MDBox>
-            <MDInput label="Номер телефона" />
-            <MDInput label="Номер сертификата" />
+            <MDInput
+              label="Номер телефона"
+              value={filters.phone}
+              onChange={(e) =>
+                setFilters({ ...filters, phone: e.target.value })
+              }
+            />
+            <MDInput
+              label="Номер сертификата"
+              value={filters.certificateNumber}
+              onChange={(e) =>
+                setFilters({ ...filters, certificateNumber: e.target.value })
+              }
+            />
             <select
-              value={statusFilter || ""}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              value={filters.status}
+              onChange={(e) =>
+                setFilters({ ...filters, status: e.target.value })
+              }
               style={{
                 width: "300px",
                 padding: "8px",
@@ -298,9 +318,31 @@ export default function DealsTable() {
               ))}
             </select>
             С
-            <TextField type="datetime-local" value="" sx={{ mb: 2 }} />
+            <TextField
+              type="datetime-local"
+              value={filters.dateFrom}
+              onChange={(e) =>
+                setFilters({ ...filters, dateFrom: e.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
             По
-            <TextField type="datetime-local" value="" sx={{ mb: 2 }} />
+            <TextField
+              type="datetime-local"
+              value={filters.dateTo}
+              onChange={(e) =>
+                setFilters({ ...filters, dateTo: e.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
+            <MDButton
+              variant="gradient"
+              color="info"
+              onClick={() => loadDeals(page, filters)}
+              sx={{ ml: 2 }}
+            >
+              Найти
+            </MDButton>
           </MDBox>
 
           <DataTable

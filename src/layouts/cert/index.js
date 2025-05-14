@@ -1,16 +1,21 @@
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { useParams } from "react-router-dom";
-
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import useDeals from "../tables/data/useDeals";
+import { useState, useEffect, useCallback } from "react";
 
 function Cert() {
   const { id } = useParams();
+  //   const [certificate, setCertificate] = useState(null);
+  const { deals, loadDeals } = useDeals(1, {});
+  useEffect(() => {
+    loadDeals(1, { certificate_id: id });
+  }, [id]);
 
   return (
     <DashboardLayout>
@@ -33,7 +38,19 @@ function Cert() {
                   Сертификат {id}
                 </MDTypography>
               </MDBox>
-              <MDBox pt={3}></MDBox>
+              <MDBox pt={3}>
+                <MDBox p={3}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <MDBox>
+                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                          {JSON.stringify(deals, null, 2)}
+                        </pre>
+                      </MDBox>
+                    </Grid>
+                  </Grid>
+                </MDBox>
+              </MDBox>
             </Card>
           </Grid>
         </Grid>

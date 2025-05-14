@@ -13,7 +13,7 @@ export default function useDeals() {
     loadDeals();
   }, []);
 
-  async function loadDeals(page) {
+  async function loadDeals(page, filters) {
     if (loading || (total > 0 && deals.length >= total)) return;
 
     setLoading(true);
@@ -21,8 +21,55 @@ export default function useDeals() {
       page = 1;
     }
 
+    const requestFilters = {};
+
+    if (filters?.certificateNumber) {
+      requestFilters.certificate_number = {
+        LIKE: `%${filters.certificateNumber}%`,
+      };
+    }
+
+    if (filters?.phone) {
+      requestFilters.contact_value = {
+        LIKE: `%${filters.phone}%`,
+      };
+    }
+
+    if (filters?.certificate_id) {
+      requestFilters.certificate_id = {
+        "=": filters.certificate_id,
+      };
+    }
+
+    if (filters?.dateFrom && filters?.dateTo) {
+      const formattedDateFrom = new Date(filters.dateFrom)
+        .toISOString()
+        .split("T")[0];
+      const formattedDateTo = new Date(filters.dateTo)
+        .toISOString()
+        .split("T")[0];
+      requestFilters.schedule_time = {
+        BETWEEN: [formattedDateFrom, formattedDateTo],
+      };
+    }
+
+    if (filters?.status) {
+      requestFilters.stage_id = {
+        EQUAL: filters.status,
+      };
+    }
+
+    const requestStage = filters?.status
+      ? [filters.status]
+      : ["new", "waiting", "confirmed", "visited", "verification", "paid"];
+
     try {
-      const response = await getDeals({}, length, page);
+      const response = await getDeals(
+        requestFilters,
+        length,
+        page,
+        requestStage
+      );
       if (response) {
         setDeals(response.data);
         setTotal(response.pagination.total_items);

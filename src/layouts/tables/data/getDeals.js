@@ -1,6 +1,11 @@
 import Cookies from "js-cookie";
 
-export async function getDeals(filter = {}, length = 5, offset = 0) {
+export async function getDeals(
+  filter = {},
+  length = 5,
+  offset = 0,
+  requestStage
+) {
   // const data = {
   //   domain: window.MyDomain,
   //   cabinet: window.Cabinet,
@@ -15,15 +20,9 @@ export async function getDeals(filter = {}, length = 5, offset = 0) {
     page: offset,
     limit: length,
     order: "DESC",
-    groupIds: [
-      "new",
-      "waiting",
-      "confirmed",
-      "visited",
-      "verification",
-      "paid",
-    ],
+    groupIds: requestStage,
     allIds: [21],
+    filters: filter,
   };
   try {
     const response = await fetch(
