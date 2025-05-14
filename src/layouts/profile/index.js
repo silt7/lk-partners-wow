@@ -55,41 +55,42 @@ import React, { useState, useEffect } from "react";
 import ProfileInfoCard from "./components/ProfileInfoCard";
 import ChannelsCard from "./components/channels";
 
-
 function parseContactDetails(data) {
-    if (typeof data !== "string") return { name: "", email: "", phone: "" };
+  if (typeof data !== "string") return { name: "", email: "", phone: "" };
 
-    // Регулярное выражение для поиска email и телефона
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-    const phoneRegex = /(\+?\d{1,3}[-.\s]?)(\d{3}|\(\d{3}\))[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}/;
+  // Регулярное выражение для поиска email и телефона
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  const phoneRegex =
+    /(\+?\d{1,3}[-.\s]?)(\d{3}|\(\d{3}\))[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}/;
 
-    const emailMatch = data.match(emailRegex);
-    const phoneMatch = data.match(phoneRegex);
+  const emailMatch = data.match(emailRegex);
+  const phoneMatch = data.match(phoneRegex);
 
-    let name = "";
-    let email = "";
-    let phone = "";
+  let name = "";
+  let email = "";
+  let phone = "";
 
-    if (emailMatch) {
-        email = emailMatch[0];
-        data = data.replace(email, "").trim();
-    }
+  if (emailMatch) {
+    email = emailMatch[0];
+    data = data.replace(email, "").trim();
+  }
 
-    if (phoneMatch) {
-        phone = phoneMatch[0];
-        data = data.replace(phone, "").trim();
-    }
+  if (phoneMatch) {
+    phone = phoneMatch[0];
+    data = data.replace(phone, "").trim();
+  }
 
-    name = data.trim();
+  name = data.trim();
 
-    return { name, email, phone };
+  return { name, email, phone };
 }
 
 function Overview() {
   const profile = GetProfile();
-  console.log(profile);
 
-  const { name, email, phone } = parseContactDetails(profile?.UF_CRM_1684102732248);
+  const { name, email, phone } = parseContactDetails(
+    profile?.UF_CRM_1684102732248
+  );
 
   return (
     <DashboardLayout>
@@ -99,75 +100,77 @@ function Overview() {
         <Header profile={profile}>
           <MDBox mt={5} mb={3}>
             <Grid container spacing={1}>
-                {/*Контактные данные*/}
-                <Grid item xs={12} md={6}>
-                  <ProfileInfoCard
-                      title="Контактные данные"
-                      description="Основная информация о контакте"
-                      info={{
-                          Контакт: name || "Не указан",
-                          Почта: email || "Не указана",
-                          Телефон: phone || "Не указан",
-                          Локация: profile?.UF_CRM_1684102866982 || "Не указана",
-                      }}
-                  />
-                  {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
-                {/*Канал связи для уведомлений*/}
-                <Grid item xs={12} xl={6}>
-                    <ChannelsCard />
-                   {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
-                {/*Локация и рабочее время*/}
-                <Grid item xs={12} xl={6}>
-                    <ProfileInfoCard
-                        title="Локация и рабочее время"
-                        description="Основная информация о контакте"
-                        info={{
-                            'Адреса проведения услуг (может быть несколько)': "", // profile?.UF_CRM_1684102732248 || "",
-                            'График работы (часы работы для каждого дня недели)': "",
-                        }}
-                    />
-                    {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
-                {/*Документы*/}
-                <Grid item xs={12} xl={6}>
-                    <ProfileInfoCard
-                        title="Документы"
-                        description="Основная информация о контакте"
-                        info={{
-                            'Прикрепленный договор (PDF, DOCX)': profile?.UF_CRM_1684102807864 || "",
-                            'Дополнительные соглашения (может быть несколько)': ""
-                        }}
-                    />
-                    {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
-                {/*Финансовые реквизиты*/}
-                <Grid item xs={12} xl={6}>
-                    <ProfileInfoCard
-                        title="Финансовые реквизиты"
-                        description="Основная информация о контакте"
-                        info={{
-                            'Название юридического лица': "", //profile?.UF_CRM_1684102732248 || "",
-                            'ИНН': "",
-                            'КПП': "",
-                            'ОГРН': "",
-                            'Банковские реквизиты (БИК, расчетный счет)': "",
-                            'Юридический адрес': ""
-                        }}
-                    />
-                    {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
-                {/*Дополнительная информация*/}
-                <Grid item xs={12} xl={6}>
-                    <ProfileInfoCard
-                        title="Дополнительная информация"
-                        info={{
-                            'Поле "Важно знать" (текст, который партнер хочет передавать клиенту при подтверждении записи)': '', //profile?.UF_CRM_1684102732248 || "",
-                        }}
-                    />
-                    {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
-                </Grid>
+              {/*Контактные данные*/}
+              <Grid item xs={12} md={6}>
+                <ProfileInfoCard
+                  title="Контактные данные"
+                  description="Основная информация о контакте"
+                  info={{
+                    Контакт: name || "Не указан",
+                    Почта: email || "Не указана",
+                    Телефон: phone || "Не указан",
+                    Локация: profile?.UF_CRM_1684102866982 || "Не указана",
+                  }}
+                />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
+              {/*Канал связи для уведомлений*/}
+              <Grid item xs={12} xl={6}>
+                <ChannelsCard />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
+              {/*Локация и рабочее время*/}
+              <Grid item xs={12} xl={6}>
+                <ProfileInfoCard
+                  title="Локация и рабочее время"
+                  description="Основная информация о контакте"
+                  info={{
+                    "Адреса проведения услуг (может быть несколько)": "", // profile?.UF_CRM_1684102732248 || "",
+                    "График работы (часы работы для каждого дня недели)": "",
+                  }}
+                />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
+              {/*Документы*/}
+              <Grid item xs={12} xl={6}>
+                <ProfileInfoCard
+                  title="Документы"
+                  description="Основная информация о контакте"
+                  info={{
+                    "Прикрепленный договор (PDF, DOCX)":
+                      profile?.UF_CRM_1684102807864 || "",
+                    "Дополнительные соглашения (может быть несколько)": "",
+                  }}
+                />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
+              {/*Финансовые реквизиты*/}
+              <Grid item xs={12} xl={6}>
+                <ProfileInfoCard
+                  title="Финансовые реквизиты"
+                  description="Основная информация о контакте"
+                  info={{
+                    "Название юридического лица": "", //profile?.UF_CRM_1684102732248 || "",
+                    ИНН: "",
+                    КПП: "",
+                    ОГРН: "",
+                    "Банковские реквизиты (БИК, расчетный счет)": "",
+                    "Юридический адрес": "",
+                  }}
+                />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
+              {/*Дополнительная информация*/}
+              <Grid item xs={12} xl={6}>
+                <ProfileInfoCard
+                  title="Дополнительная информация"
+                  info={{
+                    'Поле "Важно знать" (текст, который партнер хочет передавать клиенту при подтверждении записи)':
+                      "", //profile?.UF_CRM_1684102732248 || "",
+                  }}
+                />
+                {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+              </Grid>
             </Grid>
           </MDBox>
         </Header>

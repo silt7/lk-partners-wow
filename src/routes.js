@@ -49,6 +49,7 @@ import OAuth from "layouts/authentication/oauth";
 import Redeem from "layouts/redeem";
 import Reconciliation from "layouts/reconciliation";
 import Cert from "layouts/cert";
+import Product from "layouts/product";
 import { MainProfile } from "layouts/mainProfile";
 
 // @mui icons
@@ -76,7 +77,7 @@ const routes = [
     type: "collapse",
     name: "Сертификаты",
     key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="small">card_giftcard</Icon>,
     route: "/tables",
     component: <Tables />,
   },
@@ -101,6 +102,14 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/reconciliation",
     component: <Reconciliation />,
+  },
+  {
+    type: "collapse",
+    name: "Услуги",
+    key: "products",
+    icon: <Icon fontSize="small">inventory_2</Icon>,
+    route: "/products",
+    component: <Product />,
   },
   // {
   //     type: 'collapse',

@@ -16,12 +16,13 @@ export async function getDeals(
   //   allIds: Cookies.get("allIds")?.split(","),
   //   token: Cookies.get("token"),
   // };
+  const allIds = Cookies.get("allIds")?.split(",");
   const data = {
     page: offset,
     limit: length,
     order: "DESC",
     groupIds: requestStage,
-    allIds: [21],
+    allIds: allIds,
     filters: filter,
   };
   try {

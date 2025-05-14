@@ -132,9 +132,7 @@ function Tables() {
       if (!response.ok) {
         throw new Error("Ошибка при погашении сертификата");
       }
-      console.log(response);
       const jsonData = await response.json();
-      console.log(jsonData.result);
       jsonData.result
         ? alert("Сертификат успешно погашен!")
         : alert("Сертификат не в статусе подтвержден!");
