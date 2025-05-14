@@ -46,35 +46,70 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SingOut from "layouts/authentication/sing-out";
 import OAuth from "layouts/authentication/oauth";
+import Redeem from "layouts/redeem";
+import Reconciliation from "layouts/reconciliation";
+import Cert from "layouts/cert";
+import { MainProfile } from "layouts/mainProfile";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  // {
+  //     type: 'collapse',
+  //     name: 'Dashboard',
+  //     key: 'dashboard',
+  //     icon: <Icon fontSize="small">dashboard</Icon>,
+  //     route: '/dashboard',
+  //     component: <Dashboard />,
+  // },
   {
     type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
+    name: "Профиль",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/profile",
+    component: <MainProfile />,
+    // component: <Profile />
   },
   {
     type: "collapse",
-    name: "Заказы",
+    name: "Сертификаты",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
   },
   {
-    type: "collapse",
-    name: "Выплаты",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    name: "Сертификат",
+    key: "cert",
+    route: "/tables/:id",
+    component: <Cert />,
   },
+  {
+    type: "collapse",
+    name: "Погашение",
+    key: "redeem",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/redeem",
+    component: <Redeem />,
+  },
+  {
+    type: "collapse",
+    name: "Сверки",
+    key: "reconciliation",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/reconciliation",
+    component: <Reconciliation />,
+  },
+  // {
+  //     type: 'collapse',
+  //     name: 'Выплаты',
+  //     key: 'billing',
+  //     icon: <Icon fontSize="small">receipt_long</Icon>,
+  //     route: '/billing',
+  //     component: <Billing />,
+  // },
   {
     type: "collapse",
     name: "RTL",
@@ -90,14 +125,6 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Профиль",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
   },
   {
     type: "collapse",
@@ -121,14 +148,14 @@ const routes = [
     key: "sign-out",
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
-    component: <SingOut />
+    component: <SingOut />,
   },
   {
     name: "OAuth",
     key: "oauth",
     icon: <Icon fontSize="small">Oauth</Icon>,
     route: "/authentication/oauth",
-    component: <OAuth />
+    component: <OAuth />,
   },
 ];
 

@@ -21,24 +21,29 @@ export default function useDeals() {
   return deals;
 }
 
-async function getData() {
+async function getData(filter = {}, length = 30, offset = 0) {
   const data = {
     domain: window.MyDomain,
     cabinet: window.Cabinet,
-    length: 10,
+    offset,
+    length,
+    filter,
     contactId: Cookies.get("contactid"),
-    allIds: Cookies.get("allIds"),
+    allIds: Cookies.get("allIds").split(","),
     token: Cookies.get("token"),
   };
 
   try {
-    const response = await fetch(`${window.BaseDir}deal.getPartnerDeals`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `/restapi/certificate.getPartnerCertificates`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Ошибка HTTP: ${response.status}`);

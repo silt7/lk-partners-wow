@@ -14,44 +14,44 @@ Coded by www.creative-tim.com
 */
 
 // Images
-import kal from "assets/images/kal-visuals-square.jpg";
-import marie from "assets/images/marie.jpg";
-import ivana from "assets/images/ivana-square.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import kal from 'assets/images/kal-visuals-square.jpg';
+import marie from 'assets/images/marie.jpg';
+import ivana from 'assets/images/ivana-square.jpg';
+import team3 from 'assets/images/team-3.jpg';
+import team4 from 'assets/images/team-4.jpg';
 
 export default [
-  {
-    image: kal,
-    name: "Клиент 1",
-    description: "Текст текст..",
-    action: {
-      type: "internal",
-      route: "/pages/profile/profile-overview",
-      color: "info",
-      label: "Ответить",
+    {
+        image: kal,
+        name: 'Клиент 1',
+        description: 'Текст текст..',
+        action: {
+            type: 'internal',
+            route: '/pages/profile/profile-overview',
+            color: 'info',
+            label: 'Ответить',
+        },
     },
-  },
-  {
-    image: marie,
-    name: "Клиент 2",
-    description: "Текст текст..",
-    action: {
-      type: "internal",
-      route: "/pages/profile/profile-overview",
-      color: "info",
-      label: "Ответить",
+    {
+        image: marie,
+        name: 'Клиент 2',
+        description: 'Текст текст..',
+        action: {
+            type: 'internal',
+            route: '/pages/profile/profile-overview',
+            color: 'info',
+            label: 'Ответить',
+        },
     },
-  },
-  {
-    image: ivana,
-    name: "Клиент Три",
-    description: "Текст описание..",
-    action: {
-      type: "internal",
-      route: "/pages/profile/profile-overview",
-      color: "info",
-      label: "Ответить",
+    {
+        image: ivana,
+        name: 'Клиент Три',
+        description: 'Текст описание..',
+        action: {
+            type: 'internal',
+            route: '/pages/profile/profile-overview',
+            color: 'info',
+            label: 'Ответить',
+        },
     },
-  },
 ];

@@ -100,7 +100,7 @@ export default function App() {
             contactId: Cookies.get("contactid"),
             token: Cookies.get("token"),
           };
-          const response = await fetch(`${window.BaseDir}auth.authorization`, {
+          const response = await fetch(`/restapi/auth.authorization`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -115,12 +115,12 @@ export default function App() {
             })
             .then((data) => {
               if (data.result === false) {
-                if (pathname != "/authentication/sign-in") {
+                if (pathname !== "/authentication/sign-in") {
                   navigate("/authentication/sign-in");
                 }
               } else {
-                if (pathname == "/authentication/sign-in") {
-                  navigate("/dashboard");
+                if (pathname === "/authentication/sign-in") {
+                  navigate("/profile");
                 }
               }
             })
@@ -135,7 +135,7 @@ export default function App() {
           // Обработка ошибки, например, отображение сообщения или перенаправление на страницу ошибки
         }
       } else {
-        if (pathname != "/authentication/sign-in") {
+        if (pathname !== "/authentication/sign-in") {
           navigate("/authentication/sign-in");
         }
       }
@@ -253,7 +253,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/profile" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -281,7 +281,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/profile" />} />
       </Routes>
     </ThemeProvider>
   );

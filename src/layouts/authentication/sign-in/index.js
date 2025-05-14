@@ -60,7 +60,8 @@ function Basic() {
     };
 
     try {
-      const response = await fetch(`${window.BaseDir}auth.getCode`, {  // Добавляем auth.getCode к адресу
+      const response = await fetch(`/restapi/auth.getCode`, {
+        // Добавляем auth.getCode к адресу
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -104,7 +105,7 @@ function Basic() {
       code: inputCode,
     };
     try {
-      await fetch(`${window.BaseDir}auth.authentication`, {
+      await fetch(`/restapi/auth.authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -164,7 +165,12 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Вход в личный кабинет
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+          <Grid
+            container
+            spacing={3}
+            justifyContent="center"
+            sx={{ mt: 1, mb: 2 }}
+          >
             {/* <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
@@ -176,8 +182,11 @@ function Basic() {
               </MDTypography>
             </Grid> */}
             <Grid item xs={2}>
-              <MDTypography component={YandexButton} variant="body1" color="white">
-              </MDTypography>
+              <MDTypography
+                component={YandexButton}
+                variant="body1"
+                color="white"
+              ></MDTypography>
             </Grid>
           </Grid>
         </MDBox>
@@ -186,7 +195,7 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Телефон или почта"
+                label="Телефон"
                 fullWidth
                 value={inputContact}
                 onChange={handleChangeContact}

@@ -23,7 +23,7 @@ import { createContext, useContext, useReducer, useMemo } from "react";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
@@ -32,7 +32,7 @@ const Context = createContext();
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {
@@ -114,14 +114,22 @@ MaterialUIControllerProvider.propTypes = {
 };
 
 // Context module functions
-const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
-const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
-const setWhiteSidenav = (dispatch, value) => dispatch({ type: "WHITE_SIDENAV", value });
-const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", value });
-const setTransparentNavbar = (dispatch, value) => dispatch({ type: "TRANSPARENT_NAVBAR", value });
-const setFixedNavbar = (dispatch, value) => dispatch({ type: "FIXED_NAVBAR", value });
-const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGURATOR", value });
-const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
+const setMiniSidenav = (dispatch, value) =>
+  dispatch({ type: "MINI_SIDENAV", value });
+const setTransparentSidenav = (dispatch, value) =>
+  dispatch({ type: "TRANSPARENT_SIDENAV", value });
+const setWhiteSidenav = (dispatch, value) =>
+  dispatch({ type: "WHITE_SIDENAV", value });
+const setSidenavColor = (dispatch, value) =>
+  dispatch({ type: "SIDENAV_COLOR", value });
+const setTransparentNavbar = (dispatch, value) =>
+  dispatch({ type: "TRANSPARENT_NAVBAR", value });
+const setFixedNavbar = (dispatch, value) =>
+  dispatch({ type: "FIXED_NAVBAR", value });
+const setOpenConfigurator = (dispatch, value) =>
+  dispatch({ type: "OPEN_CONFIGURATOR", value });
+const setDirection = (dispatch, value) =>
+  dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
@@ -143,45 +151,85 @@ const domain = process.env.REACT_APP_DOMAIN;
 const endPoint = process.env.REACT_APP_BASE_URL;
 
 export const ApiProvider = ({ children }) => {
-
   const client_id = process.env.REACT_APP_YANDEX_CLIENT_ID;
 
+  // const makeRequest = async (method, data) => {
+  //   console.log(method);
+  //   data.domain = domain;
+  //   try {
+  //     if (endPoint !== undefined) {
+  //       const response = await fetch(`/api/` + method, {
+  //         method: "POST",
+  //         headers: {
+  //           Accept: "application/json",
+  //         },
+  //         body: JSON.stringify(data),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error(
+  //           `Ошибка запроса - fetch: ${response.status} ${response.statusText}`
+  //         );
+  //       }
+
+  //       return await response.json();
+  //     }
+  //   } catch (error) {
+  //     console.error("Ошибка запроса:", error);
+  //     throw error;
+  //   }
+  // };
   const makeRequest = async (method, data) => {
     data.domain = domain;
+    if (!data.city) {
+      data.city = "msk";
+    }
+    //data.t = new Date().getTime(); проверка кешируется ли запрос
     try {
       if (endPoint !== undefined) {
-        const response = await fetch(endPoint + method, {
+        // const response = await axios.post(endPoint + method, data, {
+        //   headers: {
+        //     Accept: "application/json",
+        //   },
+        // });
+        const response = await fetch("/restapi/secure-handler", {
           method: "POST",
           headers: {
             Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-API-Key": process.env.SECURE_API_KEY,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            endpoint: endPoint,
+            method: method,
+            fields: data,
+          }),
         });
 
         if (!response.ok) {
           throw new Error(
-              `Ошибка запроса - fetch: ${response.status} ${response.statusText}`
+            `Ошибка запроса - fetch: ${response.status} ${response.statusText}`
           );
         }
 
         return await response.json();
       }
     } catch (error) {
-      console.error("Ошибка запроса - axios:", error);
+      console.error("Ошибка запроса:", error);
       throw error;
     }
   };
 
   return (
-      <Context.Provider
-          value={{
-            makeRequest,
-            endPoint,
-            domain,
-          }}
-      >
-        {children}
-      </Context.Provider>
+    <Context.Provider
+      value={{
+        makeRequest,
+        endPoint,
+        domain,
+      }}
+    >
+      {children}
+    </Context.Provider>
   );
 };
 
