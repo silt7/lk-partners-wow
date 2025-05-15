@@ -4,7 +4,7 @@ import MDTypography from "../../../../components/MDTypography";
 import MDBox from "../../../../components/MDBox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
+import Cookies from "js-cookie";
 
 const AVAILABLE_CHANNELS = [
   { name: "WA" },
@@ -22,10 +22,16 @@ export default function ChannelsCard() {
 
   const updateNotificationChannels = async (channelIds) => {
     try {
-      await axios.post("/restapi/profile.setNotificationChannels", {
-        contactId: 56565, // Здесь нужно передать актуальный contactId
-        token: "4f4ce91faafb9b44dd03b514e5b5e2b6", // Здесь нужно передать актуальный token
-        channels: channelIds,
+      await fetch("/restapi/profile.setNotificationChannels", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contactId: Cookies.get("contactid") || "",
+          channels: channelIds,
+          token: Cookies.get("token") || "",
+        }),
       });
     } catch (err) {
       console.error("Ошибка при обновлении каналов:", err);
@@ -54,7 +60,6 @@ export default function ChannelsCard() {
     const newActiveChannels = activeChannels.includes(channelName)
       ? activeChannels.filter((name) => name !== channelName)
       : [...activeChannels, channelName];
-    console.log(newActiveChannels);
     setActiveChannels(newActiveChannels);
 
     await updateNotificationChannels(newActiveChannels);
@@ -77,13 +82,54 @@ export default function ChannelsCard() {
       {AVAILABLE_CHANNELS.map((channel) => (
         <FormControlLabel
           key={channel.name}
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            margin: 0,
+            "& .MuiFormControlLabel-label": {
+              marginTop: "12px",
+            },
+          }}
           control={
             <Checkbox
               checked={activeChannels.includes(channel.name)}
               onChange={() => handleChannelChange(channel.name)}
             />
           }
-          label={channel.name}
+          label={
+            channel.name === "WA" ? (
+              <MDBox sx={{ display: "flex", flexDirection: "column" }}>
+                {channel.name}
+                <MDTypography variant="caption" color="text">
+                  Чтобы оповещения заработали нужно подписаться{" "}
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=79291580047&text=start&type=phone_number&app_absent=0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WOWlife WB
+                  </a>{" "}
+                  отправив start в первом сообщении
+                </MDTypography>
+              </MDBox>
+            ) : channel.name === "TG" ? (
+              <MDBox sx={{ display: "flex", flexDirection: "column" }}>
+                {channel.name}
+                <MDTypography variant="caption" color="text">
+                  Чтобы оповещения заработали нужно подписаться{" "}
+                  <a
+                    href="https://t.me/wowlifepartner_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WOWlife Bot
+                  </a>{" "}
+                </MDTypography>
+              </MDBox>
+            ) : (
+              channel.name
+            )
+          }
         />
       ))}
     </MDBox>

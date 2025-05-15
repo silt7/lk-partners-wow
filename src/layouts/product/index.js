@@ -17,6 +17,8 @@ import TextField from "@mui/material/TextField";
 
 function Product() {
   const [products, setProducts] = useState([]);
+  const [activeProducts, setActiveProducts] = useState([]);
+  const [inactiveProducts, setInactiveProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [openNewProductModal, setOpenNewProductModal] = useState(false);
@@ -46,6 +48,21 @@ function Product() {
         body: JSON.stringify(data),
       });
       const jsonData = await response.json();
+
+      // Разделяем товары на активные и неактивные
+      const active = [];
+      const inactive = [];
+
+      jsonData.result?.forEach((product) => {
+        if (product.ACTIVE === "Y") {
+          active.push(product);
+        } else {
+          inactive.push(product);
+        }
+      });
+
+      setActiveProducts(active);
+      setInactiveProducts(inactive);
       setProducts(jsonData.result || {});
       setLoading(false);
     } catch (error) {
@@ -129,7 +146,7 @@ function Product() {
   const columns = [
     { Header: "Название", accessor: "ELEMENT_NAME" },
     { Header: "Цена", accessor: "SELFPRICE" },
-    { Header: "Описание", accessor: "DESCRIPTION" },
+    { Header: "Дата начала", accessor: "ACTIVE_FROM" },
     {
       Header: "Действия",
       accessor: "actions",
@@ -144,6 +161,12 @@ function Product() {
         </MDButton>
       ),
     },
+  ];
+  const columnsNoActive = [
+    { Header: "Название", accessor: "ELEMENT_NAME" },
+    { Header: "Цена", accessor: "SELFPRICE" },
+    { Header: "Дата начала", accessor: "ACTIVE_FROM" },
+    { Header: "Дата завершения", accessor: "ACTIVE_TO" },
   ];
 
   return (
@@ -168,8 +191,22 @@ function Product() {
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
+                <MDTypography variant="h6" color="text" mb={2}>
+                  Активные товары
+                </MDTypography>
                 <DataTable
-                  table={{ columns, rows: products }}
+                  table={{ columns, rows: activeProducts }}
+                  loading={loading}
+                  entriesPerPage={{ defaultValue: 5 }}
+                  showTotalEntries
+                  canSearch
+                />
+
+                <MDTypography variant="h6" color="text" mt={4} mb={2}>
+                  Неактивные товары
+                </MDTypography>
+                <DataTable
+                  table={{ columns: columnsNoActive, rows: inactiveProducts }}
                   loading={loading}
                   entriesPerPage={{ defaultValue: 5 }}
                   showTotalEntries

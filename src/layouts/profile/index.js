@@ -107,15 +107,22 @@ function Overview() {
       <Header profile={profile || defaultProfile}>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
-            {/*Контактные данные*/}
             <Grid item xs={12} md={6}>
               <ProfileInfoCard
-                title="Контактные данные"
+                title="Контактное лицо"
                 description="Основная информация о контакте"
                 info={{
-                  Контакт: name || "Не указан",
-                  Почта: email || "Не указана",
-                  Телефон: phone || "Не указан",
+                  Сайты:
+                    profile?.WEB?.map((item, index) => (
+                      <div key={index}>
+                        {index + 1}) {item.VALUE}
+                      </div>
+                    )) || "Не указаны",
+                  Почта: profile?.EMAIL || "Не указана",
+                  Телефон: profile?.PHONE || "Не указан",
+                  "Контакт ОЛ": name || "Не указан",
+                  "Почта ОЛ": email || "Не указана",
+                  "Телефон ОЛ": phone || "Не указан",
                   Локация: profile?.UF_CRM_1684102866982 || "Не указана",
                 }}
               />
@@ -132,8 +139,12 @@ function Overview() {
                 title="Локация и рабочее время"
                 description="Основная информация о контакте"
                 info={{
-                  "Адреса проведения услуг (может быть несколько)": "", // profile?.UF_CRM_1684102732248 || "",
-                  "График работы (часы работы для каждого дня недели)": "",
+                  "Адреса проведения услуг (может быть несколько)":
+                    profile?.UF_CRM_1692176867840?.map((address, index) => (
+                      <div key={index}>
+                        {index + 1}) {address}
+                      </div>
+                    )) || "Не указаны",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
@@ -144,9 +155,19 @@ function Overview() {
                 title="Документы"
                 description="Основная информация о контакте"
                 info={{
-                  "Прикрепленный договор (PDF, DOCX)":
-                    profile?.UF_CRM_1684102807864 || "",
-                  "Дополнительные соглашения (может быть несколько)": "",
+                  "Прикрепленный договор (PDF, DOCX)": profile
+                    ?.UF_CRM_1692620240676?.[0] ? (
+                    <a
+                      href={profile.UF_CRM_1692620240676[0].downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {profile.UF_CRM_1692620240676[0].originalName || "ссылка"}
+                    </a>
+                  ) : (
+                    ""
+                  ),
+                  // "Дополнительные соглашения (может быть несколько)": "",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
@@ -157,12 +178,16 @@ function Overview() {
                 title="Финансовые реквизиты"
                 description="Основная информация о контакте"
                 info={{
-                  "Название юридического лица": "", //profile?.UF_CRM_1684102732248 || "",
-                  ИНН: "",
-                  КПП: "",
-                  ОГРН: "",
-                  "Банковские реквизиты (БИК, расчетный счет)": "",
-                  "Юридический адрес": "",
+                  "Название юридического лица":
+                    profile?.REQUISITES[0].RQ_COMPANY_FULL_NAME || "",
+                  ИНН: profile?.REQUISITES[0].RQ_INN || "",
+                  ОГРНИП: profile?.REQUISITES[0].RQ_OGRNIP || "",
+                  КПП: profile?.REQUISITES[0].RQ_KPP || "",
+                  ОГРН: profile?.REQUISITES[0].RQ_OGRN || "",
+                  // "Банковские реквизиты (БИК, расчетный счет)":
+                  //   profile?.REQUISITES[0].RQ_BANK_DETAILS || "",
+                  // "Юридический адрес":
+                  //   profile?.REQUISITES[0].RQ_COMPANY_ADDRESS || "",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
@@ -172,8 +197,7 @@ function Overview() {
               <ProfileInfoCard
                 title="Дополнительная информация"
                 info={{
-                  'Поле "Важно знать" (текст, который партнер хочет передавать клиенту при подтверждении записи)':
-                    "", //profile?.UF_CRM_1684102732248 || "",
+                  "Важно знать": profile?.UF_CRM_1684102959619 || "",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
