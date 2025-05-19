@@ -55,7 +55,7 @@ function Basic() {
     setInputCode(event.target.value);
   };
   // number mask clean
-  const cleanNumber = '+' + inputContact.replace(/[^\d]/g, "");
+  const cleanNumber = "+" + inputContact.replace(/[^\d]/g, "");
 
   const buttonCodeClick = async () => {
     const data = {
@@ -106,7 +106,7 @@ function Basic() {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      contact: inputContact.replace(/\D/g, "").slice(-10),
+      contact: "+7" + inputContact.replace(/\D/g, "").slice(-10),
       code: inputCode,
     };
     try {
@@ -153,7 +153,6 @@ function Basic() {
     }
   };
 
-
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -199,25 +198,25 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-            {/*  <MDInput*/}
-            {/*    type="text"*/}
-            {/*    label="Телефон"*/}
-            {/*    fullWidth*/}
-            {/*    value={inputContact}*/}
-            {/*    onChange={handleChangeContact}*/}
-            {/*  />*/}
+              {/*  <MDInput*/}
+              {/*    type="text"*/}
+              {/*    label="Телефон"*/}
+              {/*    fullWidth*/}
+              {/*    value={inputContact}*/}
+              {/*    onChange={handleChangeContact}*/}
+              {/*  />*/}
               <InputMask
-                  mask="+7 (999) 999-99-99"
-                  value={inputContact}
-                  onChange={handleChangeContact}
+                mask="+7 (999) 999-99-99"
+                value={inputContact}
+                onChange={handleChangeContact}
               >
                 {(inputProps) => (
-                    <TextField
-                        {...inputProps}
-                        label="Телефон"
-                        variant="outlined"
-                        fullWidth
-                    />
+                  <TextField
+                    {...inputProps}
+                    label="Телефон"
+                    variant="outlined"
+                    fullWidth
+                  />
                 )}
               </InputMask>
             </MDBox>
