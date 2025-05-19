@@ -25,18 +25,20 @@ const CertTable = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Номер Сертификата</th>
+                  <th>Номер</th>
+                  <th>Сертификат</th>
                   <th>Имя Посетителя</th>
-                  <th>Статус</th>
+                  <th>Цена</th>
                   <th>Дата</th>
                 </tr>
               </thead>
               <tbody>
                 {certData?.map((cert) => (
                   <tr key={cert.ID}>
-                    <td>{cert.ID}</td>
+                    <td>{cert.NUMBER}</td>
+                    <td>{cert.TITLE}</td>
                     <td>{cert.NAME}</td>
-                    <td>{cert.STAGE_ID}</td>
+                    <td>{cert.OPPORTUNITY}</td>
                     <td>{new Date(cert.SCHEDULE_TIME).toLocaleDateString()}</td>
                   </tr>
                 ))}

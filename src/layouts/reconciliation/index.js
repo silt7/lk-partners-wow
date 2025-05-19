@@ -31,9 +31,22 @@ import PaymentMethod from "../billing/components/PaymentMethod";
 import Invoices from "../billing/components/Invoices";
 import Cookies from "js-cookie";
 
+const STATUS_DICTIONARY = {
+  "DT1032_11:NEW": "Новый",
+  "DT1032_11:PREPARATION": "Подтвержден",
+  "DT1032_11:CLIENT": "Подтвержден",
+  "DT1032_11:UC_5IFDUQ": "Ожидает оплаты",
+  "DT1032_11:UC_5IFDUQ": "Оплачен",
+  "DT1032_11:SUCCESS": "Оплачен",
+};
+
 function Tables() {
   const contactId = Cookies.get("contactid");
   const [reconcilation, setReconcilation] = useState([]);
+
+  const getStatusLabel = (statusCode) => {
+    return STATUS_DICTIONARY[statusCode] || statusCode;
+  };
 
   useEffect(() => {
     getReconcilation();
@@ -85,17 +98,33 @@ function Tables() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Номер Сертификата</th>
-                      <th>Имя Посетителя</th>
+                      <th>Номер</th>
+                      <th>Дата создания</th>
+                      <th>Дата оплаты</th>
+                      <th>Акт</th>
+                      <th>Сумма</th>
                       <th>Статус</th>
+                      <th>Сертификаты</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reconcilation?.map((cert) => (
                       <tr key={cert.ID}>
                         <td>{cert.ID}</td>
+                        <td>{cert.CREATED_TIME}</td>
+                        <td></td>
+                        <td>
+                          {cert.DOC_LINK ? <a href={cert.DOC_LINK}>Акт</a> : ""}
+                        </td>
                         <td>{cert.OPPORTUNITY}</td>
-                        <td>{cert.STAGE}</td>
+                        <td>{getStatusLabel(cert.STAGE)}</td>
+                        <td>
+                          {cert.CERTIFICATES?.map((certificate) => (
+                            <div key={certificate.ID}>
+                              {certificate.ID} - {certificate.OPPORTUNITY}₽
+                            </div>
+                          ))}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
