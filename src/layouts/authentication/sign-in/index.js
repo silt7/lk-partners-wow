@@ -37,6 +37,9 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import YandexButton from "./YandexButton";
 
+import InputMask from "react-input-mask";
+import TextField from "@mui/material/TextField";
+
 function Basic() {
   const [showButtonCode, setShowButtonCode] = useState(true);
   const [showButtonIn, setShowButtonIn] = useState(false);
@@ -51,12 +54,14 @@ function Basic() {
   const handleChangeCode = (event) => {
     setInputCode(event.target.value);
   };
+  // number mask clean
+  const cleanNumber = "+" + inputContact.replace(/[^\d]/g, "");
 
   const buttonCodeClick = async () => {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      contact: inputContact,
+      contact: cleanNumber,
     };
 
     try {
@@ -101,7 +106,7 @@ function Basic() {
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      contact: inputContact,
+      contact: "+7" + inputContact.replace(/\D/g, "").slice(-10),
       code: inputCode,
     };
     try {
@@ -193,13 +198,27 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Телефон"
-                fullWidth
+              {/*  <MDInput*/}
+              {/*    type="text"*/}
+              {/*    label="Телефон"*/}
+              {/*    fullWidth*/}
+              {/*    value={inputContact}*/}
+              {/*    onChange={handleChangeContact}*/}
+              {/*  />*/}
+              <InputMask
+                mask="+7 (999) 999-99-99"
                 value={inputContact}
                 onChange={handleChangeContact}
-              />
+              >
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    label="Телефон"
+                    variant="outlined"
+                    fullWidth
+                  />
+                )}
+              </InputMask>
             </MDBox>
             {showButtonIn && (
               <MDBox mb={2}>

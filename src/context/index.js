@@ -154,7 +154,6 @@ export const ApiProvider = ({ children }) => {
   const client_id = process.env.REACT_APP_YANDEX_CLIENT_ID;
 
   // const makeRequest = async (method, data) => {
-  //   console.log(method);
   //   data.domain = domain;
   //   try {
   //     if (endPoint !== undefined) {

@@ -1,21 +1,21 @@
-import MDBox from 'components/MDBox';
-import MDTypography from 'components/MDTypography';
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 export const Header = ({ companyName, companyDescription }) => {
-    return (
-        <MDBox
-            bgColor="secondary"
-            shadow="lg"
-            borderRadius="lg"
-            px={2}
-            py={1}
-            mt={2}
-            color="light"
-        >
-            <MDTypography>{companyName}</MDTypography>
-            <MDTypography>{companyDescription}</MDTypography>
-        </MDBox>
-    );
+  return (
+    <MDBox
+      bgColor="secondary"
+      shadow="lg"
+      borderRadius="lg"
+      px={2}
+      py={1}
+      mt={2}
+      color="light"
+    >
+      <MDTypography>{companyName}</MDTypography>
+      <MDTypography>{companyDescription}</MDTypography>
+    </MDBox>
+  );
 };
 
 //
@@ -28,8 +28,6 @@ export const Header = ({ companyName, companyDescription }) => {
 // import EditIcon from "@mui/icons-material/Edit";
 //
 // export const Header = ({ companyName, companyDescription }) => {
-//     console.log('companyName', companyName)
-//     console.log('companyDescription', companyDescription)
 //     const [isEditing, setIsEditing] = useState(false);
 //     const [formData, setFormData] = useState({
 //         name: companyName || "",
@@ -43,7 +41,6 @@ export const Header = ({ companyName, companyDescription }) => {
 //
 //     const handleSave = () => {
 //         // Здесь можно вызвать API или обновить состояние родителя
-//         console.log("Сохранено:", formData);
 //         setIsEditing(false);
 //     };
 //

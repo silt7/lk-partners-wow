@@ -78,13 +78,10 @@ export default function DealsTable() {
   };
 
   const handleChangeStatus = async (dealID, stageId) => {
-    console.log(dealID);
-    console.log(stageId);
     const data = {
       dealId: dealID,
       stageId: stageId,
     };
-
     try {
       const resp = await fetch(`/restapi/certificate.changeCertificateStage`, {
         method: "POST",
@@ -93,8 +90,7 @@ export default function DealsTable() {
         },
         body: JSON.stringify(data),
       });
-      console.log(resp);
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Ошибка при изменении статуса:", error);
     }
@@ -359,18 +355,105 @@ export default function DealsTable() {
                 <Icon>keyboard_arrow_left</Icon>
               </MDPagination>
             )}
-            {Array.from({ length: totalPages }, (_, i) => (
-              <MDPagination
-                item
-                key={i + 1}
-                active={currentPage === i + 1}
-                onClick={() => {
-                  setPage(i + 1);
-                }}
-              >
-                {i + 1}
-              </MDPagination>
-            ))}
+            {(() => {
+              const pages = [];
+              if (totalPages <= 7) {
+                // Если страниц мало, показываем все
+                for (let i = 0; i < totalPages; i++) {
+                  pages.push(
+                    <MDPagination
+                      item
+                      key={i + 1}
+                      active={currentPage === i + 1}
+                      onClick={() => setPage(i + 1)}
+                    >
+                      {i + 1}
+                    </MDPagination>
+                  );
+                }
+              } else {
+                // Первые две страницы
+                pages.push(
+                  <MDPagination
+                    item
+                    key={1}
+                    active={currentPage === 1}
+                    onClick={() => setPage(1)}
+                  >
+                    1
+                  </MDPagination>
+                );
+                pages.push(
+                  <MDPagination
+                    item
+                    key={2}
+                    active={currentPage === 2}
+                    onClick={() => setPage(2)}
+                  >
+                    2
+                  </MDPagination>
+                );
+
+                // Точки если текущая страница далеко от начала
+                if (currentPage > 4) {
+                  pages.push(
+                    <MDPagination item key="dots1">
+                      ...
+                    </MDPagination>
+                  );
+                }
+
+                // Три страницы вокруг текущей
+                for (
+                  let i = Math.max(3, currentPage - 1);
+                  i <= Math.min(totalPages - 2, currentPage + 1);
+                  i++
+                ) {
+                  pages.push(
+                    <MDPagination
+                      item
+                      key={i}
+                      active={currentPage === i}
+                      onClick={() => setPage(i)}
+                    >
+                      {i}
+                    </MDPagination>
+                  );
+                }
+
+                // Точки если текущая страница далеко от конца
+                if (currentPage < totalPages - 3) {
+                  pages.push(
+                    <MDPagination item key="dots2">
+                      ...
+                    </MDPagination>
+                  );
+                }
+
+                // Последние две страницы
+                pages.push(
+                  <MDPagination
+                    item
+                    key={totalPages - 1}
+                    active={currentPage === totalPages - 1}
+                    onClick={() => setPage(totalPages - 1)}
+                  >
+                    {totalPages - 1}
+                  </MDPagination>
+                );
+                pages.push(
+                  <MDPagination
+                    item
+                    key={totalPages}
+                    active={currentPage === totalPages}
+                    onClick={() => setPage(totalPages)}
+                  >
+                    {totalPages}
+                  </MDPagination>
+                );
+              }
+              return pages;
+            })()}
             {currentPage < totalPages && (
               <MDPagination item onClick={() => setPage(page + 1)}>
                 <Icon>keyboard_arrow_right</Icon>
