@@ -8,6 +8,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import useDeals from "../tables/data/useDeals";
 import { useState, useEffect, useCallback } from "react";
+import CertificateCard from "./components/CertificateCard";
 
 function Cert() {
   const { id } = useParams();
@@ -42,10 +43,17 @@ function Cert() {
                 <MDBox p={3}>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
-                      <MDBox>
-                        <pre style={{ whiteSpace: "pre-wrap" }}>
-                          {JSON.stringify(deals, null, 2)}
-                        </pre>
+                      {/*<MDBox>*/}
+                      {/*  <pre style={{ whiteSpace: "pre-wrap" }}>*/}
+                      {/*    {JSON.stringify(deals, null, 2)}*/}
+                      {/*  </pre>*/}
+                      {/*</MDBox>*/}
+                      <MDBox pt={3} px={3}>
+                        {deals && deals.length > 0 ? (
+                            <CertificateCard data={deals[0]} />
+                        ) : (
+                            <MDTypography>Сертификат не найден</MDTypography>
+                        )}
                       </MDBox>
                     </Grid>
                   </Grid>
