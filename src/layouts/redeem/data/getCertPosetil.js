@@ -1,10 +1,12 @@
+import Cookies from "js-cookie";
+
 export default async function GetCertPosetil() {
   try {
     const data = {
       page: 1,
       limit: 10,
       groupIds: ["visited"],
-      allIds: [21],
+      allIds: [Cookies.get("contactid")],
     };
     const response = await fetch(
       "/restapi/certificate.getPartnerCertificates",
@@ -20,7 +22,7 @@ export default async function GetCertPosetil() {
     if (jsonData.result?.error) {
       return [];
     } else {
-      return jsonData.result[0];
+      return jsonData.result.data;
     }
   } catch (err) {
     console.error(err);
