@@ -250,14 +250,15 @@ function Tables() {
       <Modal open={open} onClose={handleClose}>
         <Box sx={{ p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
           {certificateData ? (
-              <DashboardLayout>
-                <CertificateModal
-                    open={open}
-                    onClose={handleClose}
-                    certificateData={certificateData}
-                    onRedeem={handleRedeem}
-                    />
-              </DashboardLayout>
+            <DashboardLayout>
+              <CertificateModal
+                open={open}
+                onClose={handleClose}
+                certificateData={certificateData}
+                onRedeem={handleRedeem}
+              />
+            </DashboardLayout>
+          ) : (
             // <div>
             //   <MDTypography variant="h6">Данные сертификата</MDTypography>
             //   <MDTypography variant="body1">
@@ -272,7 +273,6 @@ function Tables() {
             //     Погасить сертификат
             //   </MDButton>
             // </div>
-          ) : (
             <MDTypography variant="body1" color="error">
               Сертификат не найден
             </MDTypography>

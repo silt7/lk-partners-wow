@@ -70,9 +70,9 @@ function Tables() {
       }
 
       const jsonData = await response.json();
+      console.log(jsonData);
       // проверка на null/undefined
       setReconcilation(Array.isArray(jsonData.result) ? jsonData.result : []);
-
     } catch (err) {
       console.error(err);
       return null;
@@ -132,8 +132,10 @@ function Tables() {
                             <>
                               {value?.map((certificate) => (
                                 <div key={certificate.ID}>
-                                  {certificate.TITLE} -{" "}
-                                  {certificate.OPPORTUNITY}
+                                  {certificate.OPTIONS
+                                    ? certificate.OPTIONS
+                                    : certificate.ID}
+                                  - {certificate.OPPORTUNITY}
                                 </div>
                               ))}
                             </>

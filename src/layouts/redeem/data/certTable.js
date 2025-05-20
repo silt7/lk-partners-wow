@@ -19,7 +19,11 @@ const CertTable = () => {
 
   const columns = [
     { Header: "Номер", accessor: "NUMBER" },
-    { Header: "Сертификат", accessor: "TITLE" },
+    {
+      Header: "Сертификат",
+      accessor: "OPTIONS",
+      Cell: ({ value, row }) => (value ? value : row.original.ID),
+    },
     { Header: "Имя Посетителя", accessor: "NAME" },
     { Header: "Цена", accessor: "OPPORTUNITY" },
     {
