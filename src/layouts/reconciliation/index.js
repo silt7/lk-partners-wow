@@ -30,6 +30,7 @@ import DefaultInfoCard from "../../examples/Cards/InfoCards/DefaultInfoCard";
 import PaymentMethod from "../billing/components/PaymentMethod";
 import Invoices from "../billing/components/Invoices";
 import Cookies from "js-cookie";
+import DataTable from "examples/Tables/DataTable2";
 
 const STATUS_DICTIONARY = {
   "DT1032_11:NEW": "Новый",
@@ -95,40 +96,56 @@ function Tables() {
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Номер</th>
-                      <th>Дата создания</th>
-                      <th>Дата оплаты</th>
-                      <th>Акт</th>
-                      <th>Сумма</th>
-                      <th>Статус</th>
-                      <th>Сертификаты</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reconcilation?.map((cert) => (
-                      <tr key={cert.ID}>
-                        <td>{cert.ID}</td>
-                        <td>{cert.CREATED_TIME}</td>
-                        <td></td>
-                        <td>
-                          {cert.DOC_LINK ? <a href={cert.DOC_LINK}>Акт</a> : ""}
-                        </td>
-                        <td>{cert.OPPORTUNITY}</td>
-                        <td>{getStatusLabel(cert.STAGE)}</td>
-                        <td>
-                          {cert.CERTIFICATES?.map((certificate) => (
-                            <div key={certificate.ID}>
-                              {certificate.ID} - {certificate.OPPORTUNITY}₽
-                            </div>
-                          ))}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {reconcilation?.length > 0 ? (
+                  <DataTable
+                    table={{
+                      columns: [
+                        { Header: "Номер", accessor: "ID" },
+                        { Header: "Дата создания", accessor: "CREATED_TIME" },
+                        { Header: "Дата оплаты", accessor: "PAYMENT_DATE" },
+                        {
+                          Header: "Акт",
+                          accessor: "DOC_LINK",
+                          Cell: ({ value }) =>
+                            value ? (
+                              <a href={value} target="_blank">
+                                Акт
+                              </a>
+                            ) : (
+                              ""
+                            ),
+                        },
+                        { Header: "Сумма", accessor: "OPPORTUNITY" },
+                        {
+                          Header: "Статус",
+                          accessor: "STAGE",
+                          Cell: ({ value }) => getStatusLabel(value),
+                        },
+                        {
+                          Header: "Сертификаты",
+                          accessor: "CERTIFICATES",
+                          Cell: ({ value }) => (
+                            <>
+                              {value?.map((certificate) => (
+                                <div key={certificate.ID}>
+                                  {certificate.TITLE} -{" "}
+                                  {certificate.OPPORTUNITY}
+                                </div>
+                              ))}
+                            </>
+                          ),
+                        },
+                      ],
+                      rows: reconcilation,
+                    }}
+                  />
+                ) : (
+                  <MDBox p={3} textAlign="center">
+                    <MDTypography variant="h6" color="text">
+                      Сверки отсутствуют
+                    </MDTypography>
+                  </MDBox>
+                )}
               </MDBox>
             </Card>
           </Grid>
