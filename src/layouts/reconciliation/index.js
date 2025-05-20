@@ -64,11 +64,15 @@ function Tables() {
         },
         body: JSON.stringify(data),
       });
-      const jsonData = await response.json();
-      setReconcilation(jsonData.result);
+
       if (!response.ok) {
         throw new Error("Ошибка при получении сверок");
       }
+
+      const jsonData = await response.json();
+      // проверка на null/undefined
+      setReconcilation(Array.isArray(jsonData.result) ? jsonData.result : []);
+
     } catch (err) {
       console.error(err);
       return null;
