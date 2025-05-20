@@ -109,7 +109,7 @@ function Overview() {
           <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
               <ProfileInfoCard
-                title="Контактное лицо"
+                title="Контакты"
                 description="Основная информация о контакте"
                 info={{
                   Сайты:

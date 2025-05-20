@@ -34,6 +34,7 @@ import { useLocation } from "react-router-dom";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Cookies from "js-cookie";
+import CertificateModal from "./components/certificateModal";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -137,6 +138,7 @@ function Tables() {
         ? alert("Сертификат успешно погашен!")
         : alert("Сертификат не в статусе подтвержден!");
       handleClose();
+      window.location.reload();
     } catch (err) {
       alert(err.message);
     }
@@ -154,6 +156,7 @@ function Tables() {
         },
         body: JSON.stringify(data),
       });
+      window.location.reload();
       if (!response.ok) {
         throw new Error("Ошибка при создании сверки");
       }
@@ -214,7 +217,7 @@ function Tables() {
               </MDBox>
               <CertTable />
               <MDBox mx={2}>
-                {daysLeft >= 14 ? (
+                {daysLeft != 0 ? (
                   <MDButton
                     variant="gradient"
                     color="info"
@@ -247,21 +250,29 @@ function Tables() {
       <Modal open={open} onClose={handleClose}>
         <Box sx={{ p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
           {certificateData ? (
-            <div>
-              <MDTypography variant="h6">Данные сертификата</MDTypography>
-              <MDTypography variant="body1">
-                {JSON.stringify(certificateData)}
-              </MDTypography>
-              <MDButton
-                variant="gradient"
-                color="info"
-                size="medium"
-                onClick={handleRedeem}
-              >
-                Погасить сертификат
-              </MDButton>
-            </div>
+            <DashboardLayout>
+              <CertificateModal
+                open={open}
+                onClose={handleClose}
+                certificateData={certificateData}
+                onRedeem={handleRedeem}
+              />
+            </DashboardLayout>
           ) : (
+            // <div>
+            //   <MDTypography variant="h6">Данные сертификата</MDTypography>
+            //   <MDTypography variant="body1">
+            //     {JSON.stringify(certificateData)}
+            //   </MDTypography>
+            //   <MDButton
+            //     variant="gradient"
+            //     color="info"
+            //     size="medium"
+            //     onClick={handleRedeem}
+            //   >
+            //     Погасить сертификат
+            //   </MDButton>
+            // </div>
             <MDTypography variant="body1" color="error">
               Сертификат не найден
             </MDTypography>

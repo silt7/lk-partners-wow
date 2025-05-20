@@ -3,6 +3,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import Grid from "@mui/material/Grid";
 import GetCertPosetil from "./getCertPosetil";
+import DataTable from "examples/Tables/DataTable2";
 
 const CertTable = () => {
   const [certData, setCertData] = useState([]);
@@ -16,34 +17,51 @@ const CertTable = () => {
     fetchData();
   }, []);
 
+  const columns = [
+    { Header: "Номер", accessor: "NUMBER" },
+    {
+      Header: "Сертификат",
+      accessor: "OPTIONS",
+      Cell: ({ value, row }) => (value ? value : row.original.ID),
+    },
+    { Header: "Имя Посетителя", accessor: "NAME" },
+    { Header: "Цена", accessor: "OPPORTUNITY" },
+    {
+      Header: "Дата",
+      accessor: "SCHEDULE_TIME",
+      Cell: ({ value }) => new Date(value).toLocaleDateString(),
+    },
+  ];
+
   return (
     <MDBox pt={6} pb={3} mx={2}>
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <MDTypography variant="h6">Таблица Сертификатов</MDTypography>
           <MDBox pt={3}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Номер</th>
-                  <th>Сертификат</th>
-                  <th>Имя Посетителя</th>
-                  <th>Цена</th>
-                  <th>Дата</th>
-                </tr>
-              </thead>
-              <tbody>
-                {certData?.map((cert) => (
-                  <tr key={cert.ID}>
-                    <td>{cert.NUMBER}</td>
-                    <td>{cert.TITLE}</td>
-                    <td>{cert.NAME}</td>
-                    <td>{cert.OPPORTUNITY}</td>
-                    <td>{new Date(cert.SCHEDULE_TIME).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {certData && certData.length > 0 ? (
+              <DataTable
+                table={{ columns, rows: certData }}
+                canSearch
+                entriesPerPage={{ defaultValue: 10 }}
+                showTotalEntries
+                noEndBorder
+              />
+            ) : (
+              <MDBox
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                p={3}
+              >
+                <MDTypography
+                  variant="button"
+                  color="text"
+                  fontWeight="regular"
+                >
+                  Сертификаты на сверку отсутствуют
+                </MDTypography>
+              </MDBox>
+            )}
           </MDBox>
         </Grid>
       </Grid>

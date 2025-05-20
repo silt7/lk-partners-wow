@@ -313,27 +313,77 @@ function Header({ profile, children }) {
     DESCRIPTION: "",
     file: null,
   });
+  const [errors, setErrors] = useState({});
 
   // Обработчик изменения полей формы
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // Очищаем ошибку при изменении поля
+      if (errors[name]) {
+          setErrors(prev => ({ ...prev, [name]: "" }));
+      }
   };
 
   // Обработчик выбора файла
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, file: e.target.files[0] }));
+      const file = e.target.files[0];
+      setFormData((prev) => ({ ...prev, file }));
+
+      // Очищаем ошибку файла при выборе
+      if (file) {
+          setErrors(prev => ({ ...prev, file: "" }));
+      }
+
   };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.TITLE.trim()) {
+            newErrors.TITLE = "Поле 'Заголовок' не может быть пустым";
+        }
+
+        if (!formData.DESCRIPTION.trim()) {
+            newErrors.DESCRIPTION = "Поле 'Описание' не может быть пустым";
+        }
+
+        if (!formData.file) {
+            newErrors.file = "Пожалуйста, прикрепите файл";
+        } else {
+            const allowedTypes = [
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ];
+
+            if (!allowedTypes.includes(formData.file.type)) {
+                newErrors.file = "Разрешены только файлы PDF, DOC, DOCX";
+            }
+
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+            if (formData.file.size > maxSize) {
+                newErrors.file = "Файл слишком большой. Максимальный размер — 5 МБ.";
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
   // Обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) return;
+
     try {
       const result = await setPartnerProfile(formData);
-      alert("Информация успешно обновлена!");
+      alert("Заявка на модерацию создана!");
       setIsModalOpen(false);
       setFormData({ TITLE: "", DESCRIPTION: "", file: null });
+      setErrors({});
     } catch (error) {
       console.error("Ошибка при отправке данных:", error);
       alert(
@@ -408,7 +458,7 @@ function Header({ profile, children }) {
 
             {/* Правая часть: кнопка редактирования */}
             <Grid item xs={12} md={3} container justifyContent="flex-end">
-              <Tooltip title="Создать новую информацию">
+              <Tooltip title="Создать заявку на модерацию.">
                 <Icon
                   fontSize="medium"
                   color="info"
@@ -446,7 +496,7 @@ function Header({ profile, children }) {
           }}
         >
           <MDTypography variant="h6" gutterBottom>
-            Создать новую информацию
+              Создать заявку на модерацию.
           </MDTypography>
 
           <TextField
@@ -456,6 +506,9 @@ function Header({ profile, children }) {
             value={formData.TITLE}
             onChange={handleChange}
             margin="normal"
+            error={!!errors.TITLE}
+            helperText={errors.TITLE}
+            onBlur={() => validateForm()}
           />
 
           <TextField
@@ -467,6 +520,9 @@ function Header({ profile, children }) {
             multiline
             rows={3}
             margin="normal"
+            error={!!errors.DESCRIPTION}
+            helperText={errors.DESCRIPTION}
+            onBlur={() => validateForm()}
           />
 
           <Button
@@ -477,8 +533,23 @@ function Header({ profile, children }) {
             sx={{ mt: 2 }}
           >
             Прикрепить файл
-            <input type="file" hidden onChange={handleFileChange} />
+            <input
+                type="file"
+                hidden
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx"
+            />
           </Button>
+            {errors.file && (
+                <MDTypography color="error" variant="caption" sx={{ mt: 1 }}>
+                    {errors.file}
+                </MDTypography>
+            )}
+            {formData.file && (
+                <MDTypography variant="caption" sx={{ mt: 1 }}>
+                    Выбран файл: {formData.file.name}
+                </MDTypography>
+            )}
 
           <Button
             type="submit"

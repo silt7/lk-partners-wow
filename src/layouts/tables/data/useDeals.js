@@ -14,7 +14,7 @@ export default function useDeals() {
   }, []);
 
   async function loadDeals(page, filters) {
-    if (loading || (total > 0 && deals.length >= total)) return;
+    //if (loading || (total > 0 && deals.length >= total)) return;
 
     setLoading(true);
     if (page == undefined) {

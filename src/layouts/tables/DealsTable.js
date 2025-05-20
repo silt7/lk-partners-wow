@@ -15,6 +15,7 @@ import MDButton from "components/MDButton";
 import MDPagination from "components/MDPagination";
 import Icon from "@mui/material/Icon";
 import MDInput from "components/MDInput";
+import Grid from "@mui/material/Grid";
 
 // DataTable
 import DataTable from "examples/Tables/DataTable";
@@ -83,7 +84,7 @@ export default function DealsTable() {
       stageId: stageId,
     };
     try {
-      const resp = await fetch(`/restapi/certificate.changeCertificateStage`, {
+      fetch(`/restapi/certificate.changeCertificateStage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -191,7 +192,7 @@ export default function DealsTable() {
           );
           return {
             NUMBER: number,
-            TITLE: element.TITLE,
+            TITLE: element.OPTIONS ? element.OPTIONS : element.ID,
             NAME: name,
             STAGE_ID: (
               <MDBadge
@@ -251,6 +252,32 @@ export default function DealsTable() {
                     Отменить
                   </MDTypography>
                 </>
+              ) : element.STAGE.group_id === "waiting" ? (
+                <>
+                  <MDTypography
+                    component="a"
+                    variant="caption"
+                    color="text"
+                    fontWeight="medium"
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      handleChangeStatus(element.ID, "C2:UC_4Q05NY")
+                    }
+                  >
+                    Записать
+                  </MDTypography>
+                  <br />
+                  <MDTypography
+                    component="a"
+                    variant="caption"
+                    color="text"
+                    fontWeight="medium"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleChangeDateModal(element.ID, dateValue)}
+                  >
+                    Изменить время
+                  </MDTypography>
+                </>
               ) : null,
           };
         })
@@ -272,73 +299,113 @@ export default function DealsTable() {
         </MDBox>
       ) : (
         <>
-          <MDBox>
-            <MDInput
-              label="Номер телефона"
-              value={filters.phone}
-              onChange={(e) =>
-                setFilters({ ...filters, phone: e.target.value })
-              }
-            />
-            <MDInput
-              label="Номер сертификата"
-              value={filters.certificateNumber}
-              onChange={(e) =>
-                setFilters({ ...filters, certificateNumber: e.target.value })
-              }
-            />
-            <select
-              value={filters.status}
-              onChange={(e) =>
-                setFilters({ ...filters, status: e.target.value })
-              }
-              style={{
-                width: "300px",
-                padding: "8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <option value="">Все статусы</option>
-              {Object.entries({
-                new: "Новый",
-                waiting: "Принят",
-                confirmed: "Записан",
-                visited: "Посетил",
-                verification: "Ожидание сверки",
-                paid: "Оплачен",
-              }).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            С
-            <TextField
-              type="datetime-local"
-              value={filters.dateFrom}
-              onChange={(e) =>
-                setFilters({ ...filters, dateFrom: e.target.value })
-              }
-              sx={{ mb: 2 }}
-            />
-            По
-            <TextField
-              type="datetime-local"
-              value={filters.dateTo}
-              onChange={(e) =>
-                setFilters({ ...filters, dateTo: e.target.value })
-              }
-              sx={{ mb: 2 }}
-            />
-            <MDButton
-              variant="gradient"
-              color="info"
-              onClick={() => loadDeals(page, filters)}
-              sx={{ ml: 2 }}
-            >
-              Найти
-            </MDButton>
+          <MDBox ml={2}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} md={2}>
+                <MDInput
+                  fullWidth
+                  label="Номер телефона"
+                  value={filters.phone}
+                  onChange={(e) =>
+                    setFilters({ ...filters, phone: e.target.value })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <MDInput
+                  fullWidth
+                  label="Номер сертификата"
+                  value={filters.certificateNumber}
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      certificateNumber: e.target.value,
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <select
+                  fullWidth
+                  value={filters.status}
+                  onChange={(e) =>
+                    setFilters({ ...filters, status: e.target.value })
+                  }
+                  style={{
+                    width: "100%",
+                    height: "43px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                  }}
+                >
+                  <option value="">Все статусы</option>
+                  {Object.entries({
+                    new: "Новый",
+                    waiting: "Принят",
+                    confirmed: "Записан",
+                    visited: "Посетил",
+                    verification: "Ожидание сверки",
+                    paid: "Оплачен",
+                  }).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <MDTypography variant="caption" color="text">
+                    С
+                  </MDTypography>
+                  <TextField
+                    fullWidth
+                    type="datetime-local"
+                    value={filters.dateFrom}
+                    onChange={(e) =>
+                      setFilters({ ...filters, dateFrom: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <MDTypography variant="caption" color="text">
+                    По
+                  </MDTypography>
+                  <TextField
+                    fullWidth
+                    type="datetime-local"
+                    value={filters.dateTo}
+                    onChange={(e) =>
+                      setFilters({ ...filters, dateTo: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} mt={2}>
+              <Grid item xs={12} md={2}>
+                <MDButton
+                  fullWidth
+                  variant="gradient"
+                  color="info"
+                  onClick={() => loadDeals(1, filters)}
+                >
+                  Найти
+                </MDButton>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <MDButton
+                  fullWidth
+                  variant="gradient"
+                  color="error"
+                  onClick={() => window.location.reload()}
+                >
+                  Сбросить фильтры
+                </MDButton>
+              </Grid>
+            </Grid>
           </MDBox>
 
           <DataTable
