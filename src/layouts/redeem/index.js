@@ -137,6 +137,7 @@ function Tables() {
         ? alert("Сертификат успешно погашен!")
         : alert("Сертификат не в статусе подтвержден!");
       handleClose();
+      window.location.reload();
     } catch (err) {
       alert(err.message);
     }
@@ -154,6 +155,7 @@ function Tables() {
         },
         body: JSON.stringify(data),
       });
+      window.location.reload();
       if (!response.ok) {
         throw new Error("Ошибка при создании сверки");
       }
@@ -214,7 +216,7 @@ function Tables() {
               </MDBox>
               <CertTable />
               <MDBox mx={2}>
-                {daysLeft >= 14 ? (
+                {daysLeft != 0 ? (
                   <MDButton
                     variant="gradient"
                     color="info"

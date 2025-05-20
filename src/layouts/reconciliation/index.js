@@ -36,7 +36,7 @@ const STATUS_DICTIONARY = {
   "DT1032_11:PREPARATION": "Подтвержден",
   "DT1032_11:CLIENT": "Подтвержден",
   "DT1032_11:UC_5IFDUQ": "Ожидает оплаты",
-  "DT1032_11:UC_5IFDUQ": "Оплачен",
+  "DT1032_11:UC_YLGUCX": "Оплачен",
   "DT1032_11:SUCCESS": "Оплачен",
 };
 
