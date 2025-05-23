@@ -106,8 +106,8 @@ function Tables() {
         }
       );
       const jsonData = await response.json();
-      if (!response.ok) {
-        throw new Error("Сертификат не найден");
+      if (!response.ok || jsonData.result?.error) {
+        throw new Error(jsonData.result?.error || "Сертификат не найден");
       }
       setCertificateData(jsonData);
       setError("");
@@ -203,9 +203,9 @@ function Tables() {
                     Найти
                   </MDButton>
                   {error && (
-                    <MDTypography variant="caption" color="error">
-                      {error}
-                    </MDTypography>
+                      <MDTypography variant="caption" color="error" display="block" mt={1}>
+                        {error.includes("not found") ? "Сертификат не найден" : error}
+                      </MDTypography>
                   )}
                 </MDBox>
                 <MDBox mx={2}>
@@ -249,34 +249,42 @@ function Tables() {
       <Footer />
       <Modal open={open} onClose={handleClose}>
         <Box sx={{ p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
-          {certificateData ? (
-            <DashboardLayout>
-              <CertificateModal
+          <DashboardLayout>
+            <CertificateModal
                 open={open}
                 onClose={handleClose}
                 certificateData={certificateData}
                 onRedeem={handleRedeem}
-              />
-            </DashboardLayout>
-          ) : (
-            // <div>
-            //   <MDTypography variant="h6">Данные сертификата</MDTypography>
-            //   <MDTypography variant="body1">
-            //     {JSON.stringify(certificateData)}
-            //   </MDTypography>
-            //   <MDButton
-            //     variant="gradient"
-            //     color="info"
-            //     size="medium"
-            //     onClick={handleRedeem}
-            //   >
-            //     Погасить сертификат
-            //   </MDButton>
-            // </div>
-            <MDTypography variant="body1" color="error">
-              Сертификат не найден
-            </MDTypography>
-          )}
+            />
+          </DashboardLayout>
+          {/*{certificateData ? (*/}
+          {/*  <DashboardLayout>*/}
+          {/*    <CertificateModal*/}
+          {/*      open={open}*/}
+          {/*      onClose={handleClose}*/}
+          {/*      certificateData={certificateData}*/}
+          {/*      onRedeem={handleRedeem}*/}
+          {/*    />*/}
+          {/*  </DashboardLayout>*/}
+          {/*) : (*/}
+          {/*  // <div>*/}
+          {/*  //   <MDTypography variant="h6">Данные сертификата</MDTypography>*/}
+          {/*  //   <MDTypography variant="body1">*/}
+          {/*  //     {JSON.stringify(certificateData)}*/}
+          {/*  //   </MDTypography>*/}
+          {/*  //   <MDButton*/}
+          {/*  //     variant="gradient"*/}
+          {/*  //     color="info"*/}
+          {/*  //     size="medium"*/}
+          {/*  //     onClick={handleRedeem}*/}
+          {/*  //   >*/}
+          {/*  //     Погасить сертификат*/}
+          {/*  //   </MDButton>*/}
+          {/*  // </div>*/}
+          {/*  <MDTypography variant="body1" color="error">*/}
+          {/*    Сертификат не найден*/}
+          {/*  </MDTypography>*/}
+          {/*)}*/}
         </Box>
       </Modal>
     </DashboardLayout>

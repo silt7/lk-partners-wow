@@ -17,6 +17,9 @@ const CertificateCard = ({ data }) => {
         STAGE,
     } = data || {};
 
+
+    console.log('data', data)
+
     // Форматирование суммы
     const formatPrice = (priceStr) => {
         if (!priceStr || typeof priceStr !== "string") return "Не указана";

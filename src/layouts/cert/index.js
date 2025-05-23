@@ -18,6 +18,8 @@ function Cert() {
     loadDeals(1, { certificate_id: id });
   }, [id]);
 
+  console.log('deals', deals)
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
