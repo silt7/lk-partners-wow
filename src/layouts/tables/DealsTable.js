@@ -6,6 +6,7 @@ import useDeals from "./data/useDeals";
 import { TextField } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -25,8 +26,18 @@ export default function DealsTable() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [openServiceModal, setOpenServiceModal] = useState(false);
+  const [modalMode, setModalMode] = useState("create"); // 'create' или 'edit'
   const [selectedDealId, setSelectedDealId] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState("");
+  const [serviceForm, setServiceForm] = useState({
+    title: "",
+    date: "",
+    time: "",
+    phone: "",
+    address: "",
+    notes: "",
+  });
   const [filters, setFilters] = useState({
     phone: "",
     certificateNumber: "",
@@ -50,7 +61,7 @@ export default function DealsTable() {
 
   const getStatusInfo = (stage) => {
     const statusMapping = {
-      new: { statusColor: "warning", statusText: "Новый" },
+      new: { statusColor: "error", statusText: "Новый" },
       waiting: { statusColor: "warning", statusText: "Принят" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
@@ -152,6 +163,99 @@ export default function DealsTable() {
     }
   };
 
+  const handleOpenServiceModal = (deal, mode = "create") => {
+    setModalMode(mode);
+    setSelectedDealId(deal.ID);
+    setServiceForm({
+      title: deal.OPTIONS || "",
+      date: deal.SCHEDULE_TIME
+        ? new Date(deal.SCHEDULE_TIME).toISOString().split("T")[0]
+        : "",
+      time: deal.SCHEDULE_TIME
+        ? new Date(deal.SCHEDULE_TIME).toTimeString().slice(0, 5)
+        : "",
+      phone: deal.CONTACTS?.PHONES?.[0] || "",
+      address: "",
+      notes: "",
+    });
+    setOpenServiceModal(true);
+  };
+
+  const handleCloseServiceModal = () => {
+    setOpenServiceModal(false);
+    setServiceForm({
+      title: "",
+      date: "",
+      time: "",
+      phone: "",
+      address: "",
+      notes: "",
+    });
+  };
+
+  const handleServiceFormChange = (e) => {
+    const { name, value } = e.target;
+    setServiceForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleServiceFormSubmit = async () => {
+    try {
+      const data = {
+        dealId: selectedDealId,
+        ...serviceForm,
+        datetime: `${serviceForm.date}T${serviceForm.time}:00`,
+      };
+
+      console.log(data);
+
+      // const response = await fetch(
+      //   "/restapi/certificate.updateServiceDetails",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(data),
+      //   }
+      // );
+
+      // if (!response.ok) {
+      //   throw new Error("Ошибка при обновлении данных услуги");
+      // }
+
+      //handleCloseServiceModal();
+      //window.location.reload();
+    } catch (error) {
+      console.error("Ошибка при обновлении данных услуги:", error);
+    }
+  };
+
+  const handleCancelService = async () => {
+    try {
+      const response = await fetch("/restapi/certificate.cancelService", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dealId: selectedDealId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Ошибка при отмене услуги");
+      }
+
+      handleCloseServiceModal();
+      window.location.reload();
+    } catch (error) {
+      console.error("Ошибка при отмене услуги:", error);
+    }
+  };
+
   // Преобразование `deals` в формат для DataTable
   const tableData = {
     columns: [
@@ -186,7 +290,11 @@ export default function DealsTable() {
             </>
           );
           const number = (
-            <MDTypography component="a" href={`/tables/${element.ID}`}>
+            <MDTypography
+              component="a"
+              href={`/tables/${element.ID}`}
+              style={{ fontSize: "14px", color: "#727cf5" }}
+            >
               {element.NUMBER}
             </MDTypography>
           );
@@ -203,58 +311,40 @@ export default function DealsTable() {
               />
             ),
             SCHEDULE_TIME: dateValue,
-            OPPORTUNITY: `${element.OPPORTUNITY}`,
+            OPPORTUNITY: `${element.OPPORTUNITY}`.replace("|RUB", "₽"),
             action:
               element.STAGE.group_id === "new" ? (
                 <>
-                  <MDTypography
-                    component="a"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleChangeStatus(element.ID, "C2:NEW")}
-                  >
-                    Принять
-                  </MDTypography>
-                  <br />
-                  <MDTypography
-                    component="a"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      handleChangeStatus(element.ID, "C2:UC_4Q05NY")
-                    }
+                  <MDButton
+                    sx={{ width: "100%" }}
+                    variant="gradient"
+                    color="info"
+                    onClick={() => handleOpenServiceModal(element, "create")}
                   >
                     Записать
-                  </MDTypography>
-                  <br />
-                  <MDTypography
-                    component="a"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleChangeDateModal(element.ID, dateValue)}
+                  </MDButton>
+
+                  <MDButton
+                    sx={{ width: "100%" }}
+                    variant="gradient"
+                    color="warning"
+                    style={{ marginTop: "10px" }}
+                    onClick={() => handleOpenServiceModal(element, "edit")}
                   >
                     Изменить время
-                  </MDTypography>
-                  <br />
-                  <MDTypography
-                    component="a"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                    onClick={() => handleChangeStatus(element.ID, "C2:LOSE")}
-                  >
-                    Отменить
-                  </MDTypography>
+                  </MDButton>
                 </>
               ) : element.STAGE.group_id === "waiting" ? (
                 <>
-                  <MDTypography
+                  <MDButton
+                    sx={{ width: "100%" }}
+                    variant="gradient"
+                    color="info"
+                    onClick={() => handleOpenServiceModal(element, "create")}
+                  >
+                    Записать
+                  </MDButton>
+                  {/* <MDTypography
                     component="a"
                     variant="caption"
                     color="text"
@@ -276,7 +366,19 @@ export default function DealsTable() {
                     onClick={() => handleChangeDateModal(element.ID, dateValue)}
                   >
                     Изменить время
-                  </MDTypography>
+                  </MDTypography> */}
+                </>
+              ) : element.STAGE.group_id === "confirmed" ? (
+                <>
+                  <MDButton
+                    sx={{ width: "100%" }}
+                    variant="gradient"
+                    color="error"
+                    style={{ marginTop: "10px" }}
+                    onClick={() => handleOpenServiceModal(element, "edit")}
+                  >
+                    Отменить/изменить
+                  </MDButton>
                 </>
               ) : null,
           };
@@ -303,7 +405,7 @@ export default function DealsTable() {
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={2}>
                 <MDInput
-                  fullWidth
+                  sx={{ width: "100%" }}
                   label="Номер телефона"
                   value={filters.phone}
                   onChange={(e) =>
@@ -313,7 +415,7 @@ export default function DealsTable() {
               </Grid>
               <Grid item xs={12} md={2}>
                 <MDInput
-                  fullWidth
+                  sx={{ width: "100%" }}
                   label="Номер сертификата"
                   value={filters.certificateNumber}
                   onChange={(e) =>
@@ -326,7 +428,7 @@ export default function DealsTable() {
               </Grid>
               <Grid item xs={12} md={2}>
                 <select
-                  fullWidth
+                  sx={{ width: "100%" }}
                   value={filters.status}
                   onChange={(e) =>
                     setFilters({ ...filters, status: e.target.value })
@@ -341,7 +443,7 @@ export default function DealsTable() {
                   <option value="">Все статусы</option>
                   {Object.entries({
                     new: "Новый",
-                    waiting: "Принят",
+                    waiting: "Согласование времени",
                     confirmed: "Записан",
                     visited: "Посетил",
                     verification: "Ожидание сверки",
@@ -359,7 +461,7 @@ export default function DealsTable() {
                     С
                   </MDTypography>
                   <TextField
-                    fullWidth
+                    sx={{ width: "100%" }}
                     type="datetime-local"
                     value={filters.dateFrom}
                     onChange={(e) =>
@@ -374,7 +476,7 @@ export default function DealsTable() {
                     По
                   </MDTypography>
                   <TextField
-                    fullWidth
+                    sx={{ width: "100%" }}
                     type="datetime-local"
                     value={filters.dateTo}
                     onChange={(e) =>
@@ -387,7 +489,7 @@ export default function DealsTable() {
             <Grid container spacing={2} mt={2}>
               <Grid item xs={12} md={2}>
                 <MDButton
-                  fullWidth
+                  sx={{ width: "100%" }}
                   variant="gradient"
                   color="info"
                   onClick={() => loadDeals(1, filters)}
@@ -397,7 +499,7 @@ export default function DealsTable() {
               </Grid>
               <Grid item xs={12} md={2}>
                 <MDButton
-                  fullWidth
+                  sx={{ width: "100%" }}
                   variant="gradient"
                   color="error"
                   onClick={() => window.location.reload()}
@@ -561,8 +663,7 @@ export default function DealsTable() {
             type="datetime-local"
             value={selectedDateTime}
             onChange={(e) => setSelectedDateTime(e.target.value)}
-            fullWidth
-            sx={{ mb: 2 }}
+            sx={{ width: "100%", mb: 2 }}
             inputProps={{
               min: new Date().toISOString().slice(0, 16), // UTC, с точностью до минут
             }}
@@ -578,6 +679,166 @@ export default function DealsTable() {
             <MDButton variant="gradient" color="info" onClick={handleSaveDate}>
               Сохранить
             </MDButton>
+          </MDBox>
+        </Box>
+      </Modal>
+
+      {/* Модальное окно для редактирования услуги */}
+      <Modal
+        open={openServiceModal}
+        onClose={handleCloseServiceModal}
+        aria-labelledby="service-modal"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 1,
+          }}
+        >
+          <MDTypography variant="h6" component="h2" mb={3}>
+            {modalMode === "create"
+              ? "Редактирование услуги"
+              : "Изменение времени/отмена записи"}
+          </MDTypography>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Название услуги"
+                name="title"
+                value={serviceForm.title}
+                onChange={handleServiceFormChange}
+                margin="normal"
+                disabled={true}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Дата"
+                name="date"
+                type="date"
+                value={serviceForm.date}
+                onChange={handleServiceFormChange}
+                InputLabelProps={{ shrink: true }}
+                margin="normal"
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Время"
+                name="time"
+                type="time"
+                value={serviceForm.time}
+                onChange={handleServiceFormChange}
+                InputLabelProps={{ shrink: true }}
+                margin="normal"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Телефон для связи"
+                name="phone"
+                value={serviceForm.phone}
+                onChange={handleServiceFormChange}
+                margin="normal"
+                disabled={true}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Адрес проведения"
+                name="address"
+                value={serviceForm.address}
+                onChange={handleServiceFormChange}
+                margin="normal"
+                disabled={modalMode === "edit"}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                sx={{ width: "100%" }}
+                label="Примечание"
+                name="notes"
+                value={serviceForm.notes}
+                onChange={handleServiceFormChange}
+                multiline
+                rows={3}
+                margin="normal"
+                disabled={modalMode === "edit"}
+              />
+            </Grid>
+            {modalMode === "edit" ? (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    sx={{ width: "100%" }}
+                    label="Причина"
+                    name="notes"
+                    value={serviceForm.notes}
+                    onChange={handleServiceFormChange}
+                    multiline
+                    rows={3}
+                    margin="normal"
+                    required
+                  />
+                </Grid>
+              </>
+            ) : null}
+          </Grid>
+
+          <MDBox display="flex" justifyContent="flex-end" gap={1} mt={3}>
+            {modalMode === "edit" ? (
+              <>
+                <MDButton
+                  variant="gradient"
+                  color="error"
+                  onClick={handleCancelService}
+                >
+                  Отменить запись
+                </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="info"
+                  onClick={handleServiceFormSubmit}
+                >
+                  Изменить
+                </MDButton>
+              </>
+            ) : (
+              <>
+                <MDButton
+                  variant="gradient"
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                >
+                  Отмена
+                </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="info"
+                  onClick={handleServiceFormSubmit}
+                >
+                  Подтвердить
+                </MDButton>
+              </>
+            )}
           </MDBox>
         </Box>
       </Modal>
