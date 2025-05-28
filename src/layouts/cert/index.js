@@ -12,7 +12,6 @@ import CertificateCard from "./components/CertificateCard";
 
 function Cert() {
   const { id } = useParams();
-  //   const [certificate, setCertificate] = useState(null);
   const { deals, loadDeals } = useDeals(1, {});
   useEffect(() => {
     loadDeals(1, { certificate_id: id });
