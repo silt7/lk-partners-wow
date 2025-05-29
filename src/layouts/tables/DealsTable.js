@@ -74,11 +74,12 @@ export default function DealsTable() {
   const getStatusInfo = (stage) => {
     const statusMapping = {
       new: { statusColor: "error", statusText: "Новый" },
-      waiting: { statusColor: "warning", statusText: "Принят" },
+      waiting: { statusColor: "warning", statusText: "Согласование времени" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
       verification: { statusColor: "primary", statusText: "Ожидание сверки" },
       paid: { statusColor: "success", statusText: "Оплачен" },
+      canceled: { statusColor: "error", statusText: "Отменен" },
     };
 
     return (

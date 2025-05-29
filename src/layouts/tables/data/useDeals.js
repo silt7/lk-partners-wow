@@ -61,7 +61,15 @@ export default function useDeals() {
 
     const requestStage = filters?.status
       ? [filters.status]
-      : ["new", "waiting", "confirmed", "visited", "verification", "paid"];
+      : [
+          "new",
+          "waiting",
+          "confirmed",
+          "visited",
+          "verification",
+          "paid",
+          "canceled",
+        ];
 
     try {
       const response = await getDeals(
