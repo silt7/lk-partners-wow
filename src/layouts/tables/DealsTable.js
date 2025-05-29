@@ -7,7 +7,7 @@ import { TextField } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-
+import { fetchProfileData } from "../profile/data/getProfile";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDBadge from "components/MDBadge";
@@ -31,12 +31,14 @@ export default function DealsTable() {
   const [modalMode, setModalMode] = useState("create"); // 'create' или 'edit'
   const [selectedDealId, setSelectedDealId] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState("");
+  const [profileData, setProfileData] = useState(null);
   const [serviceForm, setServiceForm] = useState({
     title: "",
     date: "",
     time: "",
     phone: "",
     address: "",
+    addressArray: "",
     notes: "",
     cancel: "",
   });
@@ -49,12 +51,20 @@ export default function DealsTable() {
   });
   const { deals, loadDeals, total, totalPages, currentPage, loading } =
     useDeals(1, {});
+  const [formError, setFormError] = useState("");
 
   // Симуляция ожидания данных
   useEffect(() => {
-    if (deals && Object.keys(deals).length > 0) {
-      setIsLoading(false);
-    }
+    const loadData = async () => {
+      const profile = await fetchProfileData("partnerLow");
+      setProfileData(profile);
+
+      if (deals && Object.keys(deals).length > 0) {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, [deals]);
 
   useEffect(() => {
@@ -165,9 +175,13 @@ export default function DealsTable() {
     }
   };
 
-  const handleOpenServiceModal = (deal, mode = "create") => {
+  const handleOpenServiceModal = async (deal, mode = "create") => {
     setModalMode(mode);
     setSelectedDealId(deal.ID);
+
+    const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
+    const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
+
     setServiceForm({
       title: deal.OPTIONS || "",
       date: deal.SCHEDULE_TIME
@@ -176,8 +190,9 @@ export default function DealsTable() {
       time: deal.SCHEDULE_TIME
         ? new Date(deal.SCHEDULE_TIME).toTimeString().slice(0, 5)
         : "",
-      phone: deal.CONTACTS?.PHONES?.[0] || "",
+      phone: phone,
       address: "",
+      addressArray: address,
       notes: "",
       cancel: "",
     });
@@ -186,12 +201,14 @@ export default function DealsTable() {
 
   const handleCloseServiceModal = () => {
     setOpenServiceModal(false);
+    setFormError("");
     setServiceForm({
       title: "",
       date: "",
       time: "",
       phone: "",
       address: "",
+      addressArray: "",
       notes: "",
       cancel: "",
     });
@@ -206,8 +223,15 @@ export default function DealsTable() {
   };
 
   const handleServiceFormSubmit = async (stageId) => {
+    // Проверяем поле "Причина" в режиме редактирования
+    if (modalMode === "edit" && !serviceForm.cancel.trim()) {
+      setFormError("Пожалуйста, укажите причину");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
+      setFormError("");
       const data = {
         dealId: selectedDealId,
         ...serviceForm,
@@ -742,14 +766,29 @@ export default function DealsTable() {
 
             <Grid item xs={12}>
               <TextField
+                select
                 sx={{ width: "100%" }}
                 label="Адрес проведения"
                 name="address"
                 value={serviceForm.address}
                 onChange={handleServiceFormChange}
                 margin="normal"
-                disabled={modalMode === "edit"}
-              />
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                {Array.isArray(serviceForm.addressArray)
+                  ? serviceForm.addressArray.map((addr, index) => (
+                      <option key={index} value={addr}>
+                        {addr}
+                      </option>
+                    ))
+                  : serviceForm.address && (
+                      <option value={serviceForm.addressArray}>
+                        {serviceForm.addressArray}
+                      </option>
+                    )}
+              </TextField>
             </Grid>
             {modalMode === "edit" ? (
               <>
@@ -764,6 +803,8 @@ export default function DealsTable() {
                     rows={3}
                     margin="normal"
                     required
+                    error={!!formError}
+                    helperText={formError}
                   />
                 </Grid>
               </>
@@ -798,7 +839,7 @@ export default function DealsTable() {
                   variant="gradient"
                   color="error"
                   onClick={() => handleServiceFormSubmit("C2:5")}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
                     <CircularProgress size={20} color="inherit" />
@@ -810,7 +851,7 @@ export default function DealsTable() {
                   variant="gradient"
                   color="info"
                   onClick={() => handleServiceFormSubmit("C2:NEW")}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
                     <CircularProgress size={20} color="inherit" />
