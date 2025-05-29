@@ -56,6 +56,7 @@ function Tables() {
   const [certData, setCertData] = useState([]);
 
   useEffect(() => {
+    query.get("number") && setCode(query.get("number"));
     getDaysLeft();
   }, []);
 
@@ -203,9 +204,16 @@ function Tables() {
                     Найти
                   </MDButton>
                   {error && (
-                      <MDTypography variant="caption" color="error" display="block" mt={1}>
-                        {error.includes("not found") ? "Сертификат не найден" : error}
-                      </MDTypography>
+                    <MDTypography
+                      variant="caption"
+                      color="error"
+                      display="block"
+                      mt={1}
+                    >
+                      {error.includes("not found")
+                        ? "Сертификат не найден"
+                        : error}
+                    </MDTypography>
                   )}
                 </MDBox>
                 <MDBox mx={2}>
@@ -251,10 +259,10 @@ function Tables() {
         <Box sx={{ p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
           <DashboardLayout>
             <CertificateModal
-                open={open}
-                onClose={handleClose}
-                certificateData={certificateData}
-                onRedeem={handleRedeem}
+              open={open}
+              onClose={handleClose}
+              certificateData={certificateData}
+              onRedeem={handleRedeem}
             />
           </DashboardLayout>
           {/*{certificateData ? (*/}

@@ -59,11 +59,11 @@ const CertificateCard = ({ data }) => {
   // Функция определения статуса
   const getStatusInfo = (stage) => {
     const statusMapping = {
-      new: { statusColor: "warning", statusText: "Новый" },
+      new: { statusColor: "warning", statusText: "Новая заявка" },
       waiting: { statusColor: "warning", statusText: "Согласование времени" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
-      verification: { statusColor: "primary", statusText: "Ожидание сверки" },
+      verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
       paid: { statusColor: "success", statusText: "Оплачен" },
       canceled: { statusColor: "error", statusText: "Отменен" },
     };
@@ -108,6 +108,14 @@ const CertificateCard = ({ data }) => {
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
     const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
 
+    // Определяем начальный адрес
+    let initialAddress = "";
+    if (Array.isArray(address)) {
+      initialAddress = address[0] || "";
+    } else if (address) {
+      initialAddress = address;
+    }
+
     setServiceForm({
       title: deal.OPTIONS || "",
       date: deal.SCHEDULE_TIME
@@ -117,7 +125,7 @@ const CertificateCard = ({ data }) => {
         ? new Date(deal.SCHEDULE_TIME).toTimeString().slice(0, 5)
         : "",
       phone: phone,
-      address: "",
+      address: initialAddress,
       addressArray: address,
       notes: "",
       cancel: "",
@@ -285,13 +293,24 @@ const CertificateCard = ({ data }) => {
         )}
         {STAGE.group_id === "confirmed" && (
           <MDBox mt={2} display="flex" gap={1} flexWrap="wrap">
-            <MDButton
-              variant="gradient"
-              color="error"
-              onClick={() => handleOpenServiceModal(data, "edit")}
-            >
-              Отменить/изменить
-            </MDButton>
+            <MDBox mt={2} display="flex" gap={1} flexWrap="wrap">
+              <MDButton
+                variant="gradient"
+                color="secondary"
+                onClick={() =>
+                  (window.location.href = `/redeem?number=${data.NUMBER}`)
+                }
+              >
+                Погасить
+              </MDButton>
+              <MDButton
+                variant="gradient"
+                color="error"
+                onClick={() => handleOpenServiceModal(data, "edit")}
+              >
+                Отменить/изменить
+              </MDButton>
+            </MDBox>
           </MDBox>
         )}
       </Card>
