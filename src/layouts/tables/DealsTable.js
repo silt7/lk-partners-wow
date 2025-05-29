@@ -25,6 +25,7 @@ import { CircularProgress } from "@mui/material";
 export default function DealsTable() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openServiceModal, setOpenServiceModal] = useState(false);
   const [modalMode, setModalMode] = useState("create"); // 'create' или 'edit'
@@ -37,6 +38,7 @@ export default function DealsTable() {
     phone: "",
     address: "",
     notes: "",
+    cancel: "",
   });
   const [filters, setFilters] = useState({
     phone: "",
@@ -177,6 +179,7 @@ export default function DealsTable() {
       phone: deal.CONTACTS?.PHONES?.[0] || "",
       address: "",
       notes: "",
+      cancel: "",
     });
     setOpenServiceModal(true);
   };
@@ -190,6 +193,7 @@ export default function DealsTable() {
       phone: "",
       address: "",
       notes: "",
+      cancel: "",
     });
   };
 
@@ -201,58 +205,36 @@ export default function DealsTable() {
     }));
   };
 
-  const handleServiceFormSubmit = async () => {
+  const handleServiceFormSubmit = async (stageId) => {
     try {
+      setIsSubmitting(true);
       const data = {
         dealId: selectedDealId,
         ...serviceForm,
         datetime: `${serviceForm.date}T${serviceForm.time}:00`,
+        stageId: stageId,
       };
-
-      console.log(data);
-
-      // const response = await fetch(
-      //   "/restapi/certificate.updateServiceDetails",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(data),
-      //   }
-      // );
-
-      // if (!response.ok) {
-      //   throw new Error("Ошибка при обновлении данных услуги");
-      // }
-
-      //handleCloseServiceModal();
-      //window.location.reload();
-    } catch (error) {
-      console.error("Ошибка при обновлении данных услуги:", error);
-    }
-  };
-
-  const handleCancelService = async () => {
-    try {
-      const response = await fetch("/restapi/certificate.cancelService", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          dealId: selectedDealId,
-        }),
-      });
+      const response = await fetch(
+        "/restapi/certificate.changeCertificateStage",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Ошибка при отмене услуги");
+        throw new Error("Ошибка при обновлении данных услуги");
       }
 
       handleCloseServiceModal();
       window.location.reload();
     } catch (error) {
-      console.error("Ошибка при отмене услуги:", error);
+      console.error("Ошибка при обновлении данных услуги:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -755,7 +737,6 @@ export default function DealsTable() {
                 value={serviceForm.phone}
                 onChange={handleServiceFormChange}
                 margin="normal"
-                disabled={true}
               />
             </Grid>
 
@@ -770,28 +751,14 @@ export default function DealsTable() {
                 disabled={modalMode === "edit"}
               />
             </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                sx={{ width: "100%" }}
-                label="Примечание"
-                name="notes"
-                value={serviceForm.notes}
-                onChange={handleServiceFormChange}
-                multiline
-                rows={3}
-                margin="normal"
-                disabled={modalMode === "edit"}
-              />
-            </Grid>
             {modalMode === "edit" ? (
               <>
                 <Grid item xs={12}>
                   <TextField
                     sx={{ width: "100%" }}
                     label="Причина"
-                    name="notes"
-                    value={serviceForm.notes}
+                    name="cancel"
+                    value={serviceForm.cancel}
                     onChange={handleServiceFormChange}
                     multiline
                     rows={3}
@@ -800,7 +767,20 @@ export default function DealsTable() {
                   />
                 </Grid>
               </>
-            ) : null}
+            ) : (
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: "100%" }}
+                  label="Примечание"
+                  name="notes"
+                  value={serviceForm.notes}
+                  onChange={handleServiceFormChange}
+                  multiline
+                  rows={3}
+                  margin="normal"
+                />
+              </Grid>
+            )}
           </Grid>
 
           <MDBox display="flex" justifyContent="flex-end" gap={1} mt={3}>
@@ -808,17 +788,35 @@ export default function DealsTable() {
               <>
                 <MDButton
                   variant="gradient"
-                  color="error"
-                  onClick={handleCancelService}
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
                 >
-                  Отменить запись
+                  Отмена
+                </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="error"
+                  onClick={() => handleServiceFormSubmit("C2:5")}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Отменить запись"
+                  )}
                 </MDButton>
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={handleServiceFormSubmit}
+                  onClick={() => handleServiceFormSubmit("C2:NEW")}
+                  disabled={isSubmitting}
                 >
-                  Изменить
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Изменить"
+                  )}
                 </MDButton>
               </>
             ) : (
@@ -827,15 +825,21 @@ export default function DealsTable() {
                   variant="gradient"
                   color="secondary"
                   onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
                 >
                   Отмена
                 </MDButton>
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={handleServiceFormSubmit}
+                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  disabled={isSubmitting}
                 >
-                  Подтвердить
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Подтвердить"
+                  )}
                 </MDButton>
               </>
             )}
