@@ -186,13 +186,13 @@ function Basic() {
                 <GitHubIcon color="inherit" />
               </MDTypography>
             </Grid> */}
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
               <MDTypography
                 component={YandexButton}
                 variant="body1"
                 color="white"
               ></MDTypography>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
