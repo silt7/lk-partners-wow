@@ -73,11 +73,11 @@ export default function DealsTable() {
 
   const getStatusInfo = (stage) => {
     const statusMapping = {
-      new: { statusColor: "error", statusText: "Новый" },
+      new: { statusColor: "error", statusText: "Новая заявка" },
       waiting: { statusColor: "warning", statusText: "Согласование времени" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
-      verification: { statusColor: "primary", statusText: "Ожидание сверки" },
+      verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
       paid: { statusColor: "success", statusText: "Оплачен" },
       canceled: { statusColor: "error", statusText: "Отменен" },
     };
@@ -183,6 +183,14 @@ export default function DealsTable() {
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
     const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
 
+    // Определяем начальный адрес
+    let initialAddress = "";
+    if (Array.isArray(address)) {
+      initialAddress = address[0] || "";
+    } else if (address) {
+      initialAddress = address;
+    }
+
     setServiceForm({
       title: deal.OPTIONS || "",
       date: deal.SCHEDULE_TIME
@@ -192,7 +200,7 @@ export default function DealsTable() {
         ? new Date(deal.SCHEDULE_TIME).toTimeString().slice(0, 5)
         : "",
       phone: phone,
-      address: "",
+      address: initialAddress,
       addressArray: address,
       notes: "",
       cancel: "",
@@ -380,6 +388,16 @@ export default function DealsTable() {
                   <MDButton
                     sx={{ width: "100%" }}
                     variant="gradient"
+                    color="secondary"
+                    onClick={() =>
+                      (window.location.href = `/redeem?number=${element.NUMBER}`)
+                    }
+                  >
+                    Погасить
+                  </MDButton>
+                  <MDButton
+                    sx={{ width: "100%" }}
+                    variant="gradient"
                     color="error"
                     style={{ marginTop: "10px" }}
                     onClick={() => handleOpenServiceModal(element, "edit")}
@@ -449,11 +467,11 @@ export default function DealsTable() {
                 >
                   <option value="">Все статусы</option>
                   {Object.entries({
-                    new: "Новый",
+                    new: "Новая заявка",
                     waiting: "Согласование времени",
                     confirmed: "Записан",
                     visited: "Посетил",
-                    verification: "Ожидание сверки",
+                    verification: "Ожидание оплаты",
                     paid: "Оплачен",
                   }).map(([key, value]) => (
                     <option key={key} value={key}>
