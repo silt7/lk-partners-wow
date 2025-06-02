@@ -11,7 +11,6 @@ const AVAILABLE_CHANNELS = [
   { name: "TG" },
   { name: "SMS" },
   { name: "email" },
-  { name: "responsible" },
 ];
 
 export default function ChannelsCard() {

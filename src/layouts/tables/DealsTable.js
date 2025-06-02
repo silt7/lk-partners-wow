@@ -67,50 +67,90 @@ export default function DealsTable() {
 
     const now = new Date();
 
-    switch(type) {
+    switch (type) {
       case "today":
-        dateFrom = new Date(now.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(now.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(now.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(now.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "tomorrow":
         const tomorrow = new Date(now);
         tomorrow.setDate(tomorrow.getDate() + 1);
-        dateFrom = new Date(tomorrow.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(tomorrow.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(tomorrow.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(tomorrow.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "currentWeek":
         const firstDayOfWeek = new Date(now);
-        firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay());
+        firstDayOfWeek.setDate(
+          firstDayOfWeek.getDate() - firstDayOfWeek.getDay()
+        );
         const lastDayOfWeek = new Date(firstDayOfWeek);
         lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-        dateFrom = new Date(firstDayOfWeek.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(lastDayOfWeek.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(firstDayOfWeek.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfWeek.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "nextWeek":
         const nextWeekStart = new Date(now);
-        nextWeekStart.setDate(nextWeekStart.getDate() + (7 - nextWeekStart.getDay()));
+        nextWeekStart.setDate(
+          nextWeekStart.getDate() + (7 - nextWeekStart.getDay())
+        );
         const nextWeekEnd = new Date(nextWeekStart);
         nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
-        dateFrom = new Date(nextWeekStart.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(nextWeekEnd.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(nextWeekStart.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(nextWeekEnd.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "currentMonth":
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        dateFrom = new Date(firstDayOfMonth.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(lastDayOfMonth.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        const lastDayOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0
+        );
+        dateFrom = new Date(firstDayOfMonth.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfMonth.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "nextMonth":
-        const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const nextMonthStart = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          1
+        );
         const nextMonthEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-        dateFrom = new Date(nextMonthStart.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(nextMonthEnd.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(nextMonthStart.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(nextMonthEnd.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "currentYear":
         const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
         const lastDayOfYear = new Date(now.getFullYear(), 11, 31);
-        dateFrom = new Date(firstDayOfYear.setHours(0, 0, 0, 0)).toISOString().slice(0, 16);
-        dateTo = new Date(lastDayOfYear.setHours(23, 59, 59, 999)).toISOString().slice(0, 16);
+        dateFrom = new Date(firstDayOfYear.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfYear.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
         break;
       case "custom":
         // Для пользовательского диапазона не устанавливаем значения по умолчанию
@@ -126,7 +166,7 @@ export default function DealsTable() {
     setFilters({
       ...filters,
       dateFrom,
-      dateTo
+      dateTo,
     });
   };
 
@@ -423,7 +463,7 @@ export default function DealsTable() {
                     style={{ marginTop: "10px" }}
                     onClick={() => handleOpenServiceModal(element, "edit")}
                   >
-                    Изменить время
+                    На согласование
                   </MDButton>
                 </>
               ) : element.STAGE.group_id === "waiting" ? (
@@ -559,14 +599,14 @@ export default function DealsTable() {
               </Grid>
               <Grid item xs={12} md={2}>
                 <select
-                    value={dateFilterType}
-                    onChange={(e) => handleDateFilterTypeChange(e.target.value)}
-                    style={{
-                      width: "100%",
-                      height: "43px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                    }}
+                  value={dateFilterType}
+                  onChange={(e) => handleDateFilterTypeChange(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "43px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                  }}
                 >
                   <option value="none">Без фильтра даты</option>
                   <option value="today">Сегодня</option>
@@ -581,38 +621,38 @@ export default function DealsTable() {
               </Grid>
 
               {showCustomRange && (
-                  <>
-                    <Grid item xs={12} md={2}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <MDTypography variant="caption" color="text">
-                          С
-                        </MDTypography>
-                        <TextField
-                            sx={{ width: "100%" }}
-                            type="datetime-local"
-                            value={filters.dateFrom}
-                            onChange={(e) =>
-                                setFilters({ ...filters, dateFrom: e.target.value })
-                            }
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} md={2}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <MDTypography variant="caption" color="text">
-                          По
-                        </MDTypography>
-                        <TextField
-                            sx={{ width: "100%" }}
-                            type="datetime-local"
-                            value={filters.dateTo}
-                            onChange={(e) =>
-                                setFilters({ ...filters, dateTo: e.target.value })
-                            }
-                        />
-                      </Box>
-                    </Grid>
-                  </>
+                <>
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <MDTypography variant="caption" color="text">
+                        С
+                      </MDTypography>
+                      <TextField
+                        sx={{ width: "100%" }}
+                        type="datetime-local"
+                        value={filters.dateFrom}
+                        onChange={(e) =>
+                          setFilters({ ...filters, dateFrom: e.target.value })
+                        }
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <MDTypography variant="caption" color="text">
+                        По
+                      </MDTypography>
+                      <TextField
+                        sx={{ width: "100%" }}
+                        type="datetime-local"
+                        value={filters.dateTo}
+                        onChange={(e) =>
+                          setFilters({ ...filters, dateTo: e.target.value })
+                        }
+                      />
+                    </Box>
+                  </Grid>
+                </>
               )}
               {/*<Grid item xs={12} md={2}>*/}
               {/*  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>*/}
