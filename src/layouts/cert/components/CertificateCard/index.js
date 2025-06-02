@@ -48,6 +48,7 @@ const CertificateCard = ({ data }) => {
   const {
     ID,
     TITLE,
+    OPTIONS,
     OPPORTUNITY,
     NAME,
     SCHEDULE_TIME,
@@ -204,7 +205,7 @@ const CertificateCard = ({ data }) => {
       <Card sx={{ boxShadow: 3, borderRadius: 2, p: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            {TITLE ? `Сертификат: ${TITLE}` : "Без названия"}
+            {OPTIONS ? `Сертификат: ${OPTIONS}` : "Без названия"}
           </Typography>
 
           <MDBox mb={1}>
@@ -274,9 +275,12 @@ const CertificateCard = ({ data }) => {
             <MDButton
               variant="gradient"
               color="warning"
-              onClick={() => handleOpenServiceModal(data, "edit")}
+              onClick={() => {
+                setModalMode("create");
+                handleServiceFormSubmit("C2:NEW");
+              }}
             >
-              Изменить время
+              На согласование
             </MDButton>
           </MDBox>
         )}
@@ -327,7 +331,10 @@ const CertificateCard = ({ data }) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: {
+              xs: "100%",
+              md: "500px",
+            },
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
@@ -455,11 +462,15 @@ const CertificateCard = ({ data }) => {
               <>
                 <MDButton
                   variant="gradient"
-                  color="secondary"
-                  onClick={handleCloseServiceModal}
-                  disabled={isSubmitting}
+                  color="info"
+                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
-                  Отмена
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Изменить"
+                  )}
                 </MDButton>
                 <MDButton
                   variant="gradient"
@@ -475,15 +486,11 @@ const CertificateCard = ({ data }) => {
                 </MDButton>
                 <MDButton
                   variant="gradient"
-                  color="info"
-                  onClick={() => handleServiceFormSubmit("C2:NEW")}
-                  disabled={isSubmitting || !serviceForm.cancel.trim()}
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Изменить"
-                  )}
+                  Отмена
                 </MDButton>
               </>
             ) : (

@@ -53,6 +53,123 @@ export default function DealsTable() {
     useDeals(1, {});
   const [formError, setFormError] = useState("");
 
+  const [dateFilterType, setDateFilterType] = useState("none");
+  const [showCustomRange, setShowCustomRange] = useState(false);
+
+  // фильтр дат
+  const handleDateFilterTypeChange = (type) => {
+    setDateFilterType(type);
+    setShowCustomRange(type === "custom");
+
+    // даты в зависимости от выбранного типа
+    let dateFrom = "";
+    let dateTo = "";
+
+    const now = new Date();
+
+    switch (type) {
+      case "today":
+        dateFrom = new Date(now.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(now.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "tomorrow":
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateFrom = new Date(tomorrow.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(tomorrow.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "currentWeek":
+        const firstDayOfWeek = new Date(now);
+        firstDayOfWeek.setDate(
+          firstDayOfWeek.getDate() - firstDayOfWeek.getDay()
+        );
+        const lastDayOfWeek = new Date(firstDayOfWeek);
+        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+        dateFrom = new Date(firstDayOfWeek.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfWeek.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "nextWeek":
+        const nextWeekStart = new Date(now);
+        nextWeekStart.setDate(
+          nextWeekStart.getDate() + (7 - nextWeekStart.getDay())
+        );
+        const nextWeekEnd = new Date(nextWeekStart);
+        nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
+        dateFrom = new Date(nextWeekStart.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(nextWeekEnd.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "currentMonth":
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDayOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0
+        );
+        dateFrom = new Date(firstDayOfMonth.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfMonth.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "nextMonth":
+        const nextMonthStart = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          1
+        );
+        const nextMonthEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+        dateFrom = new Date(nextMonthStart.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(nextMonthEnd.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "currentYear":
+        const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+        const lastDayOfYear = new Date(now.getFullYear(), 11, 31);
+        dateFrom = new Date(firstDayOfYear.setHours(0, 0, 0, 0))
+          .toISOString()
+          .slice(0, 16);
+        dateTo = new Date(lastDayOfYear.setHours(23, 59, 59, 999))
+          .toISOString()
+          .slice(0, 16);
+        break;
+      case "custom":
+        // Для пользовательского диапазона не устанавливаем значения по умолчанию
+        break;
+      case "none":
+      default:
+        // Сброс фильтра
+        dateFrom = "";
+        dateTo = "";
+        break;
+    }
+
+    setFilters({
+      ...filters,
+      dateFrom,
+      dateTo,
+    });
+  };
+
   // Симуляция ожидания данных
   useEffect(() => {
     const loadData = async () => {
@@ -237,16 +354,23 @@ export default function DealsTable() {
       setFormError("Пожалуйста, укажите причину");
       return;
     }
-
     try {
       setIsSubmitting(true);
       setFormError("");
-      const data = {
-        dealId: selectedDealId,
-        ...serviceForm,
-        datetime: `${serviceForm.date}T${serviceForm.time}:00`,
-        stageId: stageId,
-      };
+      let data;
+      if (stageId === "C2:NEW") {
+        data = {
+          dealId: selectedDealId,
+          stageId: stageId,
+        };
+      } else {
+        data = {
+          dealId: selectedDealId,
+          ...serviceForm,
+          datetime: `${serviceForm.date}T${serviceForm.time}:00`,
+          stageId: stageId,
+        };
+      }
       const response = await fetch(
         "/restapi/certificate.changeCertificateStage",
         {
@@ -344,9 +468,13 @@ export default function DealsTable() {
                     variant="gradient"
                     color="warning"
                     style={{ marginTop: "10px" }}
-                    onClick={() => handleOpenServiceModal(element, "edit")}
+                    onClick={() => {
+                      setModalMode("create");
+                      setSelectedDealId(element.ID);
+                      handleServiceFormSubmit("C2:NEW");
+                    }}
                   >
-                    Изменить время
+                    На согласование
                   </MDButton>
                 </>
               ) : element.STAGE.group_id === "waiting" ? (
@@ -426,7 +554,7 @@ export default function DealsTable() {
         </MDBox>
       ) : (
         <>
-          <MDBox ml={2}>
+          <MDBox mx={2}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={2}>
                 <MDInput
@@ -481,35 +609,92 @@ export default function DealsTable() {
                 </select>
               </Grid>
               <Grid item xs={12} md={2}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <MDTypography variant="caption" color="text">
-                    С
-                  </MDTypography>
-                  <TextField
-                    sx={{ width: "100%" }}
-                    type="datetime-local"
-                    value={filters.dateFrom}
-                    onChange={(e) =>
-                      setFilters({ ...filters, dateFrom: e.target.value })
-                    }
-                  />
-                </Box>
+                <select
+                  value={dateFilterType}
+                  onChange={(e) => handleDateFilterTypeChange(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "43px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                  }}
+                >
+                  <option value="none">Без фильтра даты</option>
+                  <option value="today">Сегодня</option>
+                  <option value="tomorrow">Завтра</option>
+                  <option value="currentWeek">Текущая неделя</option>
+                  <option value="nextWeek">Следующая неделя</option>
+                  <option value="currentMonth">Текущий месяц</option>
+                  <option value="nextMonth">Следующий месяц</option>
+                  <option value="currentYear">Текущий год</option>
+                  <option value="custom">Указать период</option>
+                </select>
               </Grid>
-              <Grid item xs={12} md={2}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <MDTypography variant="caption" color="text">
-                    По
-                  </MDTypography>
-                  <TextField
-                    sx={{ width: "100%" }}
-                    type="datetime-local"
-                    value={filters.dateTo}
-                    onChange={(e) =>
-                      setFilters({ ...filters, dateTo: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
+
+              {showCustomRange && (
+                <>
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <MDTypography variant="caption" color="text">
+                        С
+                      </MDTypography>
+                      <TextField
+                        sx={{ width: "100%" }}
+                        type="datetime-local"
+                        value={filters.dateFrom}
+                        onChange={(e) =>
+                          setFilters({ ...filters, dateFrom: e.target.value })
+                        }
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <MDTypography variant="caption" color="text">
+                        По
+                      </MDTypography>
+                      <TextField
+                        sx={{ width: "100%" }}
+                        type="datetime-local"
+                        value={filters.dateTo}
+                        onChange={(e) =>
+                          setFilters({ ...filters, dateTo: e.target.value })
+                        }
+                      />
+                    </Box>
+                  </Grid>
+                </>
+              )}
+              {/*<Grid item xs={12} md={2}>*/}
+              {/*  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>*/}
+              {/*    <MDTypography variant="caption" color="text">*/}
+              {/*      С*/}
+              {/*    </MDTypography>*/}
+              {/*    <TextField*/}
+              {/*      sx={{ width: "100%" }}*/}
+              {/*      type="datetime-local"*/}
+              {/*      value={filters.dateFrom}*/}
+              {/*      onChange={(e) =>*/}
+              {/*        setFilters({ ...filters, dateFrom: e.target.value })*/}
+              {/*      }*/}
+              {/*    />*/}
+              {/*  </Box>*/}
+              {/*</Grid>*/}
+              {/*<Grid item xs={12} md={2}>*/}
+              {/*  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>*/}
+              {/*    <MDTypography variant="caption" color="text">*/}
+              {/*      По*/}
+              {/*    </MDTypography>*/}
+              {/*    <TextField*/}
+              {/*      sx={{ width: "100%" }}*/}
+              {/*      type="datetime-local"*/}
+              {/*      value={filters.dateTo}*/}
+              {/*      onChange={(e) =>*/}
+              {/*        setFilters({ ...filters, dateTo: e.target.value })*/}
+              {/*      }*/}
+              {/*    />*/}
+              {/*  </Box>*/}
+              {/*</Grid>*/}
             </Grid>
             <Grid container spacing={2} mt={2}>
               <Grid item xs={12} md={2}>
@@ -720,7 +905,10 @@ export default function DealsTable() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: {
+              xs: "100%",
+              md: "500px",
+            },
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
@@ -848,11 +1036,15 @@ export default function DealsTable() {
               <>
                 <MDButton
                   variant="gradient"
-                  color="secondary"
-                  onClick={handleCloseServiceModal}
-                  disabled={isSubmitting}
+                  color="info"
+                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
-                  Отмена
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Изменить"
+                  )}
                 </MDButton>
                 <MDButton
                   variant="gradient"
@@ -868,27 +1060,15 @@ export default function DealsTable() {
                 </MDButton>
                 <MDButton
                   variant="gradient"
-                  color="info"
-                  onClick={() => handleServiceFormSubmit("C2:NEW")}
-                  disabled={isSubmitting || !serviceForm.cancel.trim()}
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Изменить"
-                  )}
-                </MDButton>
-              </>
-            ) : (
-              <>
-                <MDButton
-                  variant="gradient"
                   color="secondary"
                   onClick={handleCloseServiceModal}
                   disabled={isSubmitting}
                 >
                   Отмена
                 </MDButton>
+              </>
+            ) : (
+              <>
                 <MDButton
                   variant="gradient"
                   color="info"
@@ -900,6 +1080,14 @@ export default function DealsTable() {
                   ) : (
                     "Подтвердить"
                   )}
+                </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
+                >
+                  Отмена
                 </MDButton>
               </>
             )}

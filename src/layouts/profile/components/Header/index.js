@@ -317,60 +317,59 @@ function Header({ profile, children }) {
 
   // Обработчик изменения полей формы
   const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-      // Очищаем ошибку при изменении поля
-      if (errors[name]) {
-          setErrors(prev => ({ ...prev, [name]: "" }));
-      }
+    // Очищаем ошибку при изменении поля
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   // Обработчик выбора файла
   const handleFileChange = (e) => {
-      const file = e.target.files[0];
-      setFormData((prev) => ({ ...prev, file }));
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, file }));
 
-      // Очищаем ошибку файла при выборе
-      if (file) {
-          setErrors(prev => ({ ...prev, file: "" }));
-      }
-
+    // Очищаем ошибку файла при выборе
+    if (file) {
+      setErrors((prev) => ({ ...prev, file: "" }));
+    }
   };
 
-    const validateForm = () => {
-        const newErrors = {};
+  const validateForm = () => {
+    const newErrors = {};
 
-        if (!formData.TITLE.trim()) {
-            newErrors.TITLE = "Поле 'Заголовок' не может быть пустым";
-        }
+    if (!formData.TITLE.trim()) {
+      newErrors.TITLE = "Поле 'Заголовок' не может быть пустым";
+    }
 
-        if (!formData.DESCRIPTION.trim()) {
-            newErrors.DESCRIPTION = "Поле 'Описание' не может быть пустым";
-        }
+    if (!formData.DESCRIPTION.trim()) {
+      newErrors.DESCRIPTION = "Поле 'Описание' не может быть пустым";
+    }
 
-        if (!formData.file) {
-            newErrors.file = "Пожалуйста, прикрепите файл";
-        } else {
-            const allowedTypes = [
-                "application/pdf",
-                "application/msword",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ];
+    if (!formData.file) {
+      newErrors.file = "Пожалуйста, прикрепите файл";
+    } else {
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
 
-            if (!allowedTypes.includes(formData.file.type)) {
-                newErrors.file = "Разрешены только файлы PDF, DOC, DOCX";
-            }
+      if (!allowedTypes.includes(formData.file.type)) {
+        newErrors.file = "Разрешены только файлы PDF, DOC, DOCX";
+      }
 
-            const maxSize = 5 * 1024 * 1024; // 5 MB
-            if (formData.file.size > maxSize) {
-                newErrors.file = "Файл слишком большой. Максимальный размер — 5 МБ.";
-            }
-        }
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+      if (formData.file.size > maxSize) {
+        newErrors.file = "Файл слишком большой. Максимальный размер — 5 МБ.";
+      }
+    }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   // Обработчик отправки формы
   const handleSubmit = async (e) => {
@@ -419,7 +418,7 @@ function Header({ profile, children }) {
           sx={{
             position: "relative",
             mt: -8,
-            mx: 3,
+            mx: { xs: 0, sm: 3 },
             py: 2,
             px: 2,
           }}
@@ -496,7 +495,7 @@ function Header({ profile, children }) {
           }}
         >
           <MDTypography variant="h6" gutterBottom>
-              Создать заявку на модерацию.
+            Создать заявку на модерацию.
           </MDTypography>
 
           <TextField
@@ -534,22 +533,22 @@ function Header({ profile, children }) {
           >
             Прикрепить файл
             <input
-                type="file"
-                hidden
-                onChange={handleFileChange}
-                accept=".pdf,.doc,.docx"
+              type="file"
+              hidden
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx"
             />
           </Button>
-            {errors.file && (
-                <MDTypography color="error" variant="caption" sx={{ mt: 1 }}>
-                    {errors.file}
-                </MDTypography>
-            )}
-            {formData.file && (
-                <MDTypography variant="caption" sx={{ mt: 1 }}>
-                    Выбран файл: {formData.file.name}
-                </MDTypography>
-            )}
+          {errors.file && (
+            <MDTypography color="error" variant="caption" sx={{ mt: 1 }}>
+              {errors.file}
+            </MDTypography>
+          )}
+          {formData.file && (
+            <MDTypography variant="caption" sx={{ mt: 1 }}>
+              Выбран файл: {formData.file.name}
+            </MDTypography>
+          )}
 
           <Button
             type="submit"

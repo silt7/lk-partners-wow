@@ -146,6 +146,7 @@ function Product() {
   const columns = [
     { Header: "Название", accessor: "ELEMENT_NAME" },
     { Header: "Цена", accessor: "SELFPRICE" },
+    { Header: "Открытая цена", accessor: "OPENPRICE" },
     { Header: "Дата начала", accessor: "ACTIVE_FROM" },
     {
       Header: "Действия",
@@ -190,28 +191,40 @@ function Product() {
                   Услуги
                 </MDTypography>
               </MDBox>
-              <MDBox pt={3}>
+              <MDBox pt={3} mx={3}>
                 <MDTypography variant="h6" color="text" mb={2}>
-                  Активные товары
+                  Активные
                 </MDTypography>
-                <DataTable
-                  table={{ columns, rows: activeProducts }}
-                  loading={loading}
-                  entriesPerPage={{ defaultValue: 5 }}
-                  showTotalEntries
-                  canSearch
-                />
+                {activeProducts.length > 0 ? (
+                  <DataTable
+                    table={{ columns, rows: activeProducts }}
+                    loading={loading}
+                    entriesPerPage={{ defaultValue: 5 }}
+                    showTotalEntries
+                    canSearch
+                  />
+                ) : (
+                  <MDTypography variant="body1" color="text">
+                    Активные услуги отсутствуют
+                  </MDTypography>
+                )}
 
                 <MDTypography variant="h6" color="text" mt={4} mb={2}>
-                  Неактивные товары
+                  Неактивные
                 </MDTypography>
-                <DataTable
-                  table={{ columns: columnsNoActive, rows: inactiveProducts }}
-                  loading={loading}
-                  entriesPerPage={{ defaultValue: 5 }}
-                  showTotalEntries
-                  canSearch
-                />
+                {inactiveProducts.length > 0 ? (
+                  <DataTable
+                    table={{ columns: columnsNoActive, rows: inactiveProducts }}
+                    loading={loading}
+                    entriesPerPage={{ defaultValue: 5 }}
+                    showTotalEntries
+                    canSearch
+                  />
+                ) : (
+                  <MDTypography variant="body1" color="text">
+                    Неактивные услуги отсутствуют
+                  </MDTypography>
+                )}
               </MDBox>
             </Card>
           </Grid>
