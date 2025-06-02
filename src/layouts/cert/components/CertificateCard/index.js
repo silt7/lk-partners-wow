@@ -274,9 +274,12 @@ const CertificateCard = ({ data }) => {
             <MDButton
               variant="gradient"
               color="warning"
-              onClick={() => handleOpenServiceModal(data, "edit")}
+              onClick={() => {
+                setModalMode("create");
+                handleServiceFormSubmit("C2:NEW");
+              }}
             >
-              Изменить время
+              На согласование
             </MDButton>
           </MDBox>
         )}
@@ -455,11 +458,15 @@ const CertificateCard = ({ data }) => {
               <>
                 <MDButton
                   variant="gradient"
-                  color="secondary"
-                  onClick={handleCloseServiceModal}
-                  disabled={isSubmitting}
+                  color="info"
+                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
-                  Отмена
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Изменить"
+                  )}
                 </MDButton>
                 <MDButton
                   variant="gradient"
@@ -475,15 +482,11 @@ const CertificateCard = ({ data }) => {
                 </MDButton>
                 <MDButton
                   variant="gradient"
-                  color="info"
-                  onClick={() => handleServiceFormSubmit("C2:NEW")}
-                  disabled={isSubmitting || !serviceForm.cancel.trim()}
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Изменить"
-                  )}
+                  Отмена
                 </MDButton>
               </>
             ) : (

@@ -354,16 +354,23 @@ export default function DealsTable() {
       setFormError("Пожалуйста, укажите причину");
       return;
     }
-
     try {
       setIsSubmitting(true);
       setFormError("");
-      const data = {
-        dealId: selectedDealId,
-        ...serviceForm,
-        datetime: `${serviceForm.date}T${serviceForm.time}:00`,
-        stageId: stageId,
-      };
+      let data;
+      if (stageId === "C2:NEW") {
+        data = {
+          dealId: selectedDealId,
+          stageId: stageId,
+        };
+      } else {
+        data = {
+          dealId: selectedDealId,
+          ...serviceForm,
+          datetime: `${serviceForm.date}T${serviceForm.time}:00`,
+          stageId: stageId,
+        };
+      }
       const response = await fetch(
         "/restapi/certificate.changeCertificateStage",
         {
@@ -461,7 +468,11 @@ export default function DealsTable() {
                     variant="gradient"
                     color="warning"
                     style={{ marginTop: "10px" }}
-                    onClick={() => handleOpenServiceModal(element, "edit")}
+                    onClick={() => {
+                      setModalMode("create");
+                      setSelectedDealId(element.ID);
+                      handleServiceFormSubmit("C2:NEW");
+                    }}
                   >
                     На согласование
                   </MDButton>
@@ -1022,11 +1033,15 @@ export default function DealsTable() {
               <>
                 <MDButton
                   variant="gradient"
-                  color="secondary"
-                  onClick={handleCloseServiceModal}
-                  disabled={isSubmitting}
+                  color="info"
+                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
-                  Отмена
+                  {isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Изменить"
+                  )}
                 </MDButton>
                 <MDButton
                   variant="gradient"
@@ -1042,27 +1057,15 @@ export default function DealsTable() {
                 </MDButton>
                 <MDButton
                   variant="gradient"
-                  color="info"
-                  onClick={() => handleServiceFormSubmit("C2:NEW")}
-                  disabled={isSubmitting || !serviceForm.cancel.trim()}
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Изменить"
-                  )}
-                </MDButton>
-              </>
-            ) : (
-              <>
-                <MDButton
-                  variant="gradient"
                   color="secondary"
                   onClick={handleCloseServiceModal}
                   disabled={isSubmitting}
                 >
                   Отмена
                 </MDButton>
+              </>
+            ) : (
+              <>
                 <MDButton
                   variant="gradient"
                   color="info"
@@ -1074,6 +1077,14 @@ export default function DealsTable() {
                   ) : (
                     "Подтвердить"
                   )}
+                </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="secondary"
+                  onClick={handleCloseServiceModal}
+                  disabled={isSubmitting}
+                >
+                  Отмена
                 </MDButton>
               </>
             )}
