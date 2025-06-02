@@ -53,6 +53,9 @@ import {
   setOpenConfigurator,
 } from "context";
 
+// Import routes
+import routes from "routes";
+
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
@@ -64,7 +67,30 @@ function DashboardNavbar({ absolute, light, isMini }) {
     darkMode,
   } = controller;
   const [openMenu, setOpenMenu] = useState(false);
-  const route = useLocation().pathname.split("/").slice(1);
+  const location = useLocation();
+
+  // Получаем текущий маршрут из конфигурации routes
+  const currentRoute = routes.find((route) => {
+    // Проверяем точное совпадение маршрута
+    if (route.route === location.pathname) return true;
+
+    // Проверяем маршруты с параметрами (например, /tables/:id)
+    if (route.route.includes(":")) {
+      const routePattern = route.route.split("/");
+      const pathPattern = location.pathname.split("/");
+
+      if (routePattern.length !== pathPattern.length) return false;
+
+      return routePattern.every((part, index) => {
+        return part.startsWith(":") || part === pathPattern[index];
+      });
+    }
+
+    return false;
+  });
+
+  const routeName = currentRoute ? currentRoute.name : "";
+  const routeSegments = location.pathname.split("/").filter(Boolean);
 
   useEffect(() => {
     // Setting the navbar type
@@ -158,8 +184,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
         >
           <Breadcrumbs
             icon="home"
-            title={route[route.length - 1]}
-            route={route}
+            title={routeName}
+            route={routeSegments}
             light={light}
           />
         </MDBox>

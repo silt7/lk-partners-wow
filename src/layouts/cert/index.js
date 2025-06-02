@@ -35,7 +35,7 @@ function Cert() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Сертификат {id}
+                  Сертификат
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -49,9 +49,9 @@ function Cert() {
                       {/*</MDBox>*/}
                       <MDBox pt={3} px={3}>
                         {deals && deals.length > 0 ? (
-                            <CertificateCard data={deals[0]} />
+                          <CertificateCard data={deals[0]} />
                         ) : (
-                            <MDTypography>Сертификат не найден</MDTypography>
+                          <MDTypography>Сертификат не найден</MDTypography>
                         )}
                       </MDBox>
                     </Grid>

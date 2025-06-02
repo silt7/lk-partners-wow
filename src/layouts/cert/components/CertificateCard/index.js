@@ -48,6 +48,7 @@ const CertificateCard = ({ data }) => {
   const {
     ID,
     TITLE,
+    OPTIONS,
     OPPORTUNITY,
     NAME,
     SCHEDULE_TIME,
@@ -204,7 +205,7 @@ const CertificateCard = ({ data }) => {
       <Card sx={{ boxShadow: 3, borderRadius: 2, p: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            {TITLE ? `Сертификат: ${TITLE}` : "Без названия"}
+            {OPTIONS ? `Сертификат: ${OPTIONS}` : "Без названия"}
           </Typography>
 
           <MDBox mb={1}>

@@ -35,7 +35,8 @@ function Breadcrumbs({ icon, title, route, light }) {
       <MuiBreadcrumbs
         sx={{
           "& .MuiBreadcrumbs-separator": {
-            color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
+            color: ({ palette: { white, grey } }) =>
+              light ? white.main : grey[600],
           },
         }}
       >
@@ -61,7 +62,7 @@ function Breadcrumbs({ icon, title, route, light }) {
               opacity={light ? 0.8 : 0.5}
               sx={{ lineHeight: 0 }}
             >
-              {el}
+              {el === "tables" ? "Сертификаты" : el}
             </MDTypography>
           </Link>
         ))}
@@ -81,9 +82,7 @@ function Breadcrumbs({ icon, title, route, light }) {
         variant="h6"
         color={light ? "white" : "dark"}
         noWrap
-      >
-        {title.replace("-", " ")}
-      </MDTypography>
+      ></MDTypography>
     </MDBox>
   );
 }
