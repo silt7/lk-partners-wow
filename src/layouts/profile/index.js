@@ -103,7 +103,6 @@ function Overview() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mb={2} />
       <Header profile={profile || defaultProfile}>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>

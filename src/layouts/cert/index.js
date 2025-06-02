@@ -47,7 +47,7 @@ function Cert() {
                       {/*    {JSON.stringify(deals, null, 2)}*/}
                       {/*  </pre>*/}
                       {/*</MDBox>*/}
-                      <MDBox pt={3} px={3}>
+                      <MDBox pt={3} px={0}>
                         {deals && deals.length > 0 ? (
                           <CertificateCard data={deals[0]} />
                         ) : (

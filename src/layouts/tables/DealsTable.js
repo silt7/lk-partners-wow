@@ -554,7 +554,7 @@ export default function DealsTable() {
         </MDBox>
       ) : (
         <>
-          <MDBox ml={2}>
+          <MDBox mx={2}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={2}>
                 <MDInput
@@ -905,7 +905,10 @@ export default function DealsTable() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: {
+              xs: "100%",
+              md: "500px",
+            },
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
