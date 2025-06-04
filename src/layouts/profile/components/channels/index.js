@@ -99,7 +99,7 @@ export default function ChannelsCard() {
             channel.name === "WA" ? (
               <MDBox sx={{ display: "flex", flexDirection: "column" }}>
                 {channel.name}
-                <MDTypography variant="caption" color="text">
+                {/* <MDTypography variant="caption" color="text">
                   Чтобы оповещения заработали нужно подписаться{" "}
                   <a
                     href="https://api.whatsapp.com/send/?phone=79291580047&text=start&type=phone_number&app_absent=0"
@@ -109,7 +109,7 @@ export default function ChannelsCard() {
                     WOWlife WB
                   </a>{" "}
                   отправив start в первом сообщении
-                </MDTypography>
+                </MDTypography> */}
               </MDBox>
             ) : channel.name === "TG" ? (
               <MDBox sx={{ display: "flex", flexDirection: "column" }}>
