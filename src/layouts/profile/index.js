@@ -178,11 +178,11 @@ function Overview() {
                 description="Основная информация о контакте"
                 info={{
                   "Название юридического лица":
-                    profile?.REQUISITES[0].RQ_COMPANY_FULL_NAME || "",
-                  ИНН: profile?.REQUISITES[0].RQ_INN || "",
-                  ОГРНИП: profile?.REQUISITES[0].RQ_OGRNIP || "",
-                  КПП: profile?.REQUISITES[0].RQ_KPP || "",
-                  ОГРН: profile?.REQUISITES[0].RQ_OGRN || "",
+                    profile?.REQUISITES[0]?.RQ_COMPANY_FULL_NAME || "",
+                  ИНН: profile?.REQUISITES[0]?.RQ_INN || "",
+                  ОГРНИП: profile?.REQUISITES[0]?.RQ_OGRNIP || "",
+                  КПП: profile?.REQUISITES[0]?.RQ_KPP || "",
+                  ОГРН: profile?.REQUISITES[0]?.RQ_OGRN || "",
                   // "Банковские реквизиты (БИК, расчетный счет)":
                   //   profile?.REQUISITES[0].RQ_BANK_DETAILS || "",
                   // "Юридический адрес":

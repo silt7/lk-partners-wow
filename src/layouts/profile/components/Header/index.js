@@ -348,9 +348,7 @@ function Header({ profile, children }) {
       newErrors.DESCRIPTION = "Поле 'Описание' не может быть пустым";
     }
 
-    if (!formData.file) {
-      newErrors.file = "Пожалуйста, прикрепите файл";
-    } else {
+    if (formData.file) {
       const allowedTypes = [
         "application/pdf",
         "application/msword",

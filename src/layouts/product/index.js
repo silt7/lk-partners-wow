@@ -48,7 +48,6 @@ function Product() {
         body: JSON.stringify(data),
       });
       const jsonData = await response.json();
-
       // Разделяем товары на активные и неактивные
       const active = [];
       const inactive = [];
@@ -148,6 +147,16 @@ function Product() {
     { Header: "Цена", accessor: "SELFPRICE" },
     { Header: "Открытая цена", accessor: "OPENPRICE" },
     { Header: "Дата начала", accessor: "ACTIVE_FROM" },
+    {
+      Header: "Сайт",
+      accessor: "PRODUCT_LINK",
+      Cell: ({ value }) =>
+        value ? (
+          <a href={value} target="_blank" rel="noopener noreferrer">
+            Ссылка
+          </a>
+        ) : null,
+    },
     {
       Header: "Действия",
       accessor: "actions",
