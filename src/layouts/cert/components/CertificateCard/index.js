@@ -53,6 +53,7 @@ const CertificateCard = ({ data }) => {
     NAME,
     SCHEDULE_TIME,
     NUMBER,
+    ADDITIONAL_INFO,
     CONTACTS,
     STAGE,
   } = data;
@@ -60,7 +61,7 @@ const CertificateCard = ({ data }) => {
   // Функция определения статуса
   const getStatusInfo = (stage) => {
     const statusMapping = {
-      new: { statusColor: "warning", statusText: "Новая заявка" },
+      new: { statusColor: "error", statusText: "Новая заявка" },
       waiting: { statusColor: "warning", statusText: "Согласование времени" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
@@ -157,7 +158,7 @@ const CertificateCard = ({ data }) => {
     }));
   };
 
-  const handleServiceFormSubmit = async (stageId) => {
+  const handleServiceFormSubmit = async (stageId, dealId) => {
     if (modalMode === "edit" && !serviceForm.cancel.trim()) {
       setFormError("Пожалуйста, укажите причину");
       return;
@@ -167,7 +168,7 @@ const CertificateCard = ({ data }) => {
       setIsSubmitting(true);
       setFormError("");
       const data = {
-        dealId: ID,
+        dealId: dealId,
         ...serviceForm,
         datetime: `${serviceForm.date}T${serviceForm.time}:00`,
         stageId: stageId,
@@ -252,6 +253,12 @@ const CertificateCard = ({ data }) => {
 
           <MDBox mb={1}>
             <Typography variant="body2" color="text.secondary">
+              <strong>Комментарий:</strong> {ADDITIONAL_INFO}
+            </Typography>
+          </MDBox>
+
+          <MDBox mb={1}>
+            <Typography variant="body2" color="text.secondary">
               <strong>Статус:</strong>{" "}
               <MDBadge
                 badgeContent={statusText}
@@ -277,10 +284,10 @@ const CertificateCard = ({ data }) => {
               color="warning"
               onClick={() => {
                 setModalMode("create");
-                handleServiceFormSubmit("C2:NEW");
+                handleServiceFormSubmit("C2:NEW", data.ID);
               }}
             >
-              На согласование
+              Согласовать время
             </MDButton>
           </MDBox>
         )}
@@ -463,7 +470,9 @@ const CertificateCard = ({ data }) => {
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  onClick={() =>
+                    handleServiceFormSubmit("C2:UC_4Q05NY", data.ID)
+                  }
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
@@ -475,7 +484,7 @@ const CertificateCard = ({ data }) => {
                 <MDButton
                   variant="gradient"
                   color="error"
-                  onClick={() => handleServiceFormSubmit("C2:5")}
+                  onClick={() => handleServiceFormSubmit("C2:5", data.ID)}
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
@@ -506,7 +515,9 @@ const CertificateCard = ({ data }) => {
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  onClick={() =>
+                    handleServiceFormSubmit("C2:UC_4Q05NY", data.ID)
+                  }
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

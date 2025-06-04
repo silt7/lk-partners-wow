@@ -348,7 +348,7 @@ export default function DealsTable() {
     }));
   };
 
-  const handleServiceFormSubmit = async (stageId) => {
+  const handleServiceFormSubmit = async (stageId, dealId) => {
     // Проверяем поле "Причина" в режиме редактирования
     if (modalMode === "edit" && !serviceForm.cancel.trim()) {
       setFormError("Пожалуйста, укажите причину");
@@ -360,12 +360,12 @@ export default function DealsTable() {
       let data;
       if (stageId === "C2:NEW") {
         data = {
-          dealId: selectedDealId,
+          dealId: dealId,
           stageId: stageId,
         };
       } else {
         data = {
-          dealId: selectedDealId,
+          dealId: dealId,
           ...serviceForm,
           datetime: `${serviceForm.date}T${serviceForm.time}:00`,
           stageId: stageId,
@@ -404,6 +404,7 @@ export default function DealsTable() {
       { Header: "Статус", accessor: "STAGE_ID" },
       { Header: "Дата записи", accessor: "SCHEDULE_TIME" },
       { Header: "Сумма", accessor: "OPPORTUNITY" },
+      { Header: "Комментарий", accessor: "ADDITIONAL_INFO" },
       { Header: "Действие", accessor: "action" },
     ],
 
@@ -451,6 +452,7 @@ export default function DealsTable() {
             ),
             SCHEDULE_TIME: dateValue,
             OPPORTUNITY: `${element.OPPORTUNITY}`.replace("|RUB", "₽"),
+            ADDITIONAL_INFO: element.ADDITIONAL_INFO,
             action:
               element.STAGE.group_id === "new" ? (
                 <>
@@ -470,11 +472,10 @@ export default function DealsTable() {
                     style={{ marginTop: "10px" }}
                     onClick={() => {
                       setModalMode("create");
-                      setSelectedDealId(element.ID);
-                      handleServiceFormSubmit("C2:NEW");
+                      handleServiceFormSubmit("C2:NEW", element.ID);
                     }}
                   >
-                    На согласование
+                    Согласовать время
                   </MDButton>
                 </>
               ) : element.STAGE.group_id === "waiting" ? (
@@ -1037,7 +1038,9 @@ export default function DealsTable() {
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  onClick={() =>
+                    handleServiceFormSubmit("C2:UC_4Q05NY", selectedDealId)
+                  }
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
@@ -1049,7 +1052,9 @@ export default function DealsTable() {
                 <MDButton
                   variant="gradient"
                   color="error"
-                  onClick={() => handleServiceFormSubmit("C2:5")}
+                  onClick={() =>
+                    handleServiceFormSubmit("C2:5", selectedDealId)
+                  }
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (
@@ -1072,7 +1077,9 @@ export default function DealsTable() {
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={() => handleServiceFormSubmit("C2:UC_4Q05NY")}
+                  onClick={() =>
+                    handleServiceFormSubmit("C2:UC_4Q05NY", selectedDealId)
+                  }
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
