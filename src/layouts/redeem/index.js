@@ -279,7 +279,6 @@ function Tables() {
             p: 4,
             bgcolor: "background.paper",
             borderRadius: 1,
-            width: { xs: "100%", md: "500px" },
           }}
         >
           <DashboardLayout>

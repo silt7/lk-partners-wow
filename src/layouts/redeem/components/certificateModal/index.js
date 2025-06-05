@@ -32,7 +32,12 @@ const CertificateModal = ({ open, onClose, certificateData, onRedeem }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={style}>
+      <Box
+        sx={{
+          ...style,
+          width: { xs: "100%", md: "500px" },
+        }}
+      >
         <MDBox mb={3}>
           <MDTypography variant="h5" fontWeight="medium">
             Данные сертификата
