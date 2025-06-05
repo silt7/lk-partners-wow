@@ -274,7 +274,14 @@ function Tables() {
       </MDBox>
       <Footer />
       <Modal open={open} onClose={handleClose}>
-        <Box sx={{ p: 4, bgcolor: "background.paper", borderRadius: 1 }}>
+        <Box
+          sx={{
+            p: 4,
+            bgcolor: "background.paper",
+            borderRadius: 1,
+            width: { xs: "100%", md: "500px" },
+          }}
+        >
           <DashboardLayout>
             <CertificateModal
               open={open}
