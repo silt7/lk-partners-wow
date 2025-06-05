@@ -64,100 +64,110 @@ export default function DealsTable() {
     // даты в зависимости от выбранного типа
     let dateFrom = "";
     let dateTo = "";
-
     const now = new Date();
 
+    const getLocalISODateString = (date) => {
+      const offset = date.getTimezoneOffset() * 60000;
+      const localDate = new Date(date - offset);
+      return localDate.toISOString().slice(0, 16);
+    };
+
+    const getLocalISODateTimeString = (date) => {
+      const offset = date.getTimezoneOffset() * 60000;
+      const localDate = new Date(date - offset);
+      return localDate.toISOString().slice(0, 19).replace('T', ' ');
+    };
+
     switch (type) {
-      case "today":
-        dateFrom = new Date(now.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(now.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      case "today": {
+        const tomorrowStart = new Date();
+        tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+        tomorrowStart.setHours(0, 0, 0, 0);
+        const tomorrowEnd = new Date(tomorrowStart);
+        tomorrowEnd.setHours(23, 59, 59, 999);
+        dateFrom = getLocalISODateTimeString(tomorrowStart);
+        dateTo = getLocalISODateTimeString(tomorrowEnd);
         break;
-      case "tomorrow":
-        const tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        dateFrom = new Date(tomorrow.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(tomorrow.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "tomorrow": {
+        const tomorrowStart = new Date();
+        tomorrowStart.setDate(tomorrowStart.getDate() + 2);
+        tomorrowStart.setHours(0, 0, 0, 0);
+        const tomorrowEnd = new Date(tomorrowStart);
+        tomorrowEnd.setHours(23, 59, 59, 999);
+        dateFrom = getLocalISODateTimeString(tomorrowStart);
+        dateTo = getLocalISODateTimeString(tomorrowEnd);
         break;
-      case "currentWeek":
-        const firstDayOfWeek = new Date(now);
-        firstDayOfWeek.setDate(
-          firstDayOfWeek.getDate() - firstDayOfWeek.getDay()
-        );
-        const lastDayOfWeek = new Date(firstDayOfWeek);
-        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-        dateFrom = new Date(firstDayOfWeek.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(lastDayOfWeek.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "currentWeek": {
+        const now = new Date(); // Убрано +1 день
+
+        const day = now.getDay(); // 0-6 (воскресенье-суббота)
+        const diff = day === 0 ? -6 : 1 - day; // Корректировка для понедельника
+
+        const monday = new Date(now);
+        monday.setDate(monday.getDate() + diff);
+        monday.setHours(0, 0, 0, 0);
+
+        const sunday = new Date(monday);
+        sunday.setDate(sunday.getDate() + 6);
+        sunday.setHours(23, 59, 59, 999);
+
+        dateFrom = getLocalISODateTimeString(monday);
+        dateTo = getLocalISODateTimeString(sunday);
         break;
-      case "nextWeek":
-        const nextWeekStart = new Date(now);
-        nextWeekStart.setDate(
-          nextWeekStart.getDate() + (7 - nextWeekStart.getDay())
-        );
-        const nextWeekEnd = new Date(nextWeekStart);
-        nextWeekEnd.setDate(nextWeekEnd.getDate() + 6);
-        dateFrom = new Date(nextWeekStart.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(nextWeekEnd.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "nextWeek": {
+        const now = new Date(); // Убрано +1 день
+
+        const day = now.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+        const currentMonday = new Date(now);
+        currentMonday.setDate(currentMonday.getDate() + diff);
+        currentMonday.setHours(0, 0, 0, 0); // Сбрасываем время
+
+        const nextMonday = new Date(currentMonday);
+        nextMonday.setDate(nextMonday.getDate() + 7); // Чистый переход на следующую неделю
+
+        const nextSunday = new Date(nextMonday);
+        nextSunday.setDate(nextSunday.getDate() + 6);
+        nextSunday.setHours(23, 59, 59, 999);
+
+        dateFrom = getLocalISODateTimeString(nextMonday);
+        dateTo = getLocalISODateTimeString(nextSunday);
         break;
-      case "currentMonth":
-        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDayOfMonth = new Date(
-          now.getFullYear(),
-          now.getMonth() + 1,
-          0
-        );
-        dateFrom = new Date(firstDayOfMonth.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(lastDayOfMonth.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "currentMonth": {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        lastDay.setHours(23, 59, 59, 999);
+        dateFrom = getLocalISODateTimeString(firstDay);
+        dateTo = getLocalISODateTimeString(lastDay);
         break;
-      case "nextMonth":
-        const nextMonthStart = new Date(
-          now.getFullYear(),
-          now.getMonth() + 1,
-          1
-        );
-        const nextMonthEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-        dateFrom = new Date(nextMonthStart.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(nextMonthEnd.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "nextMonth": {
+        const now = new Date();
+        const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const lastDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+        lastDayNextMonth.setHours(23, 59, 59, 999);
+        dateFrom = getLocalISODateTimeString(firstDayNextMonth);
+        dateTo = getLocalISODateTimeString(lastDayNextMonth);
         break;
-      case "currentYear":
-        const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-        const lastDayOfYear = new Date(now.getFullYear(), 11, 31);
-        dateFrom = new Date(firstDayOfYear.setHours(0, 0, 0, 0))
-          .toISOString()
-          .slice(0, 16);
-        dateTo = new Date(lastDayOfYear.setHours(23, 59, 59, 999))
-          .toISOString()
-          .slice(0, 16);
+      }
+      case "currentYear": {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), 0, 1);
+        const lastDay = new Date(now.getFullYear(), 11, 31);
+        lastDay.setHours(23, 59, 59, 999);
+        dateFrom = getLocalISODateTimeString(firstDay);
+        dateTo = getLocalISODateTimeString(lastDay);
         break;
+      }
       case "custom":
-        // Для пользовательского диапазона не устанавливаем значения по умолчанию
         break;
       case "none":
       default:
-        // Сброс фильтра
         dateFrom = "";
         dateTo = "";
         break;
