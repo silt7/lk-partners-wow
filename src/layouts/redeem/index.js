@@ -43,6 +43,7 @@ function useQuery() {
 function Tables() {
   const query = useQuery();
   const [code, setCode] = useState("");
+  const [number, setNumber] = useState("");
   const [certificateData, setCertificateData] = useState(null);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -56,7 +57,7 @@ function Tables() {
   const [certData, setCertData] = useState([]);
 
   useEffect(() => {
-    query.get("number") && setCode(query.get("number"));
+    query.get("number") && setNumber(query.get("number"));
     getDaysLeft();
   }, []);
 
@@ -93,7 +94,8 @@ function Tables() {
   const handleSearch = async () => {
     try {
       const data = {
-        number: code,
+        number: number,
+        code: code,
         allIds: [contactId],
       };
       const response = await fetch(
@@ -157,7 +159,7 @@ function Tables() {
         },
         body: JSON.stringify(data),
       });
-      window.location.reload();
+      window.location.href = "/reconciliation";
       if (!response.ok) {
         throw new Error("Ошибка при создании сверки");
       }
@@ -170,7 +172,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      <MDBox pt={{ xs: 2, md: 5 }} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -190,19 +192,35 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <MDBox mx={2}>
-                  <MDInput
-                    label="Номер сертификата"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                  />
-                  <MDButton
-                    variant="gradient"
-                    color="info"
-                    size="medium"
-                    onClick={handleSearch}
-                  >
-                    Найти
-                  </MDButton>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={2}>
+                      <MDInput
+                        label="Номер сертификата"
+                        value={number}
+                        onChange={(e) => setNumber(e.target.value)}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MDInput
+                        label="Код сертификата"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <MDButton
+                        variant="gradient"
+                        color="info"
+                        size="medium"
+                        onClick={handleSearch}
+                        fullWidth
+                      >
+                        Найти
+                      </MDButton>
+                    </Grid>
+                  </Grid>
                   {error && (
                     <MDTypography
                       variant="caption"

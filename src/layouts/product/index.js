@@ -14,6 +14,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
+import Icon from "@mui/material/Icon";
+import InputAdornment from "@mui/material/InputAdornment";
 
 function Product() {
   const [products, setProducts] = useState([]);
@@ -24,6 +26,8 @@ function Product() {
   const [openNewProductModal, setOpenNewProductModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [description, setDescription] = useState("");
+  const [editingPrice, setEditingPrice] = useState(null);
+  const [newPrice, setNewPrice] = useState("");
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -48,7 +52,6 @@ function Product() {
         body: JSON.stringify(data),
       });
       const jsonData = await response.json();
-
       // Разделяем товары на активные и неактивные
       const active = [];
       const inactive = [];
@@ -143,11 +146,120 @@ function Product() {
     });
   };
 
+  const handlePriceEdit = (id, openPrice) => {
+    setEditingPrice(id);
+    setNewPrice(openPrice);
+  };
+
+  const handlePriceSave = async (row) => {
+    try {
+      const openPriceInput = document.getElementById(
+        `openprice-input-${row.ELEMENT_ID}`
+      );
+      const newPriceInput = openPriceInput.value;
+      const data = {
+        productId: row.ELEMENT_ID,
+        openPrice: newPriceInput,
+      };
+      console.log(data);
+      const response = await fetch("/restapi/product.setProductOpenPrice", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const jsonData = await response.json();
+      if (jsonData.success) {
+        setEditingPrice(null);
+        fetchProducts(); // Обновляем список товаров
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error("Ошибка при сохранении цены:", error);
+    }
+  };
+
+  const handlePriceCancel = () => {
+    setEditingPrice(null);
+    setNewPrice("");
+  };
+
   const columns = [
     { Header: "Название", accessor: "ELEMENT_NAME" },
     { Header: "Цена", accessor: "SELFPRICE" },
-    { Header: "Открытая цена", accessor: "OPENPRICE" },
+    {
+      Header: "Открытая цена",
+      accessor: "OPEN_PRICE",
+      Cell: ({ row }) => {
+        if (editingPrice === row.original.ELEMENT_ID) {
+          return (
+            <>
+              <MDBox display="flex" alignItems="center">
+                {row.original.OPEN_PRICE === undefined ||
+                row.original.OPEN_PRICE === null ||
+                row.original.OPEN_PRICE === ""
+                  ? 0
+                  : row.original.OPEN_PRICE}
+              </MDBox>
+              <TextField
+                id={`openprice-input-${row.original.ELEMENT_ID}`}
+                size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Icon
+                        onClick={() => handlePriceSave(row.original)}
+                        sx={{ cursor: "pointer", color: "success.main" }}
+                      >
+                        check
+                      </Icon>
+                      <Icon
+                        onClick={handlePriceCancel}
+                        sx={{ cursor: "pointer", color: "error.main", ml: 1 }}
+                      >
+                        close
+                      </Icon>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </>
+          );
+        }
+        return (
+          <MDBox display="flex" alignItems="center">
+            {row.original.OPEN_PRICE === undefined ||
+            row.original.OPEN_PRICE === null ||
+            row.original.OPEN_PRICE === ""
+              ? 0
+              : row.original.OPEN_PRICE}
+            <Icon
+              onClick={() =>
+                handlePriceEdit(
+                  row.original.ELEMENT_ID,
+                  row.original.OPEN_PRICE
+                )
+              }
+              sx={{ cursor: "pointer", ml: 1, fontSize: "1rem" }}
+            >
+              edit
+            </Icon>
+          </MDBox>
+        );
+      },
+    },
     { Header: "Дата начала", accessor: "ACTIVE_FROM" },
+    {
+      Header: "Сайт",
+      accessor: "PRODUCT_LINK",
+      Cell: ({ value }) =>
+        value ? (
+          <a href={value} target="_blank" rel="noopener noreferrer">
+            Ссылка
+          </a>
+        ) : null,
+    },
     {
       Header: "Действия",
       accessor: "actions",
@@ -173,7 +285,7 @@ function Product() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      <MDBox pt={{ xs: 2, md: 5 }} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -281,11 +393,11 @@ function Product() {
             margin="dense"
             label="Цена"
             fullWidth
-            type="number"
             value={newProduct.price}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, price: e.target.value })
-            }
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d]/g, "");
+              setNewProduct({ ...newProduct, price: value });
+            }}
           />
           <TextField
             margin="dense"

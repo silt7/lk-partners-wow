@@ -348,9 +348,7 @@ function Header({ profile, children }) {
       newErrors.DESCRIPTION = "Поле 'Описание' не может быть пустым";
     }
 
-    if (!formData.file) {
-      newErrors.file = "Пожалуйста, прикрепите файл";
-    } else {
+    if (formData.file) {
       const allowedTypes = [
         "application/pdf",
         "application/msword",
@@ -393,7 +391,7 @@ function Header({ profile, children }) {
 
   return (
     <>
-      <MDBox position="relative" mb={5}>
+      <MDBox position="relative" mb={5} mt={{ xs: 0, md: 2 }}>
         <MDBox
           display="flex"
           alignItems="center"
