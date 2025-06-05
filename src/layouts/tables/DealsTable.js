@@ -404,7 +404,7 @@ export default function DealsTable() {
       { Header: "Статус", accessor: "STAGE_ID" },
       { Header: "Дата записи", accessor: "SCHEDULE_TIME" },
       { Header: "Сумма", accessor: "OPPORTUNITY" },
-      { Header: "Комментарий", accessor: "ADDITIONAL_INFO" },
+      { Header: "Комментарии", accessor: "ADDITIONAL_INFO" },
       { Header: "Действие", accessor: "action" },
     ],
 
@@ -452,7 +452,27 @@ export default function DealsTable() {
             ),
             SCHEDULE_TIME: dateValue,
             OPPORTUNITY: `${element.OPPORTUNITY}`.replace("|RUB", "₽"),
-            ADDITIONAL_INFO: element.ADDITIONAL_INFO,
+            ADDITIONAL_INFO: (
+              <Box sx={{ whiteSpace: "pre-line" }}>
+                {[
+                  element?.COMMENT_CLIENT_ACTIVATION && (
+                    <Box mb={1}>
+                      Клиент: {element.COMMENT_CLIENT_ACTIVATION}
+                    </Box>
+                  ),
+
+                  element?.COMMENT_PARTNER_ACTIVATION && (
+                    <Box mb={1}>
+                      Партнер: {element.COMMENT_PARTNER_ACTIVATION}
+                    </Box>
+                  ),
+
+                  element?.ADDITIONAL_INFO && (
+                    <Box mb={1}>Менеджер: {element.ADDITIONAL_INFO}</Box>
+                  ),
+                ].filter(Boolean)}
+              </Box>
+            ),
             action:
               element.STAGE.group_id === "new" ? (
                 <>

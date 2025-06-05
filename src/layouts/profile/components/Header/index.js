@@ -391,7 +391,7 @@ function Header({ profile, children }) {
 
   return (
     <>
-      <MDBox position="relative" mb={5}>
+      <MDBox position="relative" mb={5} mt={{ xs: 0, md: 2 }}>
         <MDBox
           display="flex"
           alignItems="center"
