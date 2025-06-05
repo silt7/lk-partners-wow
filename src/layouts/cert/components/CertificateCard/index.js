@@ -53,6 +53,8 @@ const CertificateCard = ({ data }) => {
     NAME,
     SCHEDULE_TIME,
     NUMBER,
+    COMMENT_CLIENT_ACTIVATION,
+    COMMENT_PARTNER_ACTIVATION,
     ADDITIONAL_INFO,
     CONTACTS,
     STAGE,
@@ -253,7 +255,22 @@ const CertificateCard = ({ data }) => {
 
           <MDBox mb={1}>
             <Typography variant="body2" color="text.secondary">
-              <strong>Комментарий:</strong> {ADDITIONAL_INFO}
+              <strong>Комментарии:</strong>
+              <Box sx={{ whiteSpace: "pre-line" }}>
+                {[
+                  COMMENT_CLIENT_ACTIVATION && (
+                    <Box mb={1}>Клиент: {COMMENT_CLIENT_ACTIVATION}</Box>
+                  ),
+
+                  COMMENT_PARTNER_ACTIVATION && (
+                    <Box mb={1}>Партнер: {COMMENT_PARTNER_ACTIVATION}</Box>
+                  ),
+
+                  ADDITIONAL_INFO && (
+                    <Box mb={1}>Менеджер: {ADDITIONAL_INFO}</Box>
+                  ),
+                ].filter(Boolean)}
+              </Box>
             </Typography>
           </MDBox>
 

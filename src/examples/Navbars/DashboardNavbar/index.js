@@ -177,29 +177,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
       }
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <MDBox
-          color="inherit"
-          mb={{ xs: 1, md: 0 }}
-          sx={(theme) => navbarRow(theme, { isMini })}
-        >
-          <Breadcrumbs
-            icon="home"
-            title={routeName}
-            route={routeSegments}
-            light={light}
-          />
-        </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            {/* <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox> */}
-            <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
+            <MDBox
+              color={light ? "white" : "inherit"}
+              sx={{ display: { xs: "block", md: "none" } }}
+            >
               <IconButton
                 size="small"
                 disableRipple
@@ -210,27 +193,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 <Icon sx={iconsStyle} fontSize="medium">
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
-              </IconButton>
-              {/* <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton> */}
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon sx={iconsStyle}>notifications</Icon>
               </IconButton>
               {renderMenu()}
             </MDBox>

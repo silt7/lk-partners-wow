@@ -159,7 +159,7 @@ function Tables() {
         },
         body: JSON.stringify(data),
       });
-      window.location.reload();
+      window.location.href = "/reconciliation";
       if (!response.ok) {
         throw new Error("Ошибка при создании сверки");
       }
@@ -172,7 +172,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      <MDBox pt={{ xs: 2, md: 5 }} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -195,7 +195,7 @@ function Tables() {
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={2}>
                       <MDInput
-                        label="Код сертификата"
+                        label="Номер сертификата"
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         fullWidth
@@ -203,7 +203,7 @@ function Tables() {
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <MDInput
-                        label="Номер сертификата"
+                        label="Код сертификата"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         fullWidth

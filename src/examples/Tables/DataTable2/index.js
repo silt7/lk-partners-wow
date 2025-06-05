@@ -180,7 +180,7 @@ function DataTable({
                 renderInput={(params) => <MDInput {...params} />}
               />
               <MDTypography variant="caption" color="secondary">
-                &nbsp;&nbsp;entries per page
+                &nbsp;&nbsp;записей на странице
               </MDTypography>
             </MDBox>
           )}
@@ -253,7 +253,7 @@ function DataTable({
               color="secondary"
               fontWeight="regular"
             >
-              Showing {entriesStart} to {entriesEnd} of {rows.length} entries
+              Показаны записи с {entriesStart} по {entriesEnd}
             </MDTypography>
           </MDBox>
         )}
