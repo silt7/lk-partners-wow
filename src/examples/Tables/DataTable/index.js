@@ -183,15 +183,15 @@ function DataTable({
                 sx={{ width: "5rem" }}
                 renderInput={(params) => <MDInput {...params} />}
               />
-              <MDTypography variant="caption" color="secondary">
+              {/* <MDTypography variant="caption" color="secondary">
                 &nbsp;&nbsp;записей на странице
-              </MDTypography>
+              </MDTypography> */}
             </MDBox>
           )}
           {canSearch && (
             <MDBox width="12rem" ml="auto" style={{ display: "none" }}>
               <MDInput
-                placeholder="Search..."
+                placeholder="Поиск..."
                 value={search}
                 size="small"
                 fullWidth

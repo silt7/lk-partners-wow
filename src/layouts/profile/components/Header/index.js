@@ -381,6 +381,7 @@ function Header({ profile, children }) {
       setIsModalOpen(false);
       setFormData({ TITLE: "", DESCRIPTION: "", file: null });
       setErrors({});
+      window.location.reload();
     } catch (error) {
       console.error("Ошибка при отправке данных:", error);
       alert(
@@ -454,17 +455,24 @@ function Header({ profile, children }) {
             </Grid>
 
             {/* Правая часть: кнопка редактирования */}
-            <Grid item xs={12} md={3} container justifyContent="flex-end">
-              <Tooltip title="Создать заявку на модерацию.">
-                <Icon
-                  fontSize="medium"
-                  color="info"
-                  onClick={() => setIsModalOpen(true)}
-                  sx={{ cursor: "pointer" }}
-                >
-                  edit
-                </Icon>
-              </Tooltip>
+            <Grid
+              item
+              xs={12}
+              md={3}
+              container
+              justifyContent="flex-end"
+              sx={{ justifyContent: { xs: "flex-start", md: "flex-end" } }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <MDTypography variant="button" color="white" fontWeight="bold">
+                  Заявка на модерацию
+                </MDTypography>
+              </Button>
             </Grid>
           </Grid>
 
@@ -524,7 +532,7 @@ function Header({ profile, children }) {
 
           <Button
             component="label"
-            variant="outlined"
+            variant="text"
             startIcon={<AttachFileIcon />}
             fullWidth
             sx={{ mt: 2 }}
@@ -554,7 +562,9 @@ function Header({ profile, children }) {
             color="primary"
             sx={{ mt: 3 }}
           >
-            Отправить
+            <MDTypography variant="button" color="white" fontWeight="bold">
+              Отправить
+            </MDTypography>
           </Button>
         </MDBox>
       </Modal>

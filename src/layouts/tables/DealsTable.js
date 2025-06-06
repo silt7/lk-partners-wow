@@ -17,6 +17,8 @@ import MDPagination from "components/MDPagination";
 import Icon from "@mui/material/Icon";
 import MDInput from "components/MDInput";
 import Grid from "@mui/material/Grid";
+import Dropdown from "react-dropdown";
+import "react-dropdown/style.css";
 
 // DataTable
 import DataTable from "examples/Tables/DataTable";
@@ -49,6 +51,27 @@ export default function DealsTable() {
     dateFrom: "",
     dateTo: "",
   });
+
+  const options = [
+    { value: "none", label: "Без фильтра" },
+    { value: "today", label: "Сегодня" },
+    { value: "tomorrow", label: "Завтра" },
+    { value: "currentWeek", label: "Текущая неделя" },
+    { value: "nextWeek", label: "Следующая неделя" },
+    { value: "currentMonth", label: "Текущий месяц" },
+    { value: "nextMonth", label: "Следующий месяц" },
+    { value: "currentYear", label: "Текущий год" },
+    { value: "custom", label: "Указать период" },
+  ];
+  const options2 = [
+    { value: "new", label: "Новая заявка" },
+    { value: "waiting", label: "Согласование времени" },
+    { value: "confirmed", label: "Записан" },
+    { value: "visited", label: "Посетил" },
+    { value: "verification", label: "Ожидание оплаты" },
+    { value: "paid", label: "Оплачен" },
+    { value: "canceled", label: "Отменен" },
+  ];
   const { deals, loadDeals, total, totalPages, currentPage, loading } =
     useDeals(1, {});
   const [formError, setFormError] = useState("");
@@ -75,43 +98,38 @@ export default function DealsTable() {
     const getLocalISODateTimeString = (date) => {
       const offset = date.getTimezoneOffset() * 60000;
       const localDate = new Date(date - offset);
-      return localDate.toISOString().slice(0, 19).replace('T', ' ');
+      return localDate.toISOString().slice(0, 19).replace("T", " ");
     };
 
     switch (type) {
       case "today": {
-        const tomorrowStart = new Date();
-        tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-        tomorrowStart.setHours(0, 0, 0, 0);
-        const tomorrowEnd = new Date(tomorrowStart);
-        tomorrowEnd.setHours(23, 59, 59, 999);
-        dateFrom = getLocalISODateTimeString(tomorrowStart);
-        dateTo = getLocalISODateTimeString(tomorrowEnd);
+        const todayStart = new Date();
+        todayStart.setDate(todayStart.getDate());
+        dateFrom = getLocalISODateTimeString(todayStart);
+        dateTo = getLocalISODateTimeString(todayStart);
         break;
       }
       case "tomorrow": {
         const tomorrowStart = new Date();
-        tomorrowStart.setDate(tomorrowStart.getDate() + 2);
-        tomorrowStart.setHours(0, 0, 0, 0);
-        const tomorrowEnd = new Date(tomorrowStart);
-        tomorrowEnd.setHours(23, 59, 59, 999);
+        tomorrowStart.setDate(tomorrowStart.getDate() + 1);
         dateFrom = getLocalISODateTimeString(tomorrowStart);
-        dateTo = getLocalISODateTimeString(tomorrowEnd);
+        dateTo = getLocalISODateTimeString(tomorrowStart);
         break;
       }
       case "currentWeek": {
-        const now = new Date(); // Убрано +1 день
+        const now = new Date();
 
-        const day = now.getDay(); // 0-6 (воскресенье-суббота)
-        const diff = day === 0 ? -6 : 1 - day; // Корректировка для понедельника
+        // Получаем день недели (0-6, где 0 - воскресенье)
+        const day = now.getDay();
+        const daysToMonday = day === 0 ? -6 : 1 - day;
 
+        // Получаем понедельник текущей недели
         const monday = new Date(now);
-        monday.setDate(monday.getDate() + diff);
-        monday.setHours(0, 0, 0, 0);
+        monday.setDate(monday.getDate() + daysToMonday);
 
+        // Получаем воскресенье текущей недели
         const sunday = new Date(monday);
         sunday.setDate(sunday.getDate() + 6);
-        sunday.setHours(23, 59, 59, 999);
 
         dateFrom = getLocalISODateTimeString(monday);
         dateTo = getLocalISODateTimeString(sunday);
@@ -124,14 +142,12 @@ export default function DealsTable() {
         const diff = day === 0 ? -6 : 1 - day;
         const currentMonday = new Date(now);
         currentMonday.setDate(currentMonday.getDate() + diff);
-        currentMonday.setHours(0, 0, 0, 0); // Сбрасываем время
 
         const nextMonday = new Date(currentMonday);
         nextMonday.setDate(nextMonday.getDate() + 7); // Чистый переход на следующую неделю
 
         const nextSunday = new Date(nextMonday);
         nextSunday.setDate(nextSunday.getDate() + 6);
-        nextSunday.setHours(23, 59, 59, 999);
 
         dateFrom = getLocalISODateTimeString(nextMonday);
         dateTo = getLocalISODateTimeString(nextSunday);
@@ -142,16 +158,28 @@ export default function DealsTable() {
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         lastDay.setHours(23, 59, 59, 999);
-        dateFrom = getLocalISODateTimeString(firstDay);
+        const nextDay = new Date(firstDay);
+        nextDay.setDate(nextDay.getDate() + 1);
+        dateFrom = getLocalISODateTimeString(nextDay);
         dateTo = getLocalISODateTimeString(lastDay);
         break;
       }
       case "nextMonth": {
         const now = new Date();
-        const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        const lastDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+        const firstDayNextMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          1
+        );
+        const lastDayNextMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 2,
+          0
+        );
         lastDayNextMonth.setHours(23, 59, 59, 999);
-        dateFrom = getLocalISODateTimeString(firstDayNextMonth);
+        const nextDay = new Date(firstDayNextMonth);
+        nextDay.setDate(nextDay.getDate() + 1);
+        dateFrom = getLocalISODateTimeString(nextDay);
         dateTo = getLocalISODateTimeString(lastDayNextMonth);
         break;
       }
@@ -611,36 +639,45 @@ export default function DealsTable() {
                 />
               </Grid>
               <Grid item xs={12} md={2}>
-                <select
-                  sx={{ width: "100%" }}
+                <Dropdown
+                  options={options2}
                   value={filters.status}
-                  onChange={(e) =>
-                    setFilters({ ...filters, status: e.target.value })
+                  onChange={(selected) =>
+                    setFilters({ ...filters, status: selected.value })
                   }
-                  style={{
-                    width: "100%",
-                    height: "43px",
-                    borderRadius: "4px",
-                    border: "1px solid #ccc",
-                  }}
-                >
-                  <option value="">Все статусы</option>
-                  {Object.entries({
-                    new: "Новая заявка",
-                    waiting: "Согласование времени",
-                    confirmed: "Записан",
-                    visited: "Посетил",
-                    verification: "Ожидание оплаты",
-                    paid: "Оплачен",
-                  }).map(([key, value]) => (
-                    <option key={key} value={key}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Статус"
+                  className="custom-dropdown"
+                />
               </Grid>
               <Grid item xs={12} md={2}>
-                <select
+                <Dropdown
+                  options={options}
+                  onChange={(selected) =>
+                    handleDateFilterTypeChange(selected.value)
+                  }
+                  value={dateFilterType}
+                  placeholder="Выберите период"
+                  className="custom-dropdown"
+                />
+                <style>
+                  {`
+                    .custom-dropdown {
+                      width: 100%;
+                    }
+                    .custom-dropdown .Dropdown-control {
+                      height: 43px;
+                      border-radius: 4px;
+                      border: 1px solid #ccc;
+                      font-size: 14px;
+                      display: flex;
+                      align-items: center;
+                    }
+                    .custom-dropdown .Dropdown-menu {
+                      font-size: 14px;
+                    }
+                  `}
+                </style>
+                {/* <select
                   value={dateFilterType}
                   onChange={(e) => handleDateFilterTypeChange(e.target.value)}
                   style={{
@@ -649,17 +686,7 @@ export default function DealsTable() {
                     borderRadius: "4px",
                     border: "1px solid #ccc",
                   }}
-                >
-                  <option value="none">Без фильтра даты</option>
-                  <option value="today">Сегодня</option>
-                  <option value="tomorrow">Завтра</option>
-                  <option value="currentWeek">Текущая неделя</option>
-                  <option value="nextWeek">Следующая неделя</option>
-                  <option value="currentMonth">Текущий месяц</option>
-                  <option value="nextMonth">Следующий месяц</option>
-                  <option value="currentYear">Текущий год</option>
-                  <option value="custom">Указать период</option>
-                </select>
+                ></select> */}
               </Grid>
 
               {showCustomRange && (

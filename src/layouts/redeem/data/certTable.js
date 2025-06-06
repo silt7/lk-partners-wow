@@ -34,7 +34,7 @@ const CertTable = () => {
   ];
 
   return (
-    <MDBox pt={6} pb={3} mx={2}>
+    <MDBox pb={1} mx={2}>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <MDBox pt={3}>

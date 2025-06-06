@@ -205,18 +205,28 @@ function Product() {
               <TextField
                 id={`openprice-input-${row.original.ELEMENT_ID}`}
                 size="small"
+                sx={{ minWidth: { xs: "140px", sm: "auto" } }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <Icon
                         onClick={() => handlePriceSave(row.original)}
-                        sx={{ cursor: "pointer", color: "success.main" }}
+                        sx={{
+                          cursor: "pointer",
+                          color: "success.main",
+                          fontSize: { xs: "1.5rem !important", sm: "1rem" },
+                        }}
                       >
                         check
                       </Icon>
                       <Icon
                         onClick={handlePriceCancel}
-                        sx={{ cursor: "pointer", color: "error.main", ml: 1 }}
+                        sx={{
+                          cursor: "pointer",
+                          color: "error.main",
+                          ml: 1,
+                          fontSize: { xs: "1.5rem !important", sm: "1rem" },
+                        }}
                       >
                         close
                       </Icon>
@@ -316,7 +326,7 @@ function Product() {
                     canSearch
                   />
                 ) : (
-                  <MDTypography variant="body1" color="text">
+                  <MDTypography variant="button" color="text">
                     Активные услуги отсутствуют
                   </MDTypography>
                 )}
@@ -333,7 +343,7 @@ function Product() {
                     canSearch
                   />
                 ) : (
-                  <MDTypography variant="body1" color="text">
+                  <MDTypography variant="button" color="text" mb={2}>
                     Неактивные услуги отсутствуют
                   </MDTypography>
                 )}
@@ -341,7 +351,7 @@ function Product() {
             </Card>
           </Grid>
         </Grid>
-        <MDBox mt={2} display="flex" justifyContent="flex-end">
+        <MDBox mt={2} display="flex" justifyContent="center">
           <MDButton
             variant="contained"
             color="success"

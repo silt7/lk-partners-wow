@@ -191,6 +191,12 @@ function Tables() {
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
+                <MDBox mx={2} mb={1}>
+                  <MDTypography variant="button" color="text">
+                    Введите номер сертификата для погашения
+                    {/* или сканируйте QR */}
+                  </MDTypography>
+                </MDBox>
                 <MDBox mx={2}>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={2}>
@@ -234,39 +240,46 @@ function Tables() {
                     </MDTypography>
                   )}
                 </MDBox>
-                <MDBox mx={2}>
-                  <MDTypography variant="overline" color="text">
-                    Введите номер сертификата для погашения
-                    {/* или сканируйте QR */}
-                  </MDTypography>
-                </MDBox>
               </MDBox>
               <CertTable />
-              <MDBox mx={2}>
-                {daysLeft != 0 ? (
-                  <MDButton
-                    variant="gradient"
-                    color="info"
-                    size="medium"
-                    disabled
+              <MDBox mx={2} mb={2}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm="auto">
+                    {daysLeft != 0 ? (
+                      <MDButton
+                        variant="gradient"
+                        color="info"
+                        size="medium"
+                        disabled
+                      >
+                        Создать сверку
+                      </MDButton>
+                    ) : (
+                      <MDButton
+                        variant="gradient"
+                        color="info"
+                        size="medium"
+                        onClick={createVerification}
+                      >
+                        Создать сверку
+                      </MDButton>
+                    )}
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm
+                    sx={{
+                      paddingTop: { xs: "0 !important", sm: "16px !important" },
+                    }}
                   >
-                    Создать сверку
-                  </MDButton>
-                ) : (
-                  <MDButton
-                    variant="gradient"
-                    color="info"
-                    size="medium"
-                    onClick={createVerification}
-                  >
-                    Создать сверку
-                  </MDButton>
-                )}
-                <MDTypography variant="caption" color="text">
-                  {daysLeft >= 14
-                    ? `Новая сверка будет доступна через ${daysLeft} дней`
-                    : "Сертификаты можно отправлять раз в две недели"}
-                </MDTypography>
+                    <MDTypography variant="button" color="text">
+                      {daysLeft <= 14
+                        ? `Новая сверка будет доступна через ${daysLeft} дней`
+                        : "Сертификаты можно отправлять раз в две недели"}
+                    </MDTypography>
+                  </Grid>
+                </Grid>
               </MDBox>
             </Card>
           </Grid>
