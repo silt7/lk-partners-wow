@@ -108,12 +108,12 @@ function Tables() {
                         { Header: "Дата создания", accessor: "CREATED_TIME" },
                         { Header: "Дата оплаты", accessor: "PAYMENT_DATE" },
                         {
-                          Header: "Акт",
+                          Header: "Отчет агента",
                           accessor: "DOC_LINK",
                           Cell: ({ value }) =>
                             value ? (
                               <a href={value} target="_blank">
-                                Акт
+                                Отчет агента
                               </a>
                             ) : (
                               ""

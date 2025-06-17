@@ -1096,7 +1096,7 @@ export default function DealsTable() {
                   variant="gradient"
                   color="info"
                   onClick={() =>
-                    handleServiceFormSubmit("C2:UC_4Q05NY", selectedDealId)
+                    handleServiceFormSubmit("C2:6", selectedDealId)
                   }
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
