@@ -458,7 +458,7 @@ export default function DealsTable() {
                   {element.CONTACTS?.PHONES &&
                   Array.isArray(element.CONTACTS.PHONES)
                     ? element.CONTACTS.PHONES.map((phone, index) => (
-                        <Box key={index}>
+                        <Box key={`phone-${element.ID}-${index}`}>
                           <a href={`tel:${phone}`}>{phone}</a>
                         </Box>
                       ))
@@ -494,19 +494,21 @@ export default function DealsTable() {
               <Box sx={{ whiteSpace: "pre-line" }}>
                 {[
                   element?.COMMENT_CLIENT_ACTIVATION && (
-                    <Box mb={1}>
+                    <Box key={`client-${element.ID}`} mb={1}>
                       Клиент: {element.COMMENT_CLIENT_ACTIVATION}
                     </Box>
                   ),
 
                   element?.COMMENT_PARTNER_ACTIVATION && (
-                    <Box mb={1}>
+                    <Box key={`partner-${element.ID}`} mb={1}>
                       Партнер: {element.COMMENT_PARTNER_ACTIVATION}
                     </Box>
                   ),
 
                   element?.ADDITIONAL_INFO && (
-                    <Box mb={1}>Менеджер: {element.ADDITIONAL_INFO}</Box>
+                    <Box key={`manager-${element.ID}`} mb={1}>
+                      Менеджер: {element.ADDITIONAL_INFO}
+                    </Box>
                   ),
                 ].filter(Boolean)}
               </Box>

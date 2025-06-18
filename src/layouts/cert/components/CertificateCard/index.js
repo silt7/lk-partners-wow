@@ -256,22 +256,34 @@ const CertificateCard = ({ data }) => {
           <MDBox mb={1}>
             <Typography variant="body2" color="text.secondary">
               <strong>Комментарии:</strong>
-              <Box sx={{ whiteSpace: "pre-line" }}>
-                {[
-                  COMMENT_CLIENT_ACTIVATION && (
-                    <Box mb={1}>Клиент: {COMMENT_CLIENT_ACTIVATION}</Box>
-                  ),
-
-                  COMMENT_PARTNER_ACTIVATION && (
-                    <Box mb={1}>Партнер: {COMMENT_PARTNER_ACTIVATION}</Box>
-                  ),
-
-                  ADDITIONAL_INFO && (
-                    <Box mb={1}>Менеджер: {ADDITIONAL_INFO}</Box>
-                  ),
-                ].filter(Boolean)}
-              </Box>
             </Typography>
+            <Box sx={{ whiteSpace: "pre-line" }}>
+              {[
+                COMMENT_CLIENT_ACTIVATION && (
+                  <Box mb={1} key="client">
+                    <Typography variant="body2" color="text.secondary">
+                      Клиент: {COMMENT_CLIENT_ACTIVATION}
+                    </Typography>
+                  </Box>
+                ),
+
+                COMMENT_PARTNER_ACTIVATION && (
+                  <Box mb={1} key="partner">
+                    <Typography variant="body2" color="text.secondary">
+                      Партнер: {COMMENT_PARTNER_ACTIVATION}
+                    </Typography>
+                  </Box>
+                ),
+
+                ADDITIONAL_INFO && (
+                  <Box mb={1} key="manager">
+                    <Typography variant="body2" color="text.secondary">
+                      Менеджер: {ADDITIONAL_INFO}
+                    </Typography>
+                  </Box>
+                ),
+              ].filter(Boolean)}
+            </Box>
           </MDBox>
 
           <MDBox mb={1}>
@@ -487,9 +499,7 @@ const CertificateCard = ({ data }) => {
                 <MDButton
                   variant="gradient"
                   color="info"
-                  onClick={() =>
-                    handleServiceFormSubmit("C2:UC_4Q05NY", data.ID)
-                  }
+                  onClick={() => handleServiceFormSubmit("C2:6", data.ID)}
                   disabled={isSubmitting || !serviceForm.cancel.trim()}
                 >
                   {isSubmitting ? (

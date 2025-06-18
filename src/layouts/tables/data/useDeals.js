@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getDeals } from "./getDeals";
 
-export default function useDeals() {
+export default function useDeals(autoLoad = true) {
   const [deals, setDeals] = useState([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -10,8 +10,10 @@ export default function useDeals() {
   const length = 5; // Количество сделок за один запрос
 
   useEffect(() => {
-    loadDeals();
-  }, []);
+    if (autoLoad) {
+      loadDeals();
+    }
+  }, [autoLoad]);
 
   async function loadDeals(page, filters) {
     //if (loading || (total > 0 && deals.length >= total)) return;
