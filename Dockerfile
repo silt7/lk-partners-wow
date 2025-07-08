@@ -4,25 +4,34 @@ COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
+# Устанавливаем зависимости для сервера
+RUN npm install express http-proxy-middleware
 
-# Финальный этап
-FROM node:20.11.1-alpine AS runner
-WORKDIR /app
+# Копируем сервер
+COPY server.js ./
 
-ENV NODE_ENV=production
-
-# Создаем non-root пользователя
-# RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-# USER appuser
-COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/build ./build
-COPY --from=base /app/public ./public
-COPY --from=base /app/src ./src
-COPY --from=base /app/package.json ./package.json
-COPY --from=base /app/config-overrides.js ./config-overrides.js
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
+
+# # Финальный этап
+# FROM node:20.11.1-alpine AS runner
+# WORKDIR /app
+
+# ENV NODE_ENV=production
+
+# # Создаем non-root пользователя
+# # RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# # USER appuser
+# COPY --from=base /app/node_modules ./node_modules
+# COPY --from=base /app/build ./build
+# COPY --from=base /app/public ./public
+# COPY --from=base /app/src ./src
+# COPY --from=base /app/package.json ./package.json
+# COPY --from=base /app/config-overrides.js ./config-overrides.js
+# EXPOSE 3000
+
+# CMD ["npm", "start"]
 
 # FROM node:20.11.1-alpine AS build
 # WORKDIR /app
