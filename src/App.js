@@ -81,11 +81,7 @@ export default function App() {
   window.BaseDir = process.env.REACT_APP_BASE_URL;
   window.Cabinet = process.env.REACT_APP_CABINET;
 
-  if (process.env.NODE_ENV === "development") {
-    window.MyDomain = process.env.REACT_APP_DOMAIN;
-  } else {
-    window.MyDomain = window.location.hostname;
-  }
+  window.MyDomain = process.env.REACT_APP_DOMAIN;
 
   useEffect(() => {
     const checkAuth = async () => {
