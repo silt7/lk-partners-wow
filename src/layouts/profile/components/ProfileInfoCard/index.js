@@ -27,22 +27,22 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 function ProfileInfoCard({ title, info }) {
-    const labels = Object.keys(info);
-    const values = Object.values(info);
+  const labels = Object.keys(info);
+  const values = Object.values(info);
 
-    const renderItems = (
-        <MDTypography variant="button" fontWeight="regular" color="text">
-            {labels.map((label, key) => (
-                <div key={label}>
+  const renderItems = (
+    <MDTypography variant="button" fontWeight="regular" color="text">
+      {labels.map((label, key) => (
+        <div key={label}>
           {label}: {values[key]}
-                    {key !== labels.length - 1 ? " " : ""}
+          {key !== labels.length - 1 ? " " : ""}
         </div>
-            ))}
-        </MDTypography>
-    );
+      ))}
+    </MDTypography>
+  );
 
   return (
-    <Card sx={{ height: "100%"}}>
+    <Card sx={{ height: "100%" }}>
       <MDBox
         display="flex"
         justifyContent="space-between"
@@ -59,9 +59,7 @@ function ProfileInfoCard({ title, info }) {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        <MDBox>
-          {renderItems}
-        </MDBox>
+        <MDBox>{renderItems}</MDBox>
       </MDBox>
     </Card>
   );
@@ -70,7 +68,7 @@ function ProfileInfoCard({ title, info }) {
 // Typechecking props for the ProfileInfoCard
 ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
-  info: PropTypes.objectOf(PropTypes.string).isRequired,
+  info: PropTypes.object.isRequired,
 };
 
 export default ProfileInfoCard;

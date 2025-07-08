@@ -132,7 +132,7 @@ function Basic() {
           }
           if (data.result.id && data.result.token) {
             const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 1);
+            expirationDate.setDate(expirationDate.getDate() + 30);
             Cookies.set("token", data.result.token, {
               expires: expirationDate,
             });

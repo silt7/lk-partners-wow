@@ -112,11 +112,9 @@ function Overview() {
                 description="Основная информация о контакте"
                 info={{
                   Сайты:
-                    profile?.WEB?.map((item, index) => (
-                      <div key={index}>
-                        {index + 1}) {item.VALUE}
-                      </div>
-                    )) || "Не указаны",
+                    profile?.WEB?.map(
+                      (item, index) => `${index + 1}) ${item.VALUE}`
+                    ).join(", ") || "Не указаны",
                   Почта: profile?.EMAIL || "Не указана",
                   Телефон: profile?.PHONE || "Не указан",
                   "Контакт ОЛ": name || "Не указан",
@@ -139,11 +137,9 @@ function Overview() {
                 description="Основная информация о контакте"
                 info={{
                   "Адреса проведения услуг (может быть несколько)":
-                    profile?.UF_CRM_1692176867840?.map((address, index) => (
-                      <div key={index}>
-                        {index + 1}) {address}
-                      </div>
-                    )) || "Не указаны",
+                    profile?.UF_CRM_1692176867840?.map(
+                      (address, index) => `${index + 1}) ${address}`
+                    ).join(", ") || "Не указаны",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
@@ -164,7 +160,7 @@ function Overview() {
                       {profile.UF_CRM_1692620240676[0].originalName || "ссылка"}
                     </a>
                   ) : (
-                    ""
+                    "Не прикреплён"
                   ),
                   // "Дополнительные соглашения (может быть несколько)": "",
                 }}
