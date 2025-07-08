@@ -5,8 +5,8 @@ const path = require("path");
 const app = express();
 
 // Проверка обязательных переменных
-const baseUrl = "https://wowlife-crmtest.ru/restapi/";
-const apiKey = "8S5Ekwmhtu1PF!Rq78";
+const baseUrl = process.env.REACT_APP_BASE_URL;
+const apiKey = process.env.X_API_KEY;
 
 if (!baseUrl) {
   console.warn(
