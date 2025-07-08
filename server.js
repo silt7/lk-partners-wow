@@ -46,6 +46,25 @@ app.get("*", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Сервер запущен на порту ${PORT}`);
+
+// Обработка ошибок сервера
+process.on("uncaughtException", (err) => {
+  console.error("Необработанная ошибка:", err);
+  process.exit(1);
 });
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Необработанное отклонение промиса:", reason);
+  process.exit(1);
+});
+
+app
+  .listen(PORT, () => {
+    console.log(`✅ Сервер запущен на порту ${PORT}`);
+    console.log(`📁 Статические файлы из: ${path.join(__dirname, "build")}`);
+    console.log(`🌐 Прокси API: ${baseUrl || "не настроен"}`);
+  })
+  .on("error", (err) => {
+    console.error("❌ Ошибка запуска сервера:", err);
+    process.exit(1);
+  });

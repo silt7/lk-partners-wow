@@ -5,9 +5,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 
-# Устанавливаем зависимости для сервера
-RUN npm install express http-proxy-middleware
-
 # Копируем исходный код
 COPY . .
 
