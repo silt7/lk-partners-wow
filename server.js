@@ -29,6 +29,9 @@ if (baseUrl) {
       headers: {
         ...(apiKey ? { "X-API-Key": apiKey } : {}),
       },
+      onProxyReq: (proxyReq, req, res) => {
+        console.log("➡️ Прокси запрос:", req.method, req.originalUrl);
+      },
       onError: (err, req, res) => {
         console.error("Ошибка прокси:", err);
         res.status(500).send("Ошибка прокси");
