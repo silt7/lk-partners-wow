@@ -23,7 +23,7 @@ COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/config-overrides.js ./config-overrides.js
 EXPOSE 3000
 
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["npm", "start"]
 
 # FROM node:20.11.1-alpine AS build
 # WORKDIR /app
