@@ -71,6 +71,8 @@ export default function useDeals(autoLoad = true) {
           "verification",
           "paid",
           "canceled",
+          "notcome",
+          "notrepaid",
         ];
 
     try {

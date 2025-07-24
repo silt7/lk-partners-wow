@@ -235,6 +235,8 @@ export default function DealsTable() {
       verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
       paid: { statusColor: "success", statusText: "Оплачен" },
       canceled: { statusColor: "error", statusText: "Отменен" },
+      notcome: { statusColor: "error", statusText: "Не посетил" },
+      notrepaid: { statusColor: "error", statusText: "Не погашен" },
     };
 
     return (
@@ -584,14 +586,47 @@ export default function DealsTable() {
                   >
                     Погасить
                   </MDButton>
+                  {new Date(
+                    new Date(element.SCHEDULE_TIME).getTime() +
+                      24 * 60 * 60 * 1000
+                  ) > new Date() && (
+                    <MDButton
+                      sx={{ width: "100%" }}
+                      variant="gradient"
+                      color="error"
+                      style={{ marginTop: "10px" }}
+                      onClick={() => handleOpenServiceModal(element, "edit")}
+                    >
+                      Отменить/изменить
+                    </MDButton>
+                  )}
+                  {new Date(
+                    new Date(element.SCHEDULE_TIME).getTime() +
+                      24 * 60 * 60 * 1000
+                  ) < new Date() && (
+                    <MDButton
+                      sx={{ width: "100%" }}
+                      variant="gradient"
+                      color="error"
+                      style={{ marginTop: "10px" }}
+                      onClick={() =>
+                        handleServiceFormSubmit("C2:7", element.ID)
+                      }
+                    >
+                      Не посетил
+                    </MDButton>
+                  )}
+                </>
+              ) : element.STAGE.group_id === "notrepaid" ? (
+                <>
                   <MDButton
                     sx={{ width: "100%" }}
                     variant="gradient"
                     color="error"
                     style={{ marginTop: "10px" }}
-                    onClick={() => handleOpenServiceModal(element, "edit")}
+                    onClick={() => handleServiceFormSubmit("C2:7", element.ID)}
                   >
-                    Отменить/изменить
+                    Не посетил
                   </MDButton>
                 </>
               ) : null,
