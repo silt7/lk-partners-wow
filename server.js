@@ -8,16 +8,16 @@ const app = express();
 const baseUrl = process.env.REACT_APP_BASE_URL;
 const apiKey = process.env.X_API_KEY;
 
-// if (!baseUrl) {
-//   console.warn(
-//     "⚠️ Внимание: переменная окружения REACT_APP_BASE_URL не задана! Прокси не будет работать."
-//   );
-// }
-// if (!apiKey) {
-//   console.warn(
-//     "⚠️ Внимание: переменная окружения X_API_KEY не задана! Прокси будет работать без ключа."
-//   );
-// }
+if (!baseUrl) {
+  console.warn(
+    "⚠️ Внимание: переменная окружения REACT_APP_BASE_URL не задана! Прокси не будет работать."
+  );
+}
+if (!apiKey) {
+  console.warn(
+    "⚠️ Внимание: переменная окружения X_API_KEY не задана! Прокси будет работать без ключа."
+  );
+}
 
 // Прокси для API запросов (только если baseUrl задан)
 if (baseUrl) {
