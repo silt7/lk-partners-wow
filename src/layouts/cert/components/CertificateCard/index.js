@@ -70,6 +70,8 @@ const CertificateCard = ({ data }) => {
       verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
       paid: { statusColor: "success", statusText: "Оплачен" },
       canceled: { statusColor: "error", statusText: "Отменен" },
+      notcome: { statusColor: "error", statusText: "Не посетил" },
+      notrepaid: { statusColor: "error", statusText: "Не погашен" },
     };
 
     return (
@@ -343,14 +345,40 @@ const CertificateCard = ({ data }) => {
               >
                 Погасить
               </MDButton>
-              <MDButton
-                variant="gradient"
-                color="error"
-                onClick={() => handleOpenServiceModal(data, "edit")}
-              >
-                Отменить/изменить
-              </MDButton>
+              {new Date(
+                new Date(SCHEDULE_TIME).getTime() + 24 * 60 * 60 * 1000
+              ) > new Date() && (
+                <MDButton
+                  variant="gradient"
+                  color="error"
+                  onClick={() => handleOpenServiceModal(data, "edit")}
+                >
+                  Отменить/изменить
+                </MDButton>
+              )}
+              {new Date(
+                new Date(SCHEDULE_TIME).getTime() + 24 * 60 * 60 * 1000
+              ) < new Date() && (
+                <MDButton
+                  variant="gradient"
+                  color="error"
+                  onClick={() => handleServiceFormSubmit("C2:7", data.ID)}
+                >
+                  Не посетил
+                </MDButton>
+              )}
             </MDBox>
+          </MDBox>
+        )}
+        {STAGE.group_id === "notrepaid" && (
+          <MDBox mt={2} display="flex" gap={1} flexWrap="wrap">
+            <MDButton
+              variant="gradient"
+              color="error"
+              onClick={() => handleServiceFormSubmit("C2:7", data.ID)}
+            >
+              Не посетил
+            </MDButton>
           </MDBox>
         )}
       </Card>
