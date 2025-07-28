@@ -19,6 +19,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 function Product() {
   const [products, setProducts] = useState([]);
+  const [changedProducts, setChangedProducts] = useState([]);
   const [activeProducts, setActiveProducts] = useState([]);
   const [inactiveProducts, setInactiveProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +78,7 @@ function Product() {
   const handleEdit = (row) => {
     setSelectedRow(row);
     setDescription(row.DESCRIPTION || "");
+    setChangedProducts(row.ELEMENT_NAME);
     setOpenModal(true);
   };
 
@@ -87,12 +89,14 @@ function Product() {
   };
 
   const handleSubmit = async () => {
+    const contactId = Cookies.get("contactid");
     try {
       const data = {
         partnerData: {
           name: "Заявка на модерацию товара",
-          productInfo: description,
+          productInfo: description + "<br>" + changedProducts,
         },
+        contactId: contactId,
       };
       const response = await fetch("/restapi/product.changePartnerProduct", {
         method: "POST",
@@ -109,6 +113,7 @@ function Product() {
   };
 
   const handleNewProductSubmit = async () => {
+    const contactId = Cookies.get("contactid");
     try {
       const data = {
         partnerData: {
@@ -116,11 +121,12 @@ function Product() {
           productInfo:
             "Название товара: " +
             newProduct.name +
-            "Цена: " +
+            "<br>Цена: " +
             newProduct.price +
-            "Описание: " +
+            "<br>Описание: " +
             newProduct.description,
         },
+        contactId: contactId,
       };
       const response = await fetch("/restapi/product.addPartnerProduct", {
         method: "POST",
@@ -161,7 +167,6 @@ function Product() {
         productId: row.ELEMENT_ID,
         openPrice: newPriceInput,
       };
-      console.log(data);
       const response = await fetch("/restapi/product.setProductOpenPrice", {
         method: "POST",
         headers: {

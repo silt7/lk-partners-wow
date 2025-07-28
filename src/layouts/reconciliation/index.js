@@ -20,17 +20,15 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import MasterCard from "../../examples/Cards/MasterCard";
-import DefaultInfoCard from "../../examples/Cards/InfoCards/DefaultInfoCard";
-import PaymentMethod from "../billing/components/PaymentMethod";
-import Invoices from "../billing/components/Invoices";
 import Cookies from "js-cookie";
 import DataTable from "examples/Tables/DataTable2";
+import CertificatesModal from "./components/CertificatesModal";
 
 const STATUS_DICTIONARY = {
   "DT1032_11:NEW": "Новый",
@@ -44,9 +42,21 @@ const STATUS_DICTIONARY = {
 function Tables() {
   const contactId = Cookies.get("contactid");
   const [reconcilation, setReconcilation] = useState([]);
+  const [openCertificatesModal, setOpenCertificatesModal] = useState(false);
+  const [selectedCertificates, setSelectedCertificates] = useState([]);
 
   const getStatusLabel = (statusCode) => {
     return STATUS_DICTIONARY[statusCode] || statusCode;
+  };
+
+  const handleOpenCertificatesModal = (certificates) => {
+    setSelectedCertificates(certificates || []);
+    setOpenCertificatesModal(true);
+  };
+
+  const handleCloseCertificatesModal = () => {
+    setOpenCertificatesModal(false);
+    setSelectedCertificates([]);
   };
 
   useEffect(() => {
@@ -70,6 +80,10 @@ function Tables() {
       }
 
       const jsonData = await response.json();
+      // const totalOpportunity = jsonData.result.reduce(
+      //   (sum, certificate) => sum + (certificate.OPPORTUNITY || 0),
+      //   0
+      // );
       console.log(jsonData);
       // проверка на null/undefined
       setReconcilation(Array.isArray(jsonData.result) ? jsonData.result : []);
@@ -112,7 +126,7 @@ function Tables() {
                           accessor: "DOC_LINK",
                           Cell: ({ value }) =>
                             value ? (
-                              <a href={value} target="_blank">
+                              <a href={value} target="_blank" rel="noreferrer">
                                 Отчет агента
                               </a>
                             ) : (
@@ -129,16 +143,15 @@ function Tables() {
                           Header: "Сертификаты",
                           accessor: "CERTIFICATES",
                           Cell: ({ value }) => (
-                            <>
-                              {value?.map((certificate) => (
-                                <div key={certificate.ID}>
-                                  {certificate.OPTIONS
-                                    ? certificate.OPTIONS
-                                    : certificate.ID}
-                                  - {certificate.OPPORTUNITY}
-                                </div>
-                              ))}
-                            </>
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleOpenCertificatesModal(value)}
+                              disabled={!value || value.length === 0}
+                            >
+                              Сертификаты ({value?.length || 0})
+                            </MDButton>
                           ),
                         },
                       ],
@@ -157,6 +170,13 @@ function Tables() {
           </Grid>
         </Grid>
       </MDBox>
+
+      <CertificatesModal
+        open={openCertificatesModal}
+        onClose={handleCloseCertificatesModal}
+        certificates={selectedCertificates}
+      />
+
       <Footer />
     </DashboardLayout>
   );
