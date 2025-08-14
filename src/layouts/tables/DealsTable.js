@@ -339,14 +339,26 @@ export default function DealsTable() {
 
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
     const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
+    const selectedAddress = deal.ADDRESS;
 
     // Определяем начальный адрес
     let initialAddress = "";
     if (Array.isArray(address)) {
-      initialAddress = address[0] || "";
-    } else if (address) {
-      initialAddress = address;
+      address.forEach((addr) => {
+        if (addr.includes(selectedAddress)) {
+          initialAddress = addr;
+        }
+      });
     }
+    if (initialAddress === "") {
+      initialAddress = address[0] || "";
+    }
+
+    // if (Array.isArray(address)) {
+    //   initialAddress = address[0] || "";
+    // } else if (address) {
+    //   initialAddress = address;
+    // }
 
     setServiceForm({
       title: deal.OPTIONS || "",
@@ -427,7 +439,9 @@ export default function DealsTable() {
       }
 
       handleCloseServiceModal();
-      window.location.reload();
+      // Обновляем данные сделок и перерисовываем таблицу без перезагрузки страницы
+      await loadDeals(page, filters);
+      // window.location.reload();
     } catch (error) {
       console.error("Ошибка при обновлении данных услуги:", error);
     } finally {
@@ -655,7 +669,7 @@ export default function DealsTable() {
               <Grid item xs={12} md={2}>
                 <MDInput
                   sx={{ width: "100%" }}
-                  label="Номер телефона"
+                  label="Номер телефона (без +7)"
                   value={filters.phone}
                   onChange={(e) =>
                     setFilters({ ...filters, phone: e.target.value })
@@ -819,7 +833,7 @@ export default function DealsTable() {
             table={tableData}
             canSearch
             showTotalEntries
-            entriesPerPage={{ defaultValue: 5, entries: [5] }}
+            entriesPerPage={{ defaultValue: 20, entries: [20] }}
             isSorted={false}
             noEndBorder
           />

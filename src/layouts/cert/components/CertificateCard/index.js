@@ -113,14 +113,25 @@ const CertificateCard = ({ data }) => {
     setModalMode(mode);
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
     const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
+    const selectedAddress = deal.ADDRESS;
 
     // Определяем начальный адрес
     let initialAddress = "";
     if (Array.isArray(address)) {
-      initialAddress = address[0] || "";
-    } else if (address) {
-      initialAddress = address;
+      address.forEach((addr) => {
+        if (addr.includes(selectedAddress)) {
+          initialAddress = addr;
+        }
+      });
     }
+    if (initialAddress === "") {
+      initialAddress = address[0] || "";
+    }
+    // if (Array.isArray(address)) {
+    //   initialAddress = address[0] || "";
+    // } else if (address) {
+    //   initialAddress = address;
+    // }
 
     setServiceForm({
       title: deal.OPTIONS || "",

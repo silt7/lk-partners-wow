@@ -7,7 +7,7 @@ export default function useDeals(autoLoad = true) {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const length = 5; // Количество сделок за один запрос
+  const length = 20; // Количество сделок за один запрос
 
   useEffect(() => {
     if (autoLoad) {
