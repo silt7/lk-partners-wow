@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 export async function getDeals(
   filter = {},
-  length = 5,
+  length = 20,
   offset = 0,
   requestStage
 ) {
@@ -25,6 +25,7 @@ export async function getDeals(
     allIds: allIds,
     filters: filter,
   };
+  console.log(data);
   try {
     const response = await fetch(
       `/restapi/certificate.getPartnerCertificates`,
