@@ -4,7 +4,7 @@ export default async function GetCertPosetil() {
   try {
     const data = {
       page: 1,
-      limit: 10,
+      limit: 1000,
       groupIds: ["visited"],
       allIds: [Cookies.get("contactid")],
     };
