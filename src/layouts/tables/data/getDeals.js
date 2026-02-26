@@ -4,7 +4,7 @@ export async function getDeals(
   filter = {},
   length = 20,
   offset = 0,
-  requestStage
+  requestStage,
 ) {
   // const data = {
   //   domain: window.MyDomain,
@@ -25,7 +25,6 @@ export async function getDeals(
     allIds: allIds,
     filters: filter,
   };
-  console.log(data);
   try {
     const response = await fetch(
       `/restapi/certificate.getPartnerCertificates`,
@@ -35,7 +34,7 @@ export async function getDeals(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      }
+      },
     );
     if (!response.ok) {
       throw new Error(`Ошибка HTTP: ${response.status}`);

@@ -169,12 +169,12 @@ export default function DealsTable() {
         const firstDayNextMonth = new Date(
           now.getFullYear(),
           now.getMonth() + 1,
-          1
+          1,
         );
         const lastDayNextMonth = new Date(
           now.getFullYear(),
           now.getMonth() + 2,
-          0
+          0,
         );
         lastDayNextMonth.setHours(23, 59, 59, 999);
         const nextDay = new Date(firstDayNextMonth);
@@ -431,7 +431,7 @@ export default function DealsTable() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -474,6 +474,16 @@ export default function DealsTable() {
                   {element.CONTACTS?.PHONES &&
                   Array.isArray(element.CONTACTS.PHONES)
                     ? element.CONTACTS.PHONES.map((phone, index) => (
+                        <Box key={`phone-${element.ID}-${index}`}>
+                          <a href={`tel:${phone}`}>{phone}</a>
+                        </Box>
+                      ))
+                    : "-"}
+                </Box>
+                <Box>
+                  {element.CONTACTS?.EMAILS &&
+                  Array.isArray(element.CONTACTS.EMAILS)
+                    ? element.CONTACTS.EMAILS.map((phone, index) => (
                         <Box key={`phone-${element.ID}-${index}`}>
                           <a href={`tel:${phone}`}>{phone}</a>
                         </Box>
@@ -602,7 +612,7 @@ export default function DealsTable() {
                   </MDButton>
                   {new Date(
                     new Date(element.SCHEDULE_TIME).getTime() +
-                      24 * 60 * 60 * 1000
+                      24 * 60 * 60 * 1000,
                   ) > new Date() && (
                     <MDButton
                       sx={{ width: "100%" }}
@@ -616,7 +626,7 @@ export default function DealsTable() {
                   )}
                   {new Date(
                     new Date(element.SCHEDULE_TIME).getTime() +
-                      24 * 60 * 60 * 1000
+                      24 * 60 * 60 * 1000,
                   ) < new Date() && (
                     <MDButton
                       sx={{ width: "100%" }}
@@ -856,7 +866,7 @@ export default function DealsTable() {
                       onClick={() => setPage(i + 1)}
                     >
                       {i + 1}
-                    </MDPagination>
+                    </MDPagination>,
                   );
                 }
               } else {
@@ -869,7 +879,7 @@ export default function DealsTable() {
                     onClick={() => setPage(1)}
                   >
                     1
-                  </MDPagination>
+                  </MDPagination>,
                 );
                 pages.push(
                   <MDPagination
@@ -879,7 +889,7 @@ export default function DealsTable() {
                     onClick={() => setPage(2)}
                   >
                     2
-                  </MDPagination>
+                  </MDPagination>,
                 );
 
                 // Точки если текущая страница далеко от начала
@@ -887,7 +897,7 @@ export default function DealsTable() {
                   pages.push(
                     <MDPagination item key="dots1">
                       ...
-                    </MDPagination>
+                    </MDPagination>,
                   );
                 }
 
@@ -905,7 +915,7 @@ export default function DealsTable() {
                       onClick={() => setPage(i)}
                     >
                       {i}
-                    </MDPagination>
+                    </MDPagination>,
                   );
                 }
 
@@ -914,7 +924,7 @@ export default function DealsTable() {
                   pages.push(
                     <MDPagination item key="dots2">
                       ...
-                    </MDPagination>
+                    </MDPagination>,
                   );
                 }
 
@@ -927,7 +937,7 @@ export default function DealsTable() {
                     onClick={() => setPage(totalPages - 1)}
                   >
                     {totalPages - 1}
-                  </MDPagination>
+                  </MDPagination>,
                 );
                 pages.push(
                   <MDPagination
@@ -937,7 +947,7 @@ export default function DealsTable() {
                     onClick={() => setPage(totalPages)}
                   >
                     {totalPages}
-                  </MDPagination>
+                  </MDPagination>,
                 );
               }
               return pages;

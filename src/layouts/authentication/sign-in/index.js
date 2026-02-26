@@ -41,6 +41,7 @@ import InputMask from "react-input-mask";
 import TextField from "@mui/material/TextField";
 
 function Basic() {
+  const [authMethod, setAuthMethod] = useState("phone"); // "phone" | "email"
   const [showButtonCode, setShowButtonCode] = useState(true);
   const [showButtonIn, setShowButtonIn] = useState(false);
   const [inputContact, setInputContact] = useState("");
@@ -58,10 +59,14 @@ function Basic() {
   const cleanNumber = "+" + inputContact.replace(/[^\d]/g, "");
 
   const buttonCodeClick = async () => {
+    const contactValue =
+      authMethod === "phone" ? cleanNumber : inputContact.trim();
+
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      contact: cleanNumber,
+      contact: contactValue,
+      method: authMethod,
     };
 
     try {
@@ -103,11 +108,17 @@ function Basic() {
   };
 
   const buttonInClick = async () => {
+    const contactValue =
+      authMethod === "phone"
+        ? "+7" + inputContact.replace(/\D/g, "").slice(-10)
+        : inputContact.trim();
+
     const data = {
       domain: window.MyDomain,
       cabinet: window.Cabinet,
-      contact: "+7" + inputContact.replace(/\D/g, "").slice(-10),
+      contact: contactValue,
       code: inputCode,
+      method: authMethod,
     };
     try {
       await fetch(`/restapi/auth.authentication`, {
@@ -197,28 +208,60 @@ function Basic() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
-            <MDBox mb={2}>
-              {/*  <MDInput*/}
-              {/*    type="text"*/}
-              {/*    label="Телефон"*/}
-              {/*    fullWidth*/}
-              {/*    value={inputContact}*/}
-              {/*    onChange={handleChangeContact}*/}
-              {/*  />*/}
-              <InputMask
-                mask="+7 (999) 999-99-99"
-                value={inputContact}
-                onChange={handleChangeContact}
+            <MDBox display="flex" justifyContent="center" mb={2}>
+              <MDButton
+                variant={authMethod === "phone" ? "gradient" : "outlined"}
+                color="info"
+                onClick={() => {
+                  setAuthMethod("phone");
+                  setInputContact("");
+                  setInputCode("");
+                  setShowButtonCode(true);
+                  setShowButtonIn(false);
+                }}
+                sx={{ mr: 1 }}
               >
-                {(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    label="Телефон"
-                    variant="outlined"
-                    fullWidth
-                  />
-                )}
-              </InputMask>
+                По телефону
+              </MDButton>
+              <MDButton
+                variant={authMethod === "email" ? "gradient" : "outlined"}
+                color="info"
+                onClick={() => {
+                  setAuthMethod("email");
+                  setInputContact("");
+                  setInputCode("");
+                  setShowButtonCode(true);
+                  setShowButtonIn(false);
+                }}
+              >
+                По email
+              </MDButton>
+            </MDBox>
+            <MDBox mb={2}>
+              {authMethod === "phone" ? (
+                <InputMask
+                  mask="+7 (999) 999-99-99"
+                  value={inputContact}
+                  onChange={handleChangeContact}
+                >
+                  {(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      label="Телефон"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
+                </InputMask>
+              ) : (
+                <MDInput
+                  type="email"
+                  label="Email"
+                  fullWidth
+                  value={inputContact}
+                  onChange={handleChangeContact}
+                />
+              )}
             </MDBox>
             {showButtonIn && (
               <MDBox mb={2}>
