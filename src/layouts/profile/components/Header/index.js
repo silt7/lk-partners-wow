@@ -297,6 +297,7 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import Cookies from "js-cookie";
 
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -308,12 +309,16 @@ import { setPartnerProfile } from "../../data/setPartnerProfile";
 
 function Header({ profile, children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     TITLE: "",
     DESCRIPTION: "",
     file: null,
   });
   const [errors, setErrors] = useState({});
+
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   // Обработчик изменения полей формы
   const handleChange = (e) => {
@@ -369,6 +374,62 @@ function Header({ profile, children }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    const trimmed = password.trim();
+
+    if (!trimmed) {
+      setPasswordError("Введите пароль");
+      return;
+    }
+
+    if (trimmed.length < 6) {
+      setPasswordError("Пароль должен быть не менее 6 символов");
+      return;
+    }
+
+    try {
+      const contactId = Cookies.get("contactid");
+      const token = Cookies.get("token");
+
+      if (!contactId || !token) {
+        alert("Отсутствуют данные авторизации. Войдите в систему заново.");
+        return;
+      }
+
+      const data = {
+        id: contactId,
+        token,
+        password: trimmed,
+        email: profile?.EMAIL,
+      };
+
+      const response = await fetch("/restapi/auth.setPassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.result === false) {
+        alert("Не удалось установить пароль. Попробуйте позже.");
+        return;
+      }
+
+      alert("Пароль успешно установлен.");
+      setIsPasswordModalOpen(false);
+      setPassword("");
+      setPasswordError("");
+    } catch (error) {
+      console.error("Ошибка при установке пароля:", error);
+      alert("Произошла ошибка при установке пароля.");
+    }
+  };
+
   // Обработчик отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -385,7 +446,7 @@ function Header({ profile, children }) {
     } catch (error) {
       console.error("Ошибка при отправке данных:", error);
       alert(
-        "Не удалось отправить данные. Проверьте подключение или попробуйте позже."
+        "Не удалось отправить данные. Проверьте подключение или попробуйте позже.",
       );
     }
   };
@@ -406,7 +467,7 @@ function Header({ profile, children }) {
             }) =>
               `${linearGradient(
                 rgba(gradients.info.main, 0.6),
-                rgba(gradients.info.state, 0.6)
+                rgba(gradients.info.state, 0.6),
               )}, url(${backgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "50%",
@@ -454,25 +515,49 @@ function Header({ profile, children }) {
               </Grid>
             </Grid>
 
-            {/* Правая часть: кнопка редактирования */}
+            {/* Правая часть: кнопки действий */}
             <Grid
               item
               xs={12}
-              md={3}
+              md={4}
               container
               justifyContent="flex-end"
               sx={{ justifyContent: { xs: "flex-start", md: "flex-end" } }}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => setIsModalOpen(true)}
+              <MDBox
+                display="flex"
+                flexDirection={{ xs: "column", md: "row" }}
+                gap={2}
               >
-                <MDTypography variant="button" color="white" fontWeight="bold">
-                  Заявка на модерацию
-                </MDTypography>
-              </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <MDTypography
+                    variant="button"
+                    color="white"
+                    fontWeight="bold"
+                  >
+                    Заявка на модерацию
+                  </MDTypography>
+                </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setIsPasswordModalOpen(true)}
+                >
+                  <MDTypography
+                    variant="button"
+                    color="white"
+                    fontWeight="bold"
+                  >
+                    Пароль
+                  </MDTypography>
+                </Button>
+              </MDBox>
             </Grid>
           </Grid>
 
@@ -564,6 +649,66 @@ function Header({ profile, children }) {
           >
             <MDTypography variant="button" color="white" fontWeight="bold">
               Отправить
+            </MDTypography>
+          </Button>
+        </MDBox>
+      </Modal>
+
+      {/* Модальное окно установки пароля */}
+      <Modal
+        open={isPasswordModalOpen}
+        onClose={() => {
+          setIsPasswordModalOpen(false);
+          setPassword("");
+          setPasswordError("");
+        }}
+      >
+        <MDBox
+          component="form"
+          onSubmit={handlePasswordSubmit}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "90%", sm: 400 },
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 3,
+            borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
+            outline: "none",
+          }}
+        >
+          <MDTypography variant="h6" gutterBottom>
+            Установить пароль
+          </MDTypography>
+
+          <TextField
+            fullWidth
+            label="Новый пароль"
+            type="password"
+            margin="normal"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (passwordError) {
+                setPasswordError("");
+              }
+            }}
+            error={!!passwordError}
+            helperText={passwordError}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+          >
+            <MDTypography variant="button" color="white" fontWeight="bold">
+              Сохранить
             </MDTypography>
           </Button>
         </MDBox>

@@ -41,11 +41,13 @@ import InputMask from "react-input-mask";
 import TextField from "@mui/material/TextField";
 
 function Basic() {
-  const [authMethod, setAuthMethod] = useState("phone"); // "phone" | "email"
+  const [authMethod, setAuthMethod] = useState("phone"); // "phone" | "email" | "login"
   const [showButtonCode, setShowButtonCode] = useState(true);
   const [showButtonIn, setShowButtonIn] = useState(false);
   const [inputContact, setInputContact] = useState("");
   const [inputCode, setInputCode] = useState("");
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
@@ -55,10 +57,19 @@ function Basic() {
   const handleChangeCode = (event) => {
     setInputCode(event.target.value);
   };
+  const handleChangeLogin = (event) => {
+    setLogin(event.target.value);
+  };
+  const handleChangePassword = (event) => {
+    setPassword(event.target.value);
+  };
   // number mask clean
   const cleanNumber = "+" + inputContact.replace(/[^\d]/g, "");
 
   const buttonCodeClick = async () => {
+    if (authMethod === "login") {
+      return;
+    }
     const contactValue =
       authMethod === "phone" ? cleanNumber : inputContact.trim();
 
@@ -108,59 +119,125 @@ function Basic() {
   };
 
   const buttonInClick = async () => {
-    const contactValue =
-      authMethod === "phone"
-        ? "+7" + inputContact.replace(/\D/g, "").slice(-10)
-        : inputContact.trim();
-
-    const data = {
-      domain: window.MyDomain,
-      cabinet: window.Cabinet,
-      contact: contactValue,
-      code: inputCode,
-      method: authMethod,
-    };
     try {
-      await fetch(`/restapi/auth.authentication`, {
+      let responseData;
+
+      if (authMethod === "login") {
+        const data = {
+          domain: window.MyDomain,
+          cabinet: window.Cabinet,
+          login,
+          password,
+        };
+
+        const response = await fetch(`/restapi/auth.authorization`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        responseData = await response.json();
+      } else {
+        const contactValue =
+          authMethod === "phone"
+            ? "+7" + inputContact.replace(/\D/g, "").slice(-10)
+            : inputContact.trim();
+
+        const data = {
+          domain: window.MyDomain,
+          cabinet: window.Cabinet,
+          contact: contactValue,
+          code: inputCode,
+          method: authMethod,
+        };
+
+        const response = await fetch(`/restapi/auth.authentication`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        responseData = await response.json();
+      }
+
+      if (responseData.result === "notcode") {
+        alert("Неправильный код");
+      }
+      if (responseData.result === "not3m") {
+        alert("Прошло более 3 минут, получите новый код");
+        setShowButtonCode(true);
+        setShowButtonIn(false);
+      }
+      if (responseData.result === false) {
+        alert("Неверный логин или пароль");
+      }
+
+      if (responseData.result.id && responseData.result.token) {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        Cookies.set("token", responseData.result.token, {
+          expires: expirationDate,
+        });
+        Cookies.set("contactid", responseData.result.id, {
+          expires: expirationDate,
+        });
+        Cookies.set("allIds", responseData.result.allIds, {
+          expires: expirationDate,
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Произошла ошибка", error);
+      alert("Произошла ошибка при выполнении запроса.");
+    }
+  };
+  const buttonLoginClick = async () => {
+    try {
+      const data = {
+        domain: window.MyDomain,
+        cabinet: window.Cabinet,
+        method: "password",
+        login,
+        password,
+      };
+      const response = await fetch(`/restapi/auth.goPassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json(); // Получаем JSON-ответ
-          }
-          throw new Error("Network response was not ok");
-        })
-        .then((data) => {
-          if (data.result === "notcode") {
-            alert("Неправильный код");
-          }
-          if (data.result === "not3m") {
-            alert("Прошло более 3 минут, получите новый код");
-            setShowButtonCode(true);
-            setShowButtonIn(false);
-          }
-          if (data.result.id && data.result.token) {
-            const expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 30);
-            Cookies.set("token", data.result.token, {
-              expires: expirationDate,
-            });
-            Cookies.set("contactid", data.result.id, {
-              expires: expirationDate,
-            });
-            Cookies.set("allIds", data.result.allIds, {
-              expires: expirationDate,
-            });
-            navigate("/dashboard");
-          }
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
+      });
+      const result = await response.json();
+      if (result.result === "notfound") {
+        alert("Пользователь не найден");
+      } else if (result.result === "empty_credentials") {
+        alert("Не заполнены логин или пароль");
+      } else if (result.result === "notpassword") {
+        alert("Неверный пароль");
+      } else if (result.result === "blocked") {
+        alert("Более 3 попыток, аккаунт заблокирован на минуту");
+      } else if (result.result === "inactive") {
+        alert("Аккаунт не активен");
+      } else if (result.result.result === "success") {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+        Cookies.set("token", result.result.token, {
+          expires: expirationDate,
         });
+        Cookies.set("contactid", result.result.id, {
+          expires: expirationDate,
+        });
+        navigate("/dashboard", { replace: true });
+      }
     } catch (error) {
       console.error("Произошла ошибка", error);
+      alert("Произошла ошибка при выполнении запроса.");
     }
   };
 
@@ -216,12 +293,14 @@ function Basic() {
                   setAuthMethod("phone");
                   setInputContact("");
                   setInputCode("");
+                  setLogin("");
+                  setPassword("");
                   setShowButtonCode(true);
                   setShowButtonIn(false);
                 }}
                 sx={{ mr: 1 }}
               >
-                По телефону
+                SMS
               </MDButton>
               <MDButton
                 variant={authMethod === "email" ? "gradient" : "outlined"}
@@ -230,11 +309,29 @@ function Basic() {
                   setAuthMethod("email");
                   setInputContact("");
                   setInputCode("");
+                  setLogin("");
+                  setPassword("");
                   setShowButtonCode(true);
                   setShowButtonIn(false);
                 }}
+                sx={{ mr: 1 }}
               >
-                По email
+                email
+              </MDButton>
+              <MDButton
+                variant={authMethod === "login" ? "gradient" : "outlined"}
+                color="info"
+                onClick={() => {
+                  setAuthMethod("login");
+                  setInputContact("");
+                  setInputCode("");
+                  setLogin("");
+                  setPassword("");
+                  setShowButtonCode(false);
+                  setShowButtonIn(false);
+                }}
+              >
+                Пароль
               </MDButton>
             </MDBox>
             <MDBox mb={2}>
@@ -253,7 +350,7 @@ function Basic() {
                     />
                   )}
                 </InputMask>
-              ) : (
+              ) : authMethod === "email" ? (
                 <MDInput
                   type="email"
                   label="Email"
@@ -261,9 +358,40 @@ function Basic() {
                   value={inputContact}
                   onChange={handleChangeContact}
                 />
+              ) : (
+                <>
+                  <MDBox mb={2}>
+                    <MDInput
+                      type="text"
+                      label="Логин"
+                      fullWidth
+                      value={login}
+                      onChange={handleChangeLogin}
+                    />
+                  </MDBox>
+                  <MDBox mb={2}>
+                    <MDInput
+                      type="password"
+                      label="Пароль"
+                      fullWidth
+                      value={password}
+                      onChange={handleChangePassword}
+                    />
+                  </MDBox>
+                  <MDBox mt={4} mb={1}>
+                    <MDButton
+                      variant="gradient"
+                      color="info"
+                      fullWidth
+                      onClick={buttonLoginClick}
+                    >
+                      Войти
+                    </MDButton>
+                  </MDBox>
+                </>
               )}
             </MDBox>
-            {showButtonIn && (
+            {showButtonIn && authMethod !== "login" && (
               <MDBox mb={2}>
                 <MDInput
                   type="text"
