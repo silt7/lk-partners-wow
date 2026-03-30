@@ -7,6 +7,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Cookies from "js-cookie";
 
 const AVAILABLE_CHANNELS = [
+  { name: "Max" },
   { name: "WA" },
   { name: "TG" },
   { name: "SMS" },
@@ -122,6 +123,20 @@ export default function ChannelsCard() {
                     rel="noopener noreferrer"
                   >
                     WOWlife Bot
+                  </a>{" "}
+                </MDTypography>
+              </MDBox>
+            ) : channel.name === "Max" ? (
+              <MDBox sx={{ display: "flex", flexDirection: "column" }}>
+                {channel.name}
+                <MDTypography variant="caption" color="text">
+                  Чтобы оповещения заработали нужно подписаться{" "}
+                  <a
+                    href="https://max.ru/id471610095635_1_bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WOWlife Max Bot
                   </a>{" "}
                 </MDTypography>
               </MDBox>
