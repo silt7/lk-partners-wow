@@ -80,7 +80,7 @@ export default function useDeals(autoLoad = true) {
         requestFilters,
         length,
         page,
-        requestStage
+        requestStage,
       );
       if (response) {
         setDeals(response.data);

@@ -233,6 +233,9 @@ function Basic() {
         Cookies.set("contactid", result.result.id, {
           expires: expirationDate,
         });
+        Cookies.set("allIds", result.result.allIds, {
+          expires: expirationDate,
+        });
         navigate("/dashboard", { replace: true });
       }
     } catch (error) {

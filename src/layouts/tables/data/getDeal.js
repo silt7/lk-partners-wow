@@ -42,7 +42,7 @@ async function getData(filter = {}, length = 30, offset = 0) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      }
+      },
     );
 
     if (!response.ok) {
