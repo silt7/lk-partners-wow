@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 const AVAILABLE_CHANNELS = [
   { name: "Max" },
-  { name: "WA" },
+  // { name: "WA" },
   { name: "TG" },
   { name: "SMS" },
   { name: "email" },
