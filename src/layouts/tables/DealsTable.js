@@ -466,6 +466,28 @@ export default function DealsTable() {
       ? Object.values(deals).map((element) => {
           const { statusColor, statusText } = getStatusInfo(element.STAGE);
           const dateValue = formatDate(element.SCHEDULE_TIME);
+          const preferredMessenger = (() => {
+            const messagerId = String(element.MESSAGER);
+            if (messagerId === "672") {
+              return (
+                <Box display="flex" alignItems="center" gap={1}>
+                  TG
+                  {element.TGUSERNAME && (
+                    <MDBadge
+                      badgeContent={element.TGUSERNAME}
+                      color="info"
+                      variant="gradient"
+                      size="sm"
+                    />
+                  )}
+                </Box>
+              );
+            }
+            if (messagerId === "673") {
+              return "max";
+            }
+            return null;
+          })();
           const name = (
             <>
               <Box>
@@ -490,6 +512,11 @@ export default function DealsTable() {
                       ))
                     : "-"}
                 </Box>
+                {preferredMessenger && (
+                  <Box>
+                    Предпочитаемый мессенджер: {preferredMessenger}
+                  </Box>
+                )}
               </Box>
             </>
           );
