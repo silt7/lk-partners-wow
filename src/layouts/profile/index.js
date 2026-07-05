@@ -54,6 +54,7 @@ import GetProfile from "layouts/profile/data/getProfile";
 import React, { useState, useEffect } from "react";
 import ProfileInfoCard from "./components/ProfileInfoCard";
 import ChannelsCard from "./components/channels";
+import AgentReportCard from "./components/agentReport";
 
 function parseContactDetails(data) {
   if (typeof data !== "string") return { name: "", email: "", phone: "" };
@@ -225,6 +226,10 @@ function Overview() {
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+            </Grid>
+            {/*Отчет агента*/}
+            <Grid item xs={12} xl={6}>
+              <AgentReportCard profile={profile} />
             </Grid>
           </Grid>
         </MDBox>

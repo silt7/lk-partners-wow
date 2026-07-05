@@ -41,9 +41,13 @@ export async function getDeals(
     }
 
     const jsonData = await response.json();
-    return jsonData.result.error === "Certificates not found"
-      ? (alert("Сертификат не найден"), null)
-      : jsonData.result;
+    if (jsonData.result?.error === "Certificates not found") {
+      return {
+        data: [],
+        pagination: { total_items: 0, current_page: 1, total_pages: 0 },
+      };
+    }
+    return jsonData.result;
   } catch (error) {
     console.error("Ошибка получения данных:", error);
     return null;
