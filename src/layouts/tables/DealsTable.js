@@ -24,7 +24,23 @@ import "react-dropdown/style.css";
 import DataTable from "examples/Tables/DataTable";
 import { CircularProgress } from "@mui/material";
 
-export default function DealsTable() {
+function cleanAddress(value) {
+  if (typeof value !== "string") return "";
+  return value
+    .split("|")[0]
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .trim();
+}
+
+export default function DealsTable({
+  fixedGroupIds = null,
+  hideFilters = false,
+  emptyStateText = null,
+  autoRefreshInterval = null,
+}) {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +81,7 @@ export default function DealsTable() {
   ];
   const options2 = [
     { value: "new", label: "Новая заявка" },
-    { value: "waiting", label: "Согласование времени" },
+    { value: "waiting", label: "Принять заявку в работу" },
     { value: "confirmed", label: "Записан" },
     { value: "visited", label: "Посетил" },
     { value: "verification", label: "Ожидание оплаты" },
@@ -73,7 +89,15 @@ export default function DealsTable() {
     { value: "canceled", label: "Отменен" },
   ];
   const { deals, loadDeals, total, totalPages, currentPage, loading } =
-    useDeals(1, {});
+    useDeals(!fixedGroupIds);
+
+  const getRequestFilters = () =>
+    fixedGroupIds ? { groupIds: fixedGroupIds } : filters;
+
+  const handleRefresh = async () => {
+    await loadDeals(page, getRequestFilters());
+    window.dispatchEvent(new CustomEvent("new-requests-updated"));
+  };
   const [formError, setFormError] = useState("");
 
   const [dateFilterType, setDateFilterType] = useState("none");
@@ -213,23 +237,37 @@ export default function DealsTable() {
     const loadData = async () => {
       const profile = await fetchProfileData("partnerLow");
       setProfileData(profile);
-
-      if (deals && Object.keys(deals).length > 0) {
-        setIsLoading(false);
-      }
     };
 
     loadData();
-  }, [deals]);
+  }, []);
 
   useEffect(() => {
-    loadDeals(page, filters);
-  }, [page]);
+    if (!loading) {
+      setIsLoading(false);
+    }
+  }, [loading, deals]);
+
+  useEffect(() => {
+    loadDeals(page, getRequestFilters());
+  }, [page, fixedGroupIds]);
+
+  useEffect(() => {
+    if (!autoRefreshInterval || !fixedGroupIds) {
+      return undefined;
+    }
+
+    const interval = setInterval(() => {
+      loadDeals(page, getRequestFilters());
+    }, autoRefreshInterval);
+
+    return () => clearInterval(interval);
+  }, [page, fixedGroupIds, autoRefreshInterval]);
 
   const getStatusInfo = (stage) => {
     const statusMapping = {
       new: { statusColor: "error", statusText: "Новая заявка" },
-      waiting: { statusColor: "warning", statusText: "Согласование времени" },
+      waiting: { statusColor: "warning", statusText: "Принять заявку в работу" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
       verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
@@ -338,14 +376,17 @@ export default function DealsTable() {
     setSelectedDealId(deal.ID);
 
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
-    const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
-    const selectedAddress = deal.ADDRESS;
+    const rawAddress = profileData?.["0"]?.UF_CRM_1692176867840 || "";
+    const address = Array.isArray(rawAddress)
+      ? rawAddress.map(cleanAddress).filter(Boolean)
+      : cleanAddress(rawAddress);
+    const selectedAddress = cleanAddress(deal.ADDRESS);
 
     // Определяем начальный адрес
     let initialAddress = "";
     if (Array.isArray(address)) {
       address.forEach((addr) => {
-        if (addr.includes(selectedAddress)) {
+        if (selectedAddress && addr.includes(selectedAddress)) {
           initialAddress = addr;
         }
       });
@@ -439,8 +480,8 @@ export default function DealsTable() {
       }
 
       handleCloseServiceModal();
-      // Обновляем данные сделок и перерисовываем таблицу без перезагрузки страницы
-      await loadDeals(page, filters);
+      await loadDeals(page, getRequestFilters());
+      window.dispatchEvent(new CustomEvent("new-requests-updated"));
       // window.location.reload();
     } catch (error) {
       console.error("Ошибка при обновлении данных услуги:", error);
@@ -452,14 +493,14 @@ export default function DealsTable() {
   // Преобразование `deals` в формат для DataTable
   const tableData = {
     columns: [
+      { Header: "Действие", accessor: "action" },
       { Header: "Номер", accessor: "NUMBER" },
       { Header: "Услуга", accessor: "TITLE" },
       { Header: "Контакт", accessor: "NAME" },
       { Header: "Статус", accessor: "STAGE_ID" },
       { Header: "Дата записи", accessor: "SCHEDULE_TIME" },
-      { Header: "Сумма", accessor: "OPPORTUNITY" },
       { Header: "Комментарии", accessor: "ADDITIONAL_INFO" },
-      { Header: "Действие", accessor: "action" },
+      { Header: "Сумма", accessor: "OPPORTUNITY" },
     ],
 
     rows: deals
@@ -588,7 +629,7 @@ export default function DealsTable() {
                       handleServiceFormSubmit("C2:NEW", element.ID);
                     }}
                   >
-                    Согласовать время
+                    Принять заявку в работу
                   </MDButton>
                 </>
               ) : element.STAGE.group_id === "waiting" ? (
@@ -686,6 +727,10 @@ export default function DealsTable() {
       : [],
   };
 
+  const hasDeals = deals && Object.keys(deals).length > 0;
+  const showEmptyState =
+    emptyStateText && !hasDeals && !loading && !isLoading;
+
   return (
     <MDBox>
       {isLoading ? (
@@ -697,10 +742,38 @@ export default function DealsTable() {
           pb={3}
         >
           <CircularProgress color="info" />
-          {/*<MDTypography>Загрузка...</MDTypography>*/}
         </MDBox>
       ) : (
         <>
+          {hideFilters && (
+            <MDBox
+              mx={2}
+              mb={2}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              flexWrap="wrap"
+              gap={1}
+            >
+              <MDTypography variant="button" color="text">
+                Заявок: {total}
+              </MDTypography>
+              <MDButton
+                variant="gradient"
+                color="info"
+                onClick={handleRefresh}
+                disabled={loading}
+              >
+                {loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Обновить"
+                )}
+              </MDButton>
+            </MDBox>
+          )}
+
+          {!hideFilters && (
           <MDBox mx={2}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={2}>
@@ -865,7 +938,27 @@ export default function DealsTable() {
               </Grid>
             </Grid>
           </MDBox>
+          )}
 
+          {showEmptyState ? (
+            <MDBox textAlign="center" py={6} px={2}>
+              <Icon sx={{ fontSize: 48, color: "text.secondary", mb: 2 }}>
+                inbox
+              </Icon>
+              <MDTypography variant="h6" color="text" mb={2}>
+                {emptyStateText}
+              </MDTypography>
+              <MDButton
+                variant="gradient"
+                color="info"
+                onClick={handleRefresh}
+                disabled={loading}
+              >
+                Обновить
+              </MDButton>
+            </MDBox>
+          ) : (
+          <>
           <DataTable
             table={tableData}
             canSearch
@@ -985,6 +1078,8 @@ export default function DealsTable() {
               </MDPagination>
             )}
           </MDPagination>
+          </>
+          )}
         </>
       )}
 
@@ -1108,17 +1203,6 @@ export default function DealsTable() {
 
             <Grid item xs={12}>
               <TextField
-                sx={{ width: "100%" }}
-                label="Телефон для связи"
-                name="phone"
-                value={serviceForm.phone}
-                onChange={handleServiceFormChange}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
                 select
                 sx={{ width: "100%" }}
                 label="Адрес проведения"
@@ -1165,7 +1249,7 @@ export default function DealsTable() {
               <Grid item xs={12}>
                 <TextField
                   sx={{ width: "100%" }}
-                  label="Примечание"
+                  label="Пометка для менеджера WOWlife"
                   name="notes"
                   value={serviceForm.notes}
                   onChange={handleServiceFormChange}

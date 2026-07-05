@@ -61,9 +61,11 @@ export default function useDeals(autoLoad = true) {
       };
     }
 
-    const requestStage = filters?.status
-      ? [filters.status]
-      : [
+    const requestStage = filters?.groupIds?.length
+      ? filters.groupIds
+      : filters?.status
+        ? [filters.status]
+        : [
           "new",
           "waiting",
           "confirmed",

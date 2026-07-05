@@ -97,7 +97,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, noCollapse, key, href, route }) => {
+    ({ type, name, icon, title, noCollapse, key, href, route, badge }) => {
       let returnValue;
 
       if (
@@ -120,6 +120,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               icon={icon}
               active={key === collapseName}
               noCollapse={noCollapse}
+              badge={badge}
             />
           </Link>
         ) : (
@@ -128,6 +129,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               name={name}
               icon={icon}
               active={key === collapseName}
+              badge={badge}
             />
           </NavLink>
         );

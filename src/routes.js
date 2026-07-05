@@ -50,6 +50,7 @@ import Redeem from "layouts/redeem";
 import Reconciliation from "layouts/reconciliation";
 import Cert from "layouts/cert";
 import Product from "layouts/product";
+import NewRequests from "layouts/newRequests";
 import { MainProfile } from "layouts/mainProfile";
 
 // @mui icons
@@ -72,6 +73,14 @@ const routes = [
     route: "/profile",
     // component: <MainProfile />,
     component: <Profile />,
+  },
+  {
+    type: "collapse",
+    name: "Новые заявки",
+    key: "new-requests",
+    icon: <Icon fontSize="small">new_releases</Icon>,
+    route: "/new-requests",
+    component: <NewRequests />,
   },
   {
     type: "collapse",

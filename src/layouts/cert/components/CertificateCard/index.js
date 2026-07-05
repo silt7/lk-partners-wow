@@ -15,6 +15,17 @@ import MDTypography from "components/MDTypography";
 import Modal from "@mui/material/Modal";
 import { fetchProfileData } from "../../../profile/data/getProfile";
 
+function cleanAddress(value) {
+  if (typeof value !== "string") return "";
+  return value
+    .split("|")[0]
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .trim();
+}
+
 const CertificateCard = ({ data }) => {
   const [openModal, setOpenModal] = useState(false);
   const [openServiceModal, setOpenServiceModal] = useState(false);
@@ -64,7 +75,7 @@ const CertificateCard = ({ data }) => {
   const getStatusInfo = (stage) => {
     const statusMapping = {
       new: { statusColor: "error", statusText: "Новая заявка" },
-      waiting: { statusColor: "warning", statusText: "Согласование времени" },
+      waiting: { statusColor: "warning", statusText: "Принять заявку в работу" },
       confirmed: { statusColor: "info", statusText: "Записан" },
       visited: { statusColor: "secondary", statusText: "Посетил" },
       verification: { statusColor: "primary", statusText: "Ожидает оплаты" },
@@ -112,14 +123,17 @@ const CertificateCard = ({ data }) => {
   const handleOpenServiceModal = async (deal, mode = "create") => {
     setModalMode(mode);
     const phone = profileData?.["0"]?.PHONE?.[0]?.VALUE || "";
-    const address = profileData?.["0"]?.UF_CRM_1692176867840 || "";
-    const selectedAddress = deal.ADDRESS;
+    const rawAddress = profileData?.["0"]?.UF_CRM_1692176867840 || "";
+    const address = Array.isArray(rawAddress)
+      ? rawAddress.map(cleanAddress).filter(Boolean)
+      : cleanAddress(rawAddress);
+    const selectedAddress = cleanAddress(deal.ADDRESS);
 
     // Определяем начальный адрес
     let initialAddress = "";
     if (Array.isArray(address)) {
       address.forEach((addr) => {
-        if (addr.includes(selectedAddress)) {
+        if (selectedAddress && addr.includes(selectedAddress)) {
           initialAddress = addr;
         }
       });
@@ -329,7 +343,7 @@ const CertificateCard = ({ data }) => {
                 handleServiceFormSubmit("C2:NEW", data.ID);
               }}
             >
-              Согласовать время
+              Принять заявку в работу
             </MDButton>
           </MDBox>
         )}
@@ -463,17 +477,6 @@ const CertificateCard = ({ data }) => {
 
             <Grid item xs={12}>
               <TextField
-                sx={{ width: "100%" }}
-                label="Телефон для связи"
-                name="phone"
-                value={serviceForm.phone}
-                onChange={handleServiceFormChange}
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
                 select
                 sx={{ width: "100%" }}
                 label="Адрес проведения"
@@ -520,7 +523,7 @@ const CertificateCard = ({ data }) => {
               <Grid item xs={12}>
                 <TextField
                   sx={{ width: "100%" }}
-                  label="Примечание"
+                  label="Пометка для менеджера WOWlife"
                   name="notes"
                   value={serviceForm.notes}
                   onChange={handleServiceFormChange}

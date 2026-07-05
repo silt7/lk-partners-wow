@@ -24,6 +24,7 @@ import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 // Custom styles for the SidenavCollapse
 import {
@@ -36,7 +37,7 @@ import {
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
 
-function SidenavCollapse({ icon, name, active, ...rest }) {
+function SidenavCollapse({ icon, name, active, badge, ...rest }) {
   const [controller] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
 
@@ -67,7 +68,42 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
         </ListItemIcon>
 
         <ListItemText
-          primary={name}
+          primary={
+            <MDBox
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              width="100%"
+            >
+              <MDTypography
+                component="span"
+                variant="button"
+                fontWeight="medium"
+                color="inherit"
+              >
+                {name}
+              </MDTypography>
+              {badge > 0 && (
+                <MDBox
+                  component="span"
+                  minWidth="1.25rem"
+                  height="1.25rem"
+                  borderRadius="50%"
+                  bgColor="error"
+                  color="white"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="0.65rem"
+                  fontWeight="bold"
+                  px={0.5}
+                  ml={1}
+                >
+                  {badge > 99 ? "99+" : badge}
+                </MDBox>
+              )}
+            </MDBox>
+          }
           sx={(theme) =>
             collapseText(theme, {
               miniSidenav,
@@ -85,6 +121,7 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
 // Setting default values for the props of SidenavCollapse
 SidenavCollapse.defaultProps = {
   active: false,
+  badge: 0,
 };
 
 // Typechecking props for the SidenavCollapse
@@ -92,6 +129,7 @@ SidenavCollapse.propTypes = {
   icon: PropTypes.node.isRequired,
   name: PropTypes.string.isRequired,
   active: PropTypes.bool,
+  badge: PropTypes.number,
 };
 
 export default SidenavCollapse;

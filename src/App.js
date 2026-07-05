@@ -45,6 +45,7 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
+import useNewRequestsCount from "layouts/tables/data/useNewRequestsCount";
 
 // Material Dashboard 2 React contexts
 import {
@@ -77,6 +78,17 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { count: newRequestsCount } = useNewRequestsCount();
+
+  const sidenavRoutes = useMemo(
+    () =>
+      routes.map((route) =>
+        route.key === "new-requests"
+          ? { ...route, badge: newRequestsCount }
+          : route,
+      ),
+    [newRequestsCount],
+  );
 
   window.BaseDir = process.env.REACT_APP_BASE_URL;
   window.Cabinet = process.env.REACT_APP_CABINET;
@@ -238,7 +250,7 @@ export default function App() {
                   : brandWhite
               }
               brandName="Material Dashboard 2"
-              routes={routes}
+              routes={sidenavRoutes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
@@ -266,7 +278,7 @@ export default function App() {
                 : brandWhite
             }
             brandName="ЛК Партнера"
-            routes={routes}
+            routes={sidenavRoutes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />

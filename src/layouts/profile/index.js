@@ -111,9 +111,7 @@ function Overview() {
   const { name, email, phone } = parseContactDetails(
     profile?.UF_CRM_1684102732248,
   );
-  const serviceLocations = parseServiceLocations(
-    profile?.UF_CRM_1692176867840,
-  );
+  const serviceLocations = parseServiceLocations(profile?.UF_CRM_1692176867840);
 
   // Добавляем объект профиля по умолчанию
   const defaultProfile = {
