@@ -252,7 +252,7 @@ function Tables() {
                         size="medium"
                         disabled
                       >
-                        Создать сверку
+                        Передать сверку на оплату
                       </MDButton>
                     ) : (
                       <MDButton
@@ -261,7 +261,7 @@ function Tables() {
                         size="medium"
                         onClick={createVerification}
                       >
-                        Создать сверку
+                        Передать сверку на оплату
                       </MDButton>
                     )}
                   </Grid>

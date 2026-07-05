@@ -39,13 +39,18 @@ const CertTable = () => {
         <Grid item xs={12}>
           <MDBox pt={3}>
             {certData && certData.length > 0 ? (
-              <DataTable
+              <>
+                <MDTypography variant="h6" color="text" mb={2}>
+                  Погашенные сертификаты
+                </MDTypography>
+                <DataTable
                 table={{ columns, rows: certData }}
                 canSearch
                 entriesPerPage={{ defaultValue: 10 }}
                 showTotalEntries
                 noEndBorder
               />
+              </>
             ) : (
               <MDBox
                 display="flex"

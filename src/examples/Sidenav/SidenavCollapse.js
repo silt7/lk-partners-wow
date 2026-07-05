@@ -61,7 +61,17 @@ function SidenavCollapse({ icon, name, active, badge, ...rest }) {
           }
         >
           {typeof icon === "string" ? (
-            <Icon sx={(theme) => collapseIcon(theme, { active })}>{icon}</Icon>
+            <Icon
+              sx={(theme) =>
+                collapseIcon(theme, {
+                  active,
+                  transparentSidenav,
+                  whiteSidenav,
+                })
+              }
+            >
+              {icon}
+            </Icon>
           ) : (
             icon
           )}
@@ -79,7 +89,11 @@ function SidenavCollapse({ icon, name, active, badge, ...rest }) {
                 component="span"
                 variant="button"
                 fontWeight="medium"
-                color="inherit"
+                color={
+                  (transparentSidenav && !active) || (whiteSidenav && !active)
+                    ? "dark"
+                    : "white"
+                }
               >
                 {name}
               </MDTypography>

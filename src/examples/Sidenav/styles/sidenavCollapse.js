@@ -92,16 +92,23 @@ function collapseIconBox(theme, ownerState) {
   };
 }
 
-const collapseIcon = ({ palette: { white, gradients } }, { active }) => ({
-  color: active ? white.main : gradients.dark.state,
+const collapseIcon = (
+  { palette: { white, dark } },
+  { active, transparentSidenav, whiteSidenav },
+) => ({
+  color:
+    (transparentSidenav && !active) || (whiteSidenav && !active)
+      ? dark.main
+      : white.main,
 });
 
 function collapseText(theme, ownerState) {
-  const { typography, transitions, breakpoints, functions } = theme;
-  const { miniSidenav, transparentSidenav, active } = ownerState;
+  const { typography, transitions, breakpoints, functions, palette } = theme;
+  const { miniSidenav, transparentSidenav, whiteSidenav, active } = ownerState;
 
   const { size, fontWeightRegular, fontWeightLight } = typography;
   const { pxToRem } = functions;
+  const useWhiteText = !transparentSidenav && !whiteSidenav;
 
   return {
     marginLeft: pxToRem(10),
@@ -120,6 +127,7 @@ function collapseText(theme, ownerState) {
       fontWeight: active ? fontWeightRegular : fontWeightLight,
       fontSize: size.sm,
       lineHeight: 0,
+      ...(useWhiteText && { color: palette.white.main }),
     },
   };
 }
