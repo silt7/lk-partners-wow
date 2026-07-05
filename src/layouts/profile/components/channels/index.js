@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 const AVAILABLE_CHANNELS = [
   { name: "Max" },
-  // { name: "WA" },
+  { name: "WA" },
   { name: "TG" },
   { name: "SMS" },
   { name: "email" },
@@ -105,17 +105,6 @@ export default function ChannelsCard() {
             channel.name === "WA" ? (
               <MDBox sx={{ display: "flex", flexDirection: "column" }}>
                 {channel.name}
-                <MDTypography variant="caption" color="text">
-                  Чтобы оповещения заработали нужно подписаться{" "}
-                  <a
-                    href="https://api.whatsapp.com/send/?phone=79291580047&text=start&type=phone_number&app_absent=0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    WOWlife WB
-                  </a>{" "}
-                  отправив start в первом сообщении
-                </MDTypography>
               </MDBox>
             ) : channel.name === "TG" ? (
               <MDBox sx={{ display: "flex", flexDirection: "column" }}>
