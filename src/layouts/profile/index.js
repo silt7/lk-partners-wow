@@ -85,11 +85,34 @@ function parseContactDetails(data) {
   return { name, email, phone };
 }
 
+function decodeHtmlEntities(text) {
+  return text
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function parseServiceLocations(data) {
+  if (!Array.isArray(data)) return [];
+
+  return data
+    .map((item) => {
+      if (typeof item !== "string") return "";
+      const address = item.split("|")[0]?.trim() || "";
+      return decodeHtmlEntities(address);
+    })
+    .filter(Boolean);
+}
+
 function Overview() {
   const profile = GetProfile();
 
   const { name, email, phone } = parseContactDetails(
-    profile?.UF_CRM_1684102732248
+    profile?.UF_CRM_1684102732248,
+  );
+  const serviceLocations = parseServiceLocations(
+    profile?.UF_CRM_1692176867840,
   );
 
   // Добавляем объект профиля по умолчанию
@@ -113,7 +136,7 @@ function Overview() {
                 info={{
                   Сайты:
                     profile?.WEB?.map(
-                      (item, index) => `${index + 1}) ${item.VALUE}`
+                      (item, index) => `${index + 1}) ${item.VALUE}`,
                     ).join(", ") || "Не указаны",
                   Почта: profile?.EMAIL || "Не указана",
                   Телефон: profile?.PHONE || "Не указан",
@@ -137,9 +160,17 @@ function Overview() {
                 description="Основная информация о контакте"
                 info={{
                   "Адреса проведения услуг (может быть несколько)":
-                    profile?.UF_CRM_1692176867840?.map(
-                      (address, index) => `${index + 1}) ${address}`
-                    ).join(", ") || "Не указаны",
+                    serviceLocations.length > 0 ? (
+                      <MDBox component="ul" sx={{ m: 0, pl: 2.5 }}>
+                        {serviceLocations.map((address, index) => (
+                          <MDBox component="li" key={index} sx={{ mb: 0.5 }}>
+                            {address}
+                          </MDBox>
+                        ))}
+                      </MDBox>
+                    ) : (
+                      "Не указаны"
+                    ),
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
@@ -190,7 +221,7 @@ function Overview() {
             {/*Дополнительная информация*/}
             <Grid item xs={12} xl={6}>
               <ProfileInfoCard
-                title="Дополнительная информация"
+                title="Информация для клиента"
                 info={{
                   "Важно знать": profile?.UF_CRM_1684102959619 || "",
                 }}
