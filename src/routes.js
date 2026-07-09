@@ -52,6 +52,7 @@ import Cert from "layouts/cert";
 import Product from "layouts/product";
 import NewRequests from "layouts/newRequests";
 import { MainProfile } from "layouts/mainProfile";
+import InstructionsAndContacts from "layouts/instructionsContacts";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -73,6 +74,14 @@ const routes = [
     route: "/profile",
     // component: <MainProfile />,
     component: <Profile />,
+  },
+  {
+    type: "collapse",
+    name: "Инструкции и контакты",
+    key: "instructions-and-contacts",
+    icon: <Icon fontSize="small">menu_book</Icon>,
+    route: "/instructions-and-contacts",
+    component: <InstructionsAndContacts />,
   },
   {
     type: "collapse",
