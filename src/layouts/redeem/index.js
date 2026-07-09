@@ -274,9 +274,11 @@ function Tables() {
                     }}
                   >
                     <MDTypography variant="button" color="text">
-                      {daysLeft <= 14
-                        ? `Новая сверка будет доступна через ${daysLeft} дней`
-                        : "Сертификаты можно отправлять раз в две недели"}
+                      {daysLeft === 0
+                        ? "Доступна новая сверка"
+                        : daysLeft <= 14
+                          ? `Новая сверка будет доступна через ${daysLeft} дней`
+                          : "Сертификаты можно отправлять раз в две недели"}
                     </MDTypography>
                   </Grid>
                 </Grid>
