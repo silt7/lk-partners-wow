@@ -197,10 +197,10 @@ function Overview() {
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
             </Grid>
-            {/*Финансовые реквизиты*/}
+            {/*Реквизиты компании*/}
             <Grid item xs={12} xl={6}>
               <ProfileInfoCard
-                title="Финансовые реквизиты"
+                title="Реквизиты компании"
                 description="Основная информация о контакте"
                 info={{
                   "Название юридического лица":
@@ -209,10 +209,24 @@ function Overview() {
                   ОГРНИП: profile?.REQUISITES[0]?.RQ_OGRNIP || "—",
                   КПП: profile?.REQUISITES[0]?.RQ_KPP || "—",
                   ОГРН: profile?.REQUISITES[0]?.RQ_OGRN || "—",
-                  // "Банковские реквизиты (БИК, расчетный счет)":
-                  //   profile?.REQUISITES[0].RQ_BANK_DETAILS || "",
                   // "Юридический адрес":
                   //   profile?.REQUISITES[0].RQ_COMPANY_ADDRESS || "",
+                }}
+              />
+              {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}
+            </Grid>
+            {/*Банковские реквизиты*/}
+            <Grid item xs={12} xl={6}>
+              <ProfileInfoCard
+                title="Банковские реквизиты"
+                description="Банковские реквизиты компании"
+                info={{
+                  Название: profile?.BANK_REQUISITES?.NAME || "—",
+                  "Наименование банка":
+                    profile?.BANK_REQUISITES?.RQ_BANK_NAME || "—",
+                  БИК: profile?.BANK_REQUISITES?.RQ_BIK || "—",
+                  "Расчетный счёт": profile?.BANK_REQUISITES?.RQ_ACC_NUM || "—",
+                  "Кор. счёт": profile?.BANK_REQUISITES?.RQ_COR_ACC_NUM || "—",
                 }}
               />
               {/*<Divider orientation="vertical" sx={{ mx: 0 }} />*/}

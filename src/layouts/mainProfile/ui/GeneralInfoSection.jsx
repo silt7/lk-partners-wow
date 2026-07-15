@@ -57,7 +57,7 @@ export const GeneralInfoSection = ({
         </MDTypography>
         {/*============*/}
         <MDTypography color="light" variant="h3">
-          Финансовые реквизиты
+          Реквизиты компании
         </MDTypography>
         <MDTypography
           variant="body2"
